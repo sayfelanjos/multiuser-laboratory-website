@@ -1,0 +1,14 @@
+/* The following line can be included in a src/App.scss */
+@import "~bootstrap/scss/bootstrap";
+@import "./components/RootLayout/root-layout";
+@import "./components/Header/header";
+@import "./components/Hero/hero";
+@import "./pages/Home/home";
+@import "./pages/About/about";
+@import "./pages/Contact/contact";
+@import "./pages/NotFound/not-found";
+@import "./pages/QuoteRequest/quote-request";
+@import "./components/CardsGrid/cards-grid";
+@import "./components/Footer/footer";
+@import "./pages/Service/service";
+@import "./components/ServiceBanner/service-banner";
