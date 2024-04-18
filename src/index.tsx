@@ -10,13 +10,17 @@ import "./global.scss";
 import AboutPage from "./pages/About";
 import ContactPage from "./pages/Contact";
 import HomePage from "./pages/Home";
-import Service from "./pages/Services/TensileTest";
 import TensileTest from "./pages/Services/TensileTest";
 import RootLayout from "./components/RootLayout";
 import QuoteRequest from "./pages/QuoteRequest";
 import { DevSupport } from "@react-buddy/ide-toolbox";
 import { ComponentPreviews, useInitial } from "./dev";
 import NotFound from "./pages/NotFound";
+import CompressionTest from "./pages/Services/CompressionTest";
+import FlexionTest from "./pages/Services/FlexionTest";
+import FadigueTest from "./pages/Services/FadigueTest";
+import CharpyImpactTest from "./pages/Services/CharpyImpactTest";
+import TenacityTest from "./pages/Services/TenacityTest";
 
 const router = createBrowserRouter([
   {
@@ -49,27 +53,27 @@ const router = createBrowserRouter([
         children: [
           {
             path: "tenacity-test",
-            element: <TensileTest />,
+            element: <TenacityTest />,
           },
           {
             path: "compression-test",
-            element: <Service />,
+            element: <CompressionTest />,
           },
           {
             path: "tensile-test",
-            element: <Service />,
+            element: <TensileTest />,
           },
           {
             path: "fatigue-test",
-            element: <Service />,
+            element: <FadigueTest />,
           },
           {
             path: "flexion-test",
-            element: <Service />,
+            element: <FlexionTest />,
           },
           {
             path: "charpy-impact-test",
-            element: <Service />,
+            element: <CharpyImpactTest />,
           },
         ],
       },

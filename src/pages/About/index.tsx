@@ -2,52 +2,41 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import ProgressBar from "react-bootstrap/ProgressBar";
+import Image from "react-bootstrap/Image";
+import image from "../../assets/images/image-800x400.jpg";
+import CardsGrid from "../../components/CardsGrid";
+import Hero from "../../components/Hero";
 
 const About = () => {
-  const html = 80;
-  const responsive = 95;
-  const photoshop = 60;
   return (
-    <section id="about" className="block about-block">
-      <Container fluid>
-        <div className="title-holder">
-          <h2>About Us</h2>
-          <div className="subtitle">Lear more about us</div>
-        </div>
-        <Row>
-          <Col sm={6}></Col>
-          <Col sm={6}>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Accusantium consectetur cum distinctio, dolorem ducimus est
-              exercitationem labore laboriosam, minima mollitia nemo nulla
-              numquam officiis quidem quod repellendus sunt suscipit,
-              temporibus.
+    <>
+      <Hero />
+      <Container style={{ padding: "0" }}>
+        <h4 className="text-black text-center my-5">Sobre Nós</h4>
+        <Row xs={1} sm={1} md={2} lg={2} xl={2} xxl={2}>
+          <Col>
+            <Image src={image} className="w-100 d-block h-auto"></Image>
+          </Col>
+          <Col>
+            <p className="text-black">
+              O LMU Laboratório Multiusuário, de Caracterização de Materiais
+              visa o estudo e caracterização de materiais e processos de
+              fabricação, nas áreas de Engenharia de Manufatura e Materiais.
+              Composto por equipamentos, técnicas e procedimentos de diversos
+              laboratórios, possuindo como missão promover pesquisas
+              interdisciplinares de ponta, colabora com projetos inovadores,
+              apoiar o Plano de Desenvolvimento Institucional da Unicamp,
+              potencializando o ensino, a pesquisa, a extensão e as relações
+              entre a comunidade universitária e a iniciativa privada.
             </p>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Accusantium consectetur cum distinctio, dolorem ducimus est
-              exercitationem labore laboriosam, minima mollitia nemo nulla
-              numquam officiis quidem quod repellendus sunt suscipit,
-              temporibus.
-            </p>
-            <div className="progress-block">
-              <h4>HTML / CSS / Javascript</h4>
-              <ProgressBar now={html} label={`${html}%`} />
-            </div>
-            <div className="progress-block">
-              <h4>responsive</h4>
-              <ProgressBar now={responsive} label={`${responsive}%`} />
-            </div>
-            <div className="progress-block">
-              <h4>Photoshop</h4>
-              <ProgressBar now={photoshop} label={`${photoshop}%`} />
-            </div>
           </Col>
         </Row>
+        <Container>
+          <hr className="bg-black border-1 my-5" />
+        </Container>
+        <CardsGrid />
       </Container>
-    </section>
+    </>
   );
 };
 
