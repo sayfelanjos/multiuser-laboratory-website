@@ -1,0 +1,19 @@
+.svc-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  height: 192px;
+  padding: 0;
+}
+
+.svc-header-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.svc-header-title {
+  position: absolute;
+  color: azure;
+}

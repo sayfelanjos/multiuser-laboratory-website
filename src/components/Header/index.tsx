@@ -44,7 +44,7 @@ const Header = () => {
                 <Nav.Link href="/">Home</Nav.Link>
                 <NavDropdown title="Serviços" id="basic-nav-dropdown">
                   <NavDropdown.Item href="/service/tenacity-test">
-                    Ensaio de Tenencidade
+                    Ensaio de Tenacidade
                   </NavDropdown.Item>
                   <NavDropdown.Item href="/service/compression-test">
                     Ensaio de Compressão

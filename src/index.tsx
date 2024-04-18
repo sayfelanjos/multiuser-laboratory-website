@@ -10,7 +10,8 @@ import "./global.scss";
 import AboutPage from "./pages/About";
 import ContactPage from "./pages/Contact";
 import HomePage from "./pages/Home";
-import Service from "./pages/Service";
+import Service from "./pages/Services/TensileTest";
+import TensileTest from "./pages/Services/TensileTest";
 import RootLayout from "./components/RootLayout";
 import QuoteRequest from "./pages/QuoteRequest";
 import { DevSupport } from "@react-buddy/ide-toolbox";
@@ -48,7 +49,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "tenacity-test",
-            element: <Service />,
+            element: <TensileTest />,
           },
           {
             path: "compression-test",

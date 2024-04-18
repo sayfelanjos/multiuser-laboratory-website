@@ -237,7 +237,7 @@ const Footer = () => {
         </Col>
       </Row>
       <Row xs={1} sm={1} md={1} lg={1} xl={1} xxl={1}>
-        <p className="footer-copyright m-0 border-light border-top border-1 text-light">
+        <p className="footer-copyright m-0 border-black border-top border-1 text-bg-light">
           Copyright &copy; {year} Faculdade de Engenharia Mecânica. All Rights
           Reserved
         </p>

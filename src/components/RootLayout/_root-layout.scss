@@ -1,9 +1,7 @@
-
-.wrapper {
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+.main-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 0;
 
 }
