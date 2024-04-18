@@ -1,4 +1,16 @@
 .footer-container {
-  height: 350px;
-  background-color: black;
+  height: fit-content;
+  padding: 16px;
+}
+
+.footer-copyright {
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  //border-top: 1px solid white;
+  box-sizing: border-box;
+  padding: 16px 16px 0 16px;
+  text-align: center;
+
 }

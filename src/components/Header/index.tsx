@@ -23,7 +23,7 @@ const Header = () => {
       className="navbar"
       fixed="top"
     >
-      <Container fluid>
+      <Container>
         <Navbar.Brand href="/">
           <img src={logo} style={navbarBrandStyle} alt="FEM Unicamp Logo" />
         </Navbar.Brand>
@@ -59,11 +59,11 @@ const Header = () => {
                     Ensaio de Flexão
                   </NavDropdown.Item>
                   <NavDropdown.Item href="/service/charpy-impact-test">
-                    Teste de Impacto Charpy (150J e 300J)
+                    Ensaio de Impacto Charpy
                   </NavDropdown.Item>
                 </NavDropdown>
                 <Nav.Link href="/quote-request">Cotação</Nav.Link>
-                <Nav.Link href="/about">Sobre o LMU</Nav.Link>
+                <Nav.Link href="/about">Sobre o LEM</Nav.Link>
                 <Nav.Link href="/contact">Contato</Nav.Link>
               </Nav>
               <Form className="d-flex">
