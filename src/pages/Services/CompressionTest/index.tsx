@@ -12,7 +12,7 @@ const CompressionTest = () => {
   return (
     <>
       <Container fluid className="svc-page-content p-0">
-        <ServiceHeader svcTitle="Teste de Compressão" svcImage={image} />
+        <ServiceHeader svcTitle="Ensaio de Compressão" svcImage={image} />
         <Container className="p-0">
           <Container className="my-5">
             <Row xs={1} sm={1} md={2} lg={2} xl={2} xxl={2}>
