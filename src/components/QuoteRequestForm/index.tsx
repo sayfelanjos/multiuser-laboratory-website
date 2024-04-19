@@ -21,21 +21,22 @@ const QuoteRequestForm = () => {
           </Form.Group>
         </Col>
       </Row>
-      <Row>
+      <Row className="mb-3" xs={1} sm={1} md={2} lg={3} xl={3} xxl={3}>
         <Col>
-          <Form.Group className="mb-3" controlId="formGridAddress1">
-            <Form.Label>Endereço</Form.Label>
-            <Form.Control
-              placeholder="Rua Santos Dumont 123"
-              className="mb-3"
-            />
+          <Form.Group as={Col} controlId="formGridZip">
+            <Form.Label>Cep</Form.Label>
+            <Form.Control className="mb-3" />
           </Form.Group>
         </Col>
-      </Row>
-      <Row>
+        <Col>
+          <Form.Group as={Col} controlId="formGridCity">
+            <Form.Label>Rua</Form.Label>
+            <Form.Control className="mb-3" />
+          </Form.Group>
+        </Col>
         <Col>
           <Form.Group className="mb-3" controlId="formGridAddress2">
-            <Form.Label>Endereço 2</Form.Label>
+            <Form.Label>Complemento</Form.Label>
             <Form.Control
               placeholder="Casa, Apartamento, Kitnet e etc"
               className="mb-3"
@@ -43,11 +44,23 @@ const QuoteRequestForm = () => {
           </Form.Group>
         </Col>
       </Row>
-      <Row className="mb-3" xs={1} sm={2} md={3} lg={3} xl={3} xxl={3}>
+      <Row className="mb-3" xs={1} sm={1} md={2} lg={3} xl={3} xxl={3}>
         <Col>
-          <Form.Group as={Col} controlId="formGridCity">
+          <Form.Group className="mb-3" controlId="formGridAddress1">
+            <Form.Label>Bairro</Form.Label>
+            <Form.Control
+              placeholder="Rua Santos Dumont 123"
+              className="mb-3"
+            />
+          </Form.Group>
+        </Col>
+        <Col>
+          <Form.Group className="mb-3" controlId="formGridAddress1">
             <Form.Label>Cidade</Form.Label>
-            <Form.Control className="mb-3" />
+            <Form.Control
+              placeholder="Rua Santos Dumont 123"
+              className="mb-3"
+            />
           </Form.Group>
         </Col>
         <Col>
@@ -59,13 +72,9 @@ const QuoteRequestForm = () => {
             </Form.Select>
           </Form.Group>
         </Col>
-        <Col>
-          <Form.Group as={Col} controlId="formGridZip">
-            <Form.Label>Cep</Form.Label>
-            <Form.Control className="mb-3" />
-          </Form.Group>
-        </Col>
       </Row>
+      <Row></Row>
+
       <Button variant="dark" type="submit" className="px-5">
         Enviar
       </Button>
