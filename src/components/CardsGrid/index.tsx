@@ -9,7 +9,7 @@ import { cardsData } from "./cardsData";
 const CardsGrid = () => {
   return (
     <Container className="cards-grid-container">
-      <Row xs={1} sm={2} md={2} xl={3} lg={3} className="g-4">
+      <Row xs={1} sm={2} md={2} lg={3} xl={3} xxl={3} className="g-4">
         {cardsData.map((card) => {
           return (
             <Col key={card.id}>

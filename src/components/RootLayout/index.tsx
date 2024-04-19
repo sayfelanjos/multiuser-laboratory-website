@@ -6,14 +6,13 @@ import { Outlet } from "react-router-dom";
 
 const RootLayout = () => {
   return (
-    <>
+    <Container fluid className="p-0 position-relative">
       <Header />
       <Container fluid className="main-content">
         <Outlet />
       </Container>
-
       <Footer />
-    </>
+    </Container>
   );
 };
 

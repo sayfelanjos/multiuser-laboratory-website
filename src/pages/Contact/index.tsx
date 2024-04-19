@@ -18,7 +18,7 @@ const Contact = () => {
         <Form>
           <Row xs={1} sm={1} md={1} lg={3} xl={3} xxl={3}>
             <Col>
-              <Form.Group controlId="formBasicName">
+              <Form.Group controlId="formBasicName" className="mb-3">
                 <Form.Label>Nome completo</Form.Label>
                 <Form.Control
                   type="text"
@@ -28,7 +28,7 @@ const Contact = () => {
               </Form.Group>
             </Col>
             <Col>
-              <Form.Group controlId="formBasicEmail">
+              <Form.Group controlId="formBasicEmail" className="mb-3">
                 <Form.Label>Endereço de email</Form.Label>
                 <Form.Control
                   type="email"
@@ -38,7 +38,7 @@ const Contact = () => {
               </Form.Group>
             </Col>
             <Col>
-              <Form.Group controlId="formBasicPhone">
+              <Form.Group controlId="formBasicPhone" className="mb-3">
                 <Form.Label>Telefone</Form.Label>
                 <Form.Control type="tel" placeholder="Telefone" required />
               </Form.Group>
