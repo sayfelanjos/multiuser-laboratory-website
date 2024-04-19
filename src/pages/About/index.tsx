@@ -5,12 +5,10 @@ import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 import image from "../../assets/images/image-800x400.jpg";
 import CardsGrid from "../../components/CardsGrid";
-import Hero from "../../components/Hero";
 
 const About = () => {
   return (
     <>
-      <Hero />
       <Container style={{ padding: "0" }}>
         <h4 className="text-black text-center my-5">Sobre Nós</h4>
         <Row xs={1} sm={1} md={2} lg={2} xl={2} xxl={2}>

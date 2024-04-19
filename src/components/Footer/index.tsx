@@ -221,16 +221,16 @@ const Footer = () => {
               "flex-xxl-column"
             }
           >
-            <Link to="#" className="link-dark">
+            <Link to="#" className="link-dark icon-link-hover">
               <InstagramIcon />
             </Link>
-            <Link to="#" className="link-dark">
+            <Link to="#" className="link-dark icon-link-hover">
               <LinkedInIcon />
             </Link>
-            <Link to="#" className="link-dark">
+            <Link to="#" className="link-dark icon-link-hover">
               <FacebookIcon />
             </Link>
-            <Link to="#" className="link-dark">
+            <Link to="#" className="link-dark icon-link-hover">
               <WhatsAppIcon />
             </Link>
           </Stack>

@@ -5,7 +5,7 @@ import CardsGrid from "../../components/CardsGrid";
 
 const Home = () => {
   return (
-    <Container fluid className="main-container">
+    <Container fluid className="main-container p-0">
       <Hero />
       <CardsGrid />
     </Container>

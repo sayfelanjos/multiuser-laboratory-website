@@ -11,12 +11,12 @@ import CardsGrid from "../../../components/CardsGrid";
 const TenacityTest = () => {
   return (
     <>
-      <Container fluid className="svc-page-content">
+      <Container fluid className="svc-page-content p-0">
         <ServiceHeader svcTitle="Teste de Tenacidade" svcImage={image} />
         <Container className="my-5">
           <Row xs={1} sm={1} md={2} lg={2} xl={2} xxl={2}>
             <Col>
-              <h5>Ensaio de tenacidade a fratura CTOD</h5>
+              <h5 className="h5">Ensaio de tenacidade a fratura CTOD</h5>
               <p className="text-black">
                 O ensaio consiste em avaliar um corpo de prova com um entalhe de
                 tamanho especificado de acordo com as normas (BS 7448-1, ASTM
@@ -31,8 +31,8 @@ const TenacityTest = () => {
                 transição de comportamento dúctil-frágil, como os aços de
                 estrutura ferrítica
               </p>
-              <h5>Ensaio de tenacidade a fratura K1C</h5>
-              <p>
+              <h5 className="h5">Ensaio de tenacidade a fratura K1C</h5>
+              <p className="text-black">
                 O fator de intensidade de tensão crítico K1C descreve a
                 resistência do material ao crescimento da trinca. O fator de
                 intensidade de tensão também é chamado de tenacidade da trinca
@@ -71,7 +71,10 @@ const TenacityTest = () => {
               </Link>
             </Col>
             <Col>
-              <Image src={image} className="d-block w-100 h-auto" />
+              <Image
+                src={image}
+                className="d-none d-sm-none d-md-block d-lg-block d-xl-block d-xxl-block w-100 h-auto"
+              />
             </Col>
           </Row>
         </Container>

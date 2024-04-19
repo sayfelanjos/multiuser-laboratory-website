@@ -11,7 +11,7 @@ import CardsGrid from "../../../components/CardsGrid";
 const CharpyImpactTest = () => {
   return (
     <>
-      <Container fluid className="svc-page-content">
+      <Container fluid className="svc-page-content p-0">
         <ServiceHeader svcTitle="Teste de Impacto Charpy" svcImage={image} />
         <Container className="my-5">
           <Row xs={1} sm={1} md={2} lg={2} xl={2} xxl={2}>
@@ -36,7 +36,10 @@ const CharpyImpactTest = () => {
               </Link>
             </Col>
             <Col>
-              <Image src={image} className="d-block w-100 h-auto" />
+              <Image
+                src={image}
+                className="d-none d-sm-none d-md-block d-lg-block d-xl-block d-xxl-block w-100 h-auto"
+              />
             </Col>
           </Row>
         </Container>
