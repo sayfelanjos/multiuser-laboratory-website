@@ -9,11 +9,11 @@ import CardsGrid from "../../components/CardsGrid";
 const About = () => {
   return (
     <>
-      <Container style={{ padding: "0" }}>
+      <Container>
         <h4 className="text-black text-center my-5">Sobre Nós</h4>
-        <Row xs={1} sm={1} md={2} lg={2} xl={2} xxl={2}>
+        <Row xs={1} sm={1} md={1} lg={2} xl={2} xxl={2}>
           <Col>
-            <Image src={image} className="w-100 d-block h-auto"></Image>
+            <Image src={image} className="w-100 d-block h-auto mb-3"></Image>
           </Col>
           <Col>
             <p className="text-black">
