@@ -12,7 +12,7 @@ const TenacityTest = () => {
   return (
     <>
       <Container fluid className="svc-page-content p-0">
-        <ServiceHeader svcTitle="Teste de Tenacidade" svcImage={image} />
+        <ServiceHeader svcTitle="Ensaio de Tenacidade" svcImage={image} />
         <Container className="my-5">
           <Row xs={1} sm={1} md={2} lg={2} xl={2} xxl={2}>
             <Col>
