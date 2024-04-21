@@ -21,3 +21,4 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+!/multiuser-laboratory-website-firebase-adminsdk-uri77-936de0c41a.json
