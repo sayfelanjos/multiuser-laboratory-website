@@ -1,7 +1,11 @@
-.hero-container {
+.hero-ctn {
   padding: 0;
+  height: 60vh;
 }
 
-.carousel-item {
-  height: 100%;
+.hero-img {
+  display: block;
+  object-fit: cover;
+  width: inherit;
+  height: inherit;
 }

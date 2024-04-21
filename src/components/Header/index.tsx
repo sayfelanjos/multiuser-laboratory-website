@@ -1,3 +1,4 @@
+import React from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -6,7 +7,6 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import logo from "../../assets/images/FEM_monocromatica.png";
-import React from "react";
 
 const navbarBrandStyle = {
   width: "auto",
@@ -24,7 +24,7 @@ const Header = () => {
       fixed="top"
     >
       <Container>
-        <Navbar.Brand href="/">
+        <Navbar.Brand href="/" className="py-0">
           <img src={logo} style={navbarBrandStyle} alt="FEM Unicamp Logo" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
