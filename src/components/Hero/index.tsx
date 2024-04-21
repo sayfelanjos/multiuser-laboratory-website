@@ -1,78 +1,41 @@
 import React from "react";
 import Container from "react-bootstrap/Container";
 import Carousel from "react-bootstrap/Carousel";
-import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
-import image3 from "../../assets/images/image-1600x500.jpg";
+import { Link } from "react-router-dom";
+import ChevronRightIcon from "../../assets/icons/ChevronRightIcon";
+import { heroData } from "./heroData";
 
 const Hero = () => {
   return (
-    <Container fluid className="hero-container">
+    <Container fluid className="p-0">
       <Carousel>
-        <Carousel.Item className="carousel-item">
-          <Image
-            src={image3}
-            alt="Hero"
-            className="w-100 h-auto d-block"
-            fluid
-          />
-          <Carousel.Caption>
-            <h3>First slide label</h3>
-            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-            <Button variant="dark" size="sm">
-              Link to page
-            </Button>
-          </Carousel.Caption>
-        </Carousel.Item>
-        <Carousel.Item className="carousel-item">
-          <Image
-            src={image3}
-            alt="Hero"
-            className="w-100 h-auto d-block"
-            fluid
-          />
-          <Carousel.Caption>
-            <h3>Second slide label</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <Button variant="dark" size="sm">
-              Link to page
-            </Button>
-          </Carousel.Caption>
-        </Carousel.Item>
-        <Carousel.Item className="carousel-item">
-          <Image
-            src={image3}
-            alt="Hero"
-            className="w-100 h-auto d-block"
-            fluid
-          />
-          <Carousel.Caption>
-            <h3>Third slide label</h3>
-            <p>
-              Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-            </p>
-            <Button variant="dark" size="sm">
-              Link to page
-            </Button>
-          </Carousel.Caption>
-        </Carousel.Item>
-        <Carousel.Item className="carousel-item">
-          <Image
-            src={image3}
-            alt="Hero"
-            className="w-100 h-auto d-block"
-            fluid
-          />
-          <Carousel.Caption>
-            <h3>Third slide label</h3>
-            <p>
-              Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-            </p>
-            <Button variant="dark" size="sm">
-              Link to page
-            </Button>
-          </Carousel.Caption>
-        </Carousel.Item>
+        {heroData.map((hero) => {
+          return (
+            <Carousel.Item key={hero.id}>
+              <Container fluid className="hero-ctn">
+                <Image
+                  src={hero.imagePath}
+                  alt={hero.imageDesc}
+                  width="1800"
+                  height="1200"
+                  loading="lazy"
+                  className="hero-img"
+                  srcSet={hero.imageSet}
+                  sizes={hero.imageSizes}
+                />
+              </Container>
+              <Carousel.Caption>
+                <h3>{hero.label}</h3>
+                <p>{hero.summary}</p>
+                <Link to={hero.buttonLink} className="px-3 btn btn-dark">
+                  <span className="me-1">{hero.buttonText}</span>
+                  <ChevronRightIcon />
+                </Link>
+              </Carousel.Caption>
+            </Carousel.Item>
+          );
+        })}
       </Carousel>
     </Container>
   );

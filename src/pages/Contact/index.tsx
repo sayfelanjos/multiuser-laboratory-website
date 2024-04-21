@@ -14,7 +14,7 @@ const Contact = () => {
   return (
     <>
       <Container as="section" id="contact">
-        <h2 className="text-center my-5">Contate nos</h2>
+        <h2 className="text-center my-5">Contate-nos</h2>
         <Form>
           <Row xs={1} sm={1} md={1} lg={3} xl={3} xxl={3}>
             <Col>
