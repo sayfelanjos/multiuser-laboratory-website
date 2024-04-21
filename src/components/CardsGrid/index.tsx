@@ -14,8 +14,12 @@ const CardsGrid = () => {
           return (
             <Col key={card.id}>
               <Link to={card.link} className="card-link">
-                <Card>
-                  <Card.Img variant="top" src={card.image} />
+                <Card className="rounded-0">
+                  <Card.Img
+                    variant="top"
+                    src={card.image}
+                    className="rounded-0"
+                  />
                   <Card.Body>
                     <Card.Title>{card.title}</Card.Title>
                   </Card.Body>
