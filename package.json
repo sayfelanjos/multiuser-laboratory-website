@@ -61,17 +61,5 @@
     "nodemon": "^3.1.0",
     "prettier": "3.2.5",
     "typescript-eslint": "^7.6.0"
-  },
-  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
-  "main": ".eslintrc.js",
-  "author": "",
-  "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sayfelanjos/multiuser-laboratory-webpage.git"
-  },
-  "bugs": {
-    "url": "https://github.com/sayfelanjos/multiuser-laboratory-webpage/issues"
-  },
-  "homepage": "https://github.com/sayfelanjos/multiuser-laboratory-webpage#readme"
+  }
 }

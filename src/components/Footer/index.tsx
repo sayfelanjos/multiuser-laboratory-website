@@ -10,7 +10,7 @@ import WhatsAppIcon from "../../assets/icons/WhatsAppIcon";
 import InstagramIcon from "../../assets/icons/InstagramIcon";
 
 const d = new Date();
-let year = d.getFullYear();
+const year = d.getFullYear();
 
 const Footer = () => {
   return (
