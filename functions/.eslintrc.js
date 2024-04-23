@@ -9,6 +9,7 @@ module.exports = {
   extends: ["eslint:recommended", "google", "prettier"],
   rules: {
     "no-restricted-globals": ["error", "name", "length"],
+    "@typescript-eslint/no-var-requires": 0,
     "prefer-arrow-callback": "error",
     quotes: ["error", "double", { allowTemplateLiterals: true }],
   },
