@@ -41,7 +41,7 @@ const Header = () => {
             </Offcanvas.Header>
             <Offcanvas.Body>
               <Nav className="justify-content-start flex-grow-1 pe-3">
-                <Nav.Link href="/">Home</Nav.Link>
+                <Nav.Link href="/">Início</Nav.Link>
                 <NavDropdown title="Serviços" id="basic-nav-dropdown">
                   <NavDropdown.Item href="/service/tenacity-test">
                     Ensaio de Tenacidade
