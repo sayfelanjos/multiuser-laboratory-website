@@ -73,8 +73,6 @@ const QuoteRequestForm = () => {
           </Form.Group>
         </Col>
       </Row>
-      <Row></Row>
-
       <Button variant="dark" type="submit" className="px-5">
         Enviar
       </Button>
