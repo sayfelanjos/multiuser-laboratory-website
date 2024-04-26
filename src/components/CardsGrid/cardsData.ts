@@ -8,7 +8,7 @@ export const cardsData: Card[] = [
   {
     id: 1,
     image: require("../../assets/images/istockphoto-1220425228-286x180.jpg"),
-    title: "Ensaios de Tenacidade",
+    title: "Ensaio de Tenacidade",
     link: "/service/tenacity-test",
   },
   {
@@ -26,7 +26,7 @@ export const cardsData: Card[] = [
   {
     id: 4,
     image: require("../../assets/images/istockphoto-1220425228-286x180.jpg"),
-    title: "Ensaios de Fadiga",
+    title: "Ensaio de Fadiga",
     link: "/service/fatigue-test",
   },
   {
