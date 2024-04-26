@@ -10,9 +10,6 @@
     "logs": "firebase functions:log",
     "build": "babel ./src --out-dir ./build"
   },
-  "engines": {
-    "node": "18"
-  },
   "main": "index.js",
   "dependencies": {
     "@google-cloud/functions-framework": "^3.3.0",
