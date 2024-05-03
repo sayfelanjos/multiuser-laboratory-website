@@ -242,8 +242,8 @@ const Footer = () => {
       </Row>
       <Row xs={1} sm={1} md={1} lg={1} xl={1} xxl={1}>
         <p className="footer-copyright m-0 border-black border-top border-1 text-bg-light text-center text-sm-center text-md-start text-lg-start text-xl-start text-xxl-start">
-          Copyright &copy; {year} Faculdade de Engenharia Mecânica. All Rights
-          Reserved
+          Copyright &copy; {year} Faculdade de Engenharia Mecânica. Todos os
+          direitos reservados
         </p>
       </Row>
     </Container>

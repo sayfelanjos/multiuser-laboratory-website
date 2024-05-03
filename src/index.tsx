@@ -36,6 +36,10 @@ const router = createBrowserRouter([
         path: "home",
         element: <Navigate to="/" />,
       },
+      // {
+      //   path: "schedule",
+      //   element: <SchedulePage />,
+      // },
       {
         path: "quote-request",
         element: <QuoteRequest />,
