@@ -7,7 +7,8 @@ import ReactInputMask from "react-input-mask";
 
 const QuoteRequestForm = () => {
   const [requester, setRequester] = useState("RA");
-  let requesterIdPlaceholder;
+  let requesterIdPlaceholder = "";
+
   switch (requester) {
     case "RA": {
       requesterIdPlaceholder = "999999";
@@ -27,7 +28,7 @@ const QuoteRequestForm = () => {
     (event: React.ChangeEvent<HTMLSelectElement>) => {
       setRequester(event.target.value);
     },
-    [requester, setRequester],
+    [],
   );
 
   return (
@@ -75,7 +76,7 @@ const QuoteRequestForm = () => {
           </Form.Group>
         </Col>
       </Row>
-      <Row className="mb-3" xs={1} sm={1} md={2} lg={3} xl={3} xxl={3}>
+      <Row className="mb-3" xs={1} sm={1} md={2} lg={4} xl={4} xxl={4}>
         <Col
           lg={{ span: 2, offset: 0 }}
           xl={{ span: 2, offset: 0 }}
@@ -121,36 +122,17 @@ const QuoteRequestForm = () => {
             </Form.Select>
           </Form.Group>
         </Col>
+        <Col
+          lg={{ span: 4, offset: 0 }}
+          xl={{ span: 4, offset: 0 }}
+          xxl={{ span: 4, offset: 0 }}
+        >
+          <Form.Group controlId="formFileMultiple" className="mb-3">
+            <Form.Label>Adicionar arquivo</Form.Label>
+            <Form.Control type="file" multiple />
+          </Form.Group>
+        </Col>
       </Row>
-      {/*<Row className="mb-3" xs={1} sm={1} md={2} lg={3} xl={3} xxl={3}>*/}
-      {/*  <Col>*/}
-      {/*    <Form.Group className="mb-3" controlId="formGridAddress1">*/}
-      {/*      <Form.Label>Bairro</Form.Label>*/}
-      {/*      <Form.Control*/}
-      {/*        placeholder="Rua Santos Dumont 123"*/}
-      {/*        className="mb-3"*/}
-      {/*      />*/}
-      {/*    </Form.Group>*/}
-      {/*  </Col>*/}
-      {/*  <Col>*/}
-      {/*    <Form.Group className="mb-3" controlId="formGridAddress1">*/}
-      {/*      <Form.Label>Cidade</Form.Label>*/}
-      {/*      <Form.Control*/}
-      {/*        placeholder="Rua Santos Dumont 123"*/}
-      {/*        className="mb-3"*/}
-      {/*      />*/}
-      {/*    </Form.Group>*/}
-      {/*  </Col>*/}
-      {/*  <Col>*/}
-      {/*    <Form.Group as={Col} controlId="formGridState">*/}
-      {/*      <Form.Label>Estado</Form.Label>*/}
-      {/*      <Form.Select defaultValue="Choose..." className="mb-3">*/}
-      {/*        <option>Choose...</option>*/}
-      {/*        <option>...</option>*/}
-      {/*      </Form.Select>*/}
-      {/*    </Form.Group>*/}
-      {/*  </Col>*/}
-      {/*</Row>*/}
       <Row>
         <Col>
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
@@ -159,7 +141,6 @@ const QuoteRequestForm = () => {
           </Form.Group>
         </Col>
       </Row>
-
       <Button variant="dark" type="submit" className="px-5">
         Enviar
       </Button>

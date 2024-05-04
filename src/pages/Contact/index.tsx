@@ -55,8 +55,8 @@ const Contact: React.FC = () => {
 
   return (
     <>
-      <Container as="section" id="contact">
-        <h2 className="text-center my-5">Contate-nos</h2>
+      <Container as="section" id="contact" className="contact__ctn">
+        <h2 className="text-center my-3">Contate-nos</h2>
         <Form onSubmit={onButtonSubmit}>
           <Row xs={1} sm={1} md={1} lg={3} xl={3} xxl={3}>
             <Col>
@@ -94,8 +94,15 @@ const Contact: React.FC = () => {
               </Form.Group>
             </Col>
           </Row>
-          <Row xs={1} sm={1} md={1} lg={3} xl={3} xxl={3}>
-            <Col>
+          <Row xs={1} sm={1} md={1} lg={4} xl={4} xxl={4}>
+            <Col
+              xs={1}
+              sm={1}
+              md={1}
+              lg={{ span: 2, offset: 0 }}
+              xl={{ span: 2, offset: 0 }}
+              xxl={{ span: 2, offset: 0 }}
+            >
               <Form.Group controlId="formBasicName" className="mb-3">
                 <Form.Label>Assunto</Form.Label>
                 <Form.Control
