@@ -6,16 +6,14 @@ import { Outlet, ScrollRestoration } from "react-router-dom";
 
 const RootLayout = () => {
   return (
-    <>
-      <Container fluid className="p-0">
-        <Header />
-        <Container fluid className="main p-0 position-relative top-0 bottom-0">
-          <Outlet />
-        </Container>
-        <Footer />
+    <Container fluid className="p-0 root-layout__ctn">
+      <Header />
+      <Container fluid className=" p-0 root-layout__main">
+        <Outlet />
       </Container>
+      <Footer />
       <ScrollRestoration />
-    </>
+    </Container>
   );
 };
 

@@ -16,6 +16,7 @@ const navbarBrandStyle = {
 const Header = () => {
   return (
     <Navbar
+      collapseOnSelect
       expand="lg"
       id="navbar"
       bg="light"
@@ -23,7 +24,7 @@ const Header = () => {
       className="navbar"
       fixed="top"
     >
-      <Container>
+      <Container fluid="lg">
         <Navbar.Brand href="/" className="py-0">
           <img src={logo} style={navbarBrandStyle} alt="FEM Unicamp Logo" />
         </Navbar.Brand>
@@ -41,30 +42,81 @@ const Header = () => {
             </Offcanvas.Header>
             <Offcanvas.Body>
               <Nav className="justify-content-start flex-grow-1 pe-3">
-                <Nav.Link href="/">Home</Nav.Link>
+                <Nav.Link
+                  href="/"
+                  active={
+                    location.pathname === "/home" || location.pathname === "/"
+                  }
+                  className="text-truncate"
+                >
+                  Início
+                </Nav.Link>
                 <NavDropdown title="Serviços" id="basic-nav-dropdown">
-                  <NavDropdown.Item href="/service/tenacity-test">
+                  <NavDropdown.Item
+                    href="/service/tenacity-test"
+                    className={`${location.pathname === "/service/tenacity-test" ? "active bg-dark" : ""} text-truncate`}
+                  >
                     Ensaio de Tenacidade
                   </NavDropdown.Item>
-                  <NavDropdown.Item href="/service/compression-test">
+                  <NavDropdown.Item
+                    href="/service/compression-test"
+                    className={`${location.pathname === "/service/compression-test" ? "active bg-dark" : ""} text-truncate`}
+                  >
                     Ensaio de Compressão
                   </NavDropdown.Item>
-                  <NavDropdown.Item href="/service/tensile-test">
+                  <NavDropdown.Item
+                    href="/service/tensile-test"
+                    className={`${location.pathname === "/service/tensile-test" ? "active bg-dark" : ""} text-truncate`}
+                  >
                     Ensaio de Tração
                   </NavDropdown.Item>
-                  <NavDropdown.Item href="/service/fatigue-test">
+                  <NavDropdown.Item
+                    href="/service/fatigue-test"
+                    className={`${location.pathname === "/service/fatigue-test" ? "active bg-dark" : ""} text-truncate`}
+                  >
                     Ensaio de Fadiga
                   </NavDropdown.Item>
-                  <NavDropdown.Item href="/service/flexion-test">
+                  <NavDropdown.Item
+                    href="/service/flexion-test"
+                    className={`${location.pathname === "/service/flexion-test" ? "active bg-dark" : ""} text-truncate`}
+                  >
                     Ensaio de Flexão
                   </NavDropdown.Item>
-                  <NavDropdown.Item href="/service/charpy-impact-test">
+                  <NavDropdown.Item
+                    href="/service/charpy-impact-test"
+                    className={`${location.pathname === "/service/charpy-impact-test" ? "active bg-dark" : ""} text-truncate`}
+                  >
                     Ensaio de Impacto Charpy
                   </NavDropdown.Item>
                 </NavDropdown>
-                <Nav.Link href="/quote-request">Cotação</Nav.Link>
-                <Nav.Link href="/about">Sobre o LEM</Nav.Link>
-                <Nav.Link href="/contact">Contato</Nav.Link>
+                {/*<Nav.Link*/}
+                {/*  href="/schedule"*/}
+                {/*  active={location.pathname === "/schedule"}*/}
+                {/*  className="text-truncate"*/}
+                {/*>*/}
+                {/*  Reservar laboratório*/}
+                {/*</Nav.Link>*/}
+                <Nav.Link
+                  href="/quote-request"
+                  active={location.pathname === "/quote-request"}
+                  className="text-truncate"
+                >
+                  Orçamento
+                </Nav.Link>
+                <Nav.Link
+                  href="/about"
+                  active={location.pathname === "/about"}
+                  className="text-truncate"
+                >
+                  Sobre o LEM
+                </Nav.Link>
+                <Nav.Link
+                  href="/contact"
+                  active={location.pathname === "/contact"}
+                  className="text-truncate"
+                >
+                  Contato
+                </Nav.Link>
               </Nav>
               <Form className="d-flex">
                 <Form.Control

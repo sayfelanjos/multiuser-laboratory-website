@@ -1,3 +1,13 @@
-.main {
-  margin: 56px 0 32px 0;
+.root-layout__ {
+  &ctn {
+    //display: flex;
+    //flex-direction: column;
+  }
+
+  &main {
+    margin-top: 56px;
+    margin-bottom: 5rem;
+  }
 }
+
+
