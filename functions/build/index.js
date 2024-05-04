@@ -3,10 +3,10 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-Object.defineProperty(exports, "helloWorld", {
+Object.defineProperty(exports, "sendEmail", {
   enumerable: true,
   get: function () {
-    return _helloWorld.helloWorld;
+    return _sendEmail.sendEmail;
   }
 });
-var _helloWorld = require("./helloWorld");
+var _sendEmail = require("./sendEmail");

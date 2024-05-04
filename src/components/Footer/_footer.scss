@@ -1,10 +1,9 @@
 .footer-container {
-  height: fit-content;
+  //height: 100%;
   padding: 16px;
 }
 
 .footer-copyright {
-  bottom: 0;
   display: flex;
   justify-content: center;
   align-content: center;
@@ -12,5 +11,4 @@
   box-sizing: border-box;
   padding: 16px 16px 0 16px;
   text-align: center;
-
 }

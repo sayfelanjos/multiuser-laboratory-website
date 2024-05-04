@@ -4,8 +4,8 @@ import QuoteRequestForm from "../../components/QuoteRequestForm";
 
 const QuoteRequest = () => {
   return (
-    <Container>
-      <h2 className="text-center my-5">Solicite uma Cotação</h2>
+    <Container className="quote-request__ctn">
+      <h2 className="text-center my-3">Solicite um Orçamento</h2>
       <QuoteRequestForm />
     </Container>
   );
