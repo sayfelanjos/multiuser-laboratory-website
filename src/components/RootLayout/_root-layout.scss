@@ -1,13 +1,12 @@
 .root-layout__ {
   &ctn {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+    //display: flex;
+    //flex-direction: column;
   }
 
   &main {
     margin-top: 56px;
-    height: 100%;
+    margin-bottom: 5rem;
   }
 }
 
