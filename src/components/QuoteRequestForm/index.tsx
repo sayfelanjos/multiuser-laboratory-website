@@ -4,6 +4,8 @@ import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ReactInputMask from "react-input-mask";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
+import TooltipIcon from "../../assets/icons/TooltipIcon";
 
 const QuoteRequestForm = () => {
   const [requester, setRequester] = useState("RA");
@@ -18,8 +20,8 @@ const QuoteRequestForm = () => {
       requesterIdPlaceholder = "999.999.999-99";
       break;
     }
-    case "CNPJ": {
-      requesterIdPlaceholder = "99.999.999/9999-99";
+    case "Matrícula": {
+      requesterIdPlaceholder = "999.999-9";
       break;
     }
   }
@@ -90,9 +92,9 @@ const QuoteRequestForm = () => {
               onChange={onSelectChange}
             >
               <option value="RA">Aluno</option>
-              <option value="RA">Professor</option>
+              <option value="Matrícula">Professor</option>
+              <option value="Matrícula">Funcionário</option>
               <option value="CPF">Pessoa física</option>
-              <option value="CNPJ">Pessoa jurídica</option>
             </Form.Select>
           </Form.Group>
         </Col>
@@ -109,7 +111,11 @@ const QuoteRequestForm = () => {
             />
           </Form.Group>
         </Col>
-        <Col>
+        <Col
+          lg={{ span: 4, offset: 0 }}
+          xl={{ span: 4, offset: 0 }}
+          xxl={{ span: 4, offset: 0 }}
+        >
           <Form.Group as={Col} controlId="formGridZip">
             <Form.Label>Serviço pretendido</Form.Label>
             <Form.Select aria-label="Select service" className="mb-3">
@@ -137,7 +143,28 @@ const QuoteRequestForm = () => {
         <Col>
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Mensagem</Form.Label>
-            <Form.Control as="textarea" rows={3} name="msg" />
+            <OverlayTrigger
+              overlay={
+                <Tooltip id="1">
+                  {"Qual a temperatura? (ex: ambiente, aquecida, resfriada)\n" +
+                    "Qual a atmosfera? (ex: não monitorada oxidativa, inerte)\n" +
+                    "Qual a técnica? (ex: análise espectroscópica)"}
+                </Tooltip>
+              }
+            >
+              {
+                <span className="m-2">
+                  <TooltipIcon />
+                </span>
+              }
+            </OverlayTrigger>
+
+            <Form.Control
+              as="textarea"
+              rows={3}
+              name="msg"
+              placeholder={"Mensagem"}
+            />
           </Form.Group>
         </Col>
       </Row>

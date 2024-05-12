@@ -13,6 +13,20 @@
   user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
 -->
   <link href="%PUBLIC_URL%/manifest.json" rel="manifest" />
+  <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
+  <script>
+    (function() {
+      var target = document.currentScript;
+      window.addEventListener('load', function() {
+        calendar.schedulingButton.load({
+          url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ3iN4czRBk-TzYw1QjH84ul5c7fDcow5xXpT_wWnFYQuLPuYMuFLerZJSmtXdth8v7PZ7y7E9G_?gv=true',
+          color: '#039BE5',
+          label: 'Agendar um compromisso',
+          target,
+        })
+      })
+    })()
+  </script>
   <!--
   Notice the use of %PUBLIC_URL% in the tags above.
   It will be replaced with the URL of the `public` folder during the build.

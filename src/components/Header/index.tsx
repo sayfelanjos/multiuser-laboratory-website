@@ -89,13 +89,6 @@ const Header = () => {
                     Ensaio de Impacto Charpy
                   </NavDropdown.Item>
                 </NavDropdown>
-                {/*<Nav.Link*/}
-                {/*  href="/schedule"*/}
-                {/*  active={location.pathname === "/schedule"}*/}
-                {/*  className="text-truncate"*/}
-                {/*>*/}
-                {/*  Reservar laboratório*/}
-                {/*</Nav.Link>*/}
                 <Nav.Link
                   href="/quote-request"
                   active={location.pathname === "/quote-request"}
@@ -103,6 +96,11 @@ const Header = () => {
                 >
                   Orçamento
                 </Nav.Link>
+                <NavDropdown title="Agendamentos">
+                  <NavDropdown.Item>Agenda 1</NavDropdown.Item>
+                  <NavDropdown.Item>Agenda 2</NavDropdown.Item>
+                  <NavDropdown.Item>Agenda 3</NavDropdown.Item>
+                </NavDropdown>
                 <Nav.Link
                   href="/about"
                   active={location.pathname === "/about"}
