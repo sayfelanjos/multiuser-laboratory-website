@@ -94,15 +94,8 @@ const Contact: React.FC = () => {
               </Form.Group>
             </Col>
           </Row>
-          <Row xs={1} sm={1} md={1} lg={4} xl={4} xxl={4}>
-            <Col
-              xs={1}
-              sm={1}
-              md={1}
-              lg={{ span: 2, offset: 0 }}
-              xl={{ span: 2, offset: 0 }}
-              xxl={{ span: 2, offset: 0 }}
-            >
+          <Row xs={1} sm={1} md={1} lg={3} xl={3} xxl={3}>
+            <Col>
               <Form.Group controlId="formBasicName" className="mb-3">
                 <Form.Label>Assunto</Form.Label>
                 <Form.Control

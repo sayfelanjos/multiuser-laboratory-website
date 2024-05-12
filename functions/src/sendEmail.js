@@ -1,8 +1,3 @@
-/* using Twilio SendGrid's v3 Node.js Library
-https://github.com/sendgrid/sendgrid-nodejs
-Imports the Secret Manager library*/
-
-// import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
 import { onRequest } from "firebase-functions/v2/https";
 import sgMail from "@sendgrid/mail";
 
