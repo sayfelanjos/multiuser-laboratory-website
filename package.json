@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@react-buddy/ide-toolbox": "^2.4.0",
+    "@react-buddy/palette-antd": "^5.3.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -17,6 +18,7 @@
     "bootstrap-icons": "^1.11.3",
     "eslint": "^8.57.0",
     "firebase": "^10.11.0",
+    "firebase-functions": "^5.0.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",
     "react-dom": "^18.2.0",
@@ -25,16 +27,16 @@
     "react-scripts": "5.0.1",
     "sass": "^1.75.0",
     "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4",
-    "@react-buddy/palette-antd": "^5.3.0"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "functions:start": "NODE_ENV=development npm run functions:build && NODE_ENV=development npm run serve --prefix ./functions",
     "functions:build": "npm run build --prefix ./functions",
-    "functions:deploy": "npm run functions:build && firebase deploy --only functions"
+    "functions:deploy": "NODE_ENV=production npm run functions:build && firebase deploy --only functions"
   },
   "eslintConfig": {
     "extends": [

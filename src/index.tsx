@@ -21,6 +21,9 @@ import FlexionTest from "./pages/Services/FlexionTest";
 import FadigueTest from "./pages/Services/FadigueTest";
 import CharpyImpactTest from "./pages/Services/CharpyImpactTest";
 import TenacityTest from "./pages/Services/TenacityTest";
+import ImpactCalendar from "./pages/ImpactCalendar";
+import MTSCalendar from "./pages/MTSCalendar";
+import DurometerCalendar from "./pages/DurometerCalendar";
 
 const router = createBrowserRouter([
   {
@@ -36,10 +39,23 @@ const router = createBrowserRouter([
         path: "home",
         element: <Navigate to="/" />,
       },
-      // {
-      //   path: "schedule",
-      //   element: <SchedulePage />,
-      // },
+      {
+        path: "calendar",
+        children: [
+          {
+            path: "mts",
+            element: <MTSCalendar />,
+          },
+          {
+            path: "impact",
+            element: <ImpactCalendar />,
+          },
+          {
+            path: "durometer",
+            element: <DurometerCalendar />,
+          },
+        ],
+      },
       {
         path: "quote-request",
         element: <QuoteRequest />,

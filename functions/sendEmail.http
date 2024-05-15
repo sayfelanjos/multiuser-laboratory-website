@@ -1,0 +1,22 @@
+###
+// POST send an email in development
+POST http://127.0.0.1:5001/multiuser-laboratory-website/southamerica-east1/sendEmail
+Content-Type: application/json
+
+{
+  "subject": "Test",
+  "text": "Text",
+  "html": "<strong>html</strong>"
+}
+
+
+###
+// POST send an email in production
+POST https://sendemail-qpkecm37va-rj.a.run.app
+Content-Type: application/json
+
+{
+  "subject": "Test",
+  "text": "Text",
+  "html": "<strong>html</strong>"
+}

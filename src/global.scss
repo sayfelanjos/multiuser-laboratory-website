@@ -1,4 +1,3 @@
-/* The following line can be included in a src/App.scss */
 @import "~bootstrap/scss/bootstrap";
 @import "./components/RootLayout/root-layout";
 @import "./components/Header/header";
@@ -13,3 +12,6 @@
 @import "pages/Services/TensileTest/tensile-test";
 @import "components/ServiceHeader/service-header";
 @import "components/QuoteRequestForm/quote-request-form";
+@import "pages/MTSCalendar/mts-calendars";
+@import "pages/ImpactCalendar/impact-calendar";
+@import "pages/DurometerCalendar/durometer-calendar";
