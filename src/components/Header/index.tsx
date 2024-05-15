@@ -97,9 +97,15 @@ const Header = () => {
                   Orçamento
                 </Nav.Link>
                 <NavDropdown title="Agendamentos">
-                  <NavDropdown.Item>Agenda 1</NavDropdown.Item>
-                  <NavDropdown.Item>Agenda 2</NavDropdown.Item>
-                  <NavDropdown.Item>Agenda 3</NavDropdown.Item>
+                  <NavDropdown.Item className="" href="/calendar/mts">
+                    MTS
+                  </NavDropdown.Item>
+                  <NavDropdown.Item className="" href="/calendar/impact">
+                    Impacto
+                  </NavDropdown.Item>
+                  <NavDropdown.Item className="" href="/calendar/durometer">
+                    Durômetro
+                  </NavDropdown.Item>
                 </NavDropdown>
                 <Nav.Link
                   href="/about"

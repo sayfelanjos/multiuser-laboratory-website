@@ -13,9 +13,10 @@ import ReactInputMask from "react-input-mask";
 
 interface MailOptions {
   subject: FormDataEntryValue;
-  text: FormDataEntryValue;
   html: FormDataEntryValue;
 }
+
+const sendEmailUrl = process.env.REACT_APP_SENDEMAIL_URL as string;
 
 const Contact: React.FC = () => {
   const onButtonSubmit = useCallback(
@@ -26,22 +27,16 @@ const Contact: React.FC = () => {
       const data = Object.fromEntries(fd.entries());
       const mailOptions: MailOptions = {
         subject: data["subject"],
-        text: data["text"],
         html: `<h4>Nome: ${data["fullName"]}</h4><h4>Email: ${data["email"]}</h4><h4>Telefone: ${data["phone"]}</h4><h4>Mensagem</h4><p>${data["msg"]}</p>`,
       };
-      console.log(data);
-      const response = await fetch(
-        "http://127.0.0.1:5001/multiuser-laboratory-website/southamerica-east1/sendEmail",
-        {
-          mode: "cors",
-          method: "POST",
-          cache: "default",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(mailOptions),
+      const response = await fetch(sendEmailUrl, {
+        mode: "cors",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(mailOptions),
+      });
       event.target.reset();
       if (!response.ok) {
         throw new Error("Mensagem não enviada, tente novamente.");
@@ -75,6 +70,7 @@ const Contact: React.FC = () => {
                 <Form.Label>Endereço de email</Form.Label>
                 <Form.Control
                   type="email"
+                  name="email"
                   placeholder="Endereço de email"
                   required
                 />
