@@ -16,7 +16,7 @@ const MTSCalendar = () => {
           xxl={{ span: 10, offset: 1 }}
         >
           <iframe
-            src="https://calendar.google.com/calendar/embed?src=c_c126488c5dff70cbda801fcb906a795b554f9396c296306a92406e3c44721ca3%40group.calendar.google.com&ctz=America%2FSao_Paulo"
+            src="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0Wz5aAmSnhy1PYVsiAfnY9DBoCM7tqFEFMKqxg5aLGt7sU7-iuBnKEgXPm2u2VX71Id3qPs6KU?gv=true"
             style={{ border: 0 }}
             width="100%"
             height="800px"

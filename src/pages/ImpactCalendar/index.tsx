@@ -16,7 +16,7 @@ const ImpactCalendar = () => {
           xxl={{ span: 10, offset: 1 }}
         >
           <iframe
-            src="https://calendar.google.com/calendar/embed?src=c_052c5528846dffb3669556a2aa90bef30d5b46f8a454e5b4c31df5bbddd36f5f%40group.calendar.google.com&ctz=America%2FSao_Paulo"
+            src="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ3mLy4RKUauJJ1RmorEhAYr_HBkX4I9ljUUKfq7hwZGG19Dkgm8IOHUjqDAe4SaC6Aa-Im3C6XG?gv=true"
             style={{ border: 0 }}
             width="100%"
             height="800px"

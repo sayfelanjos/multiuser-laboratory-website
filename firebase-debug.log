@@ -1,0 +1,17 @@
+[debug] [2024-05-22T01:01:12.700Z] ----------------------------------------------------------------------
+[debug] [2024-05-22T01:01:12.702Z] Command:       /home/saymon.anjos/.nvm/versions/node/v20.13.0/bin/node /usr/bin/firebase serve --only functions
+[debug] [2024-05-22T01:01:12.703Z] CLI Version:   13.4.0
+[debug] [2024-05-22T01:01:12.703Z] Platform:      linux
+[debug] [2024-05-22T01:01:12.703Z] Node Version:  v20.13.0
+[debug] [2024-05-22T01:01:12.704Z] Time:          Tue May 21 2024 22:01:12 GMT-0300 (Brasilia Standard Time)
+[debug] [2024-05-22T01:01:12.704Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-05-22T01:01:12.823Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-05-22T01:01:12.823Z] > authorizing via signed-in user (saymon.anjos@minasinfotech.com.br)
+[debug] [2024-05-22T01:01:12.823Z] [iam] checking project multiuser-laboratory-website for permissions ["firebase.projects.get"]
+[debug] [2024-05-22T01:01:12.825Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/multiuser-laboratory-website:testIamPermissions [none]
+[debug] [2024-05-22T01:01:12.825Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/multiuser-laboratory-website:testIamPermissions x-goog-quota-user=projects/multiuser-laboratory-website
+[debug] [2024-05-22T01:01:12.826Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/multiuser-laboratory-website:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-05-22T01:01:13.710Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/multiuser-laboratory-website:testIamPermissions 200
+[debug] [2024-05-22T01:01:13.710Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/multiuser-laboratory-website:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-05-22T01:01:13.711Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/multiuser-laboratory-website [none]
