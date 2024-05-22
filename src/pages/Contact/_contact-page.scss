@@ -1,0 +1,35 @@
+.contact-page__ {
+  &ctn {
+    padding-top: 3rem;
+    padding-bottom: 1rem;
+  }
+
+  &check-ctn {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: left;
+    margin-top: 1rem;
+  }
+
+  &check-text-ctn {
+    display: flex;
+    align-items: center;
+  }
+
+  &check-image-ctn {
+    width: 48px;
+    height: 48px;
+  }
+
+  &check-image {
+    display: block;
+    width: inherit;
+    height: inherit;
+    object-fit: cover;
+  }
+
+  &check-msg {
+    margin: 0;
+  }
+}

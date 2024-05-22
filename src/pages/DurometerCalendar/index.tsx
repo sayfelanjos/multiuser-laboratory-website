@@ -16,7 +16,7 @@ const DurometerCalendar = () => {
           xxl={{ span: 10, offset: 1 }}
         >
           <iframe
-            src="https://calendar.google.com/calendar/embed?src=c_5968aacbf3e7a625362b91726cf40bc33fc698bde3129943bc8020bfc0d75bbf%40group.calendar.google.com&ctz=America%2FSao_Paulo"
+            src="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1gVF4LW8Yi-RgRqVWR2rzTDpPsisOZtRfJwyQ4KUNIRPHc0PHQcphspkTXVJ7R8V0oFIW_Jo3I?gv=true"
             style={{ border: 0 }}
             width="100%"
             height="800px"
