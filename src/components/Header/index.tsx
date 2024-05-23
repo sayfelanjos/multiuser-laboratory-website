@@ -95,8 +95,8 @@ const Header = () => {
                   Orçamento
                 </Nav.Link>
                 <NavDropdown title="Agendamentos">
-                  <NavDropdown.Item className="" href="/calendar/mts">
-                    MTS
+                  <NavDropdown.Item className="" href="/calendar/durometer">
+                    Durômetro
                   </NavDropdown.Item>
                   <NavDropdown.Item className="" href="/calendar/mev">
                     MEV
@@ -104,8 +104,11 @@ const Header = () => {
                   <NavDropdown.Item className="" href="/calendar/impact">
                     Impacto
                   </NavDropdown.Item>
-                  <NavDropdown.Item className="" href="/calendar/durometer">
-                    Durômetro
+                  <NavDropdown.Item className="" href="/calendar/mts">
+                    MTS
+                  </NavDropdown.Item>
+                  <NavDropdown.Item className="" href="/calendar/mev">
+                    MEV
                   </NavDropdown.Item>
                 </NavDropdown>
                 <Nav.Link
