@@ -3,7 +3,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-const MEVCalendar = () => {
+const MTSCalendar = () => {
   return (
     <Container fluid className="mts-calendar__ctn">
       <Row>
@@ -16,7 +16,7 @@ const MEVCalendar = () => {
           xxl={{ span: 10, offset: 1 }}
         >
           <iframe
-            src="https://calendar.app.google/uS8wRSqEphCqBkF47"
+            src="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ3oN5kuh58-7vgi4wESb3uOZVu4l3riDTkTGeqKMxISEn1pj4FnkshUpQVq4QzbkHhHvDKaprta"
             style={{ border: 0 }}
             width="100%"
             height="800px"
@@ -27,4 +27,4 @@ const MEVCalendar = () => {
   );
 };
 
-export default MEVCalendar;
+export default MTSCalendar;

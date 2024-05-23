@@ -96,7 +96,7 @@ const Contact: React.FC = () => {
                 <Form.Label>Assunto</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Nome completo"
+                  placeholder="Assunto"
                   required
                   name="subject"
                 />

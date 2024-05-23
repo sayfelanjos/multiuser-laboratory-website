@@ -2,7 +2,7 @@ import { onRequest } from "firebase-functions/v2/https";
 import sgMail from "@sendgrid/mail";
 
 export const sendEmail = onRequest(
-  { cors: [process.env.CLIENT_URL], region: "southamerica-east1" },
+  { cors: true, region: "southamerica-east1" },
   (request, response) => {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     const data = request.body;
@@ -12,7 +12,7 @@ export const sendEmail = onRequest(
       from: process.env.SENDGRID_EMAIL_FROM,
       ...data,
     };
-    response.set("Access-Control-Allow-Origin", process.env.CLIENT_URL);
+    response.set("Access-Control-Allow-Origin", "*");
     response.set("Access-Control-Request-Method", "POST");
     sgMail
       .send(msg)

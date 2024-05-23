@@ -43,16 +43,20 @@ const router = createBrowserRouter([
         path: "calendar",
         children: [
           {
-            path: "mts",
-            element: <MTSCalendar />,
+            path: "durometer",
+            element: <DurometerCalendar />,
           },
           {
             path: "impact",
             element: <ImpactCalendar />,
           },
           {
-            path: "durometer",
-            element: <DurometerCalendar />,
+            path: "mts",
+            element: <MTSCalendar />,
+          },
+          {
+            path: "mev",
+            element: <MTSCalendar />,
           },
         ],
       },
