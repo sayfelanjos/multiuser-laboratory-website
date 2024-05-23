@@ -24,6 +24,7 @@ import TenacityTest from "./pages/Services/TenacityTest";
 import ImpactCalendar from "./pages/ImpactCalendar";
 import MTSCalendar from "./pages/MTSCalendar";
 import DurometerCalendar from "./pages/DurometerCalendar";
+import MEVCalendar from "./pages/MEVCalendar";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
           {
             path: "durometer",
             element: <DurometerCalendar />,
+          },
+          {
+            path: "mev",
+            element: <MEVCalendar />,
           },
         ],
       },

@@ -77,7 +77,9 @@ const Contact: React.FC = () => {
                 <h2 className="contact-page__check-msg">
                   Sua mensagem foi enviada.
                 </h2>
-                <p>Logo nosso time entrará em contato com você.</p>
+                <p className="notranslate">
+                  Logo entraremos em contato com você.
+                </p>
               </div>
             </span>
           </span>

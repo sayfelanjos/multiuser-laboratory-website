@@ -3,9 +3,10 @@ import sgMail from "@sendgrid/mail";
 
 export const sendEmail = onRequest(
   { cors: true, region: "southamerica-east1" },
-  (request, response) => {
+  async (request, response) => {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-    const { subject, html, file } = request.body;
+    const body = await request.body;
+    console.log(body);
     const msg = {
       to: process.env.SENDGRID_EMAIL_TO,
       from: process.env.SENDGRID_EMAIL_FROM,
@@ -13,10 +14,10 @@ export const sendEmail = onRequest(
       html,
       attachments: [
         {
-          content: Buffer.from(file).toString("base64"),
-          filename: "example.txt",
-          type: "plain/text",
-          disposition: "attachment",
+          content: Buffer.from(file.arrayBuffers()).toString("base64"),
+          filename: file.name,
+          type: file.type,
+          disposition: "Attachment",
         },
       ],
     };

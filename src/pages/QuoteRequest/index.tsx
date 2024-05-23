@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { ChangeEvent, useCallback, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
@@ -8,11 +8,11 @@ import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import TooltipIcon from "../../assets/icons/TooltipIcon";
 import Button from "react-bootstrap/Button";
 
-interface QuoteRequestOptions {
-  subject: FormDataEntryValue;
-  html: FormDataEntryValue;
-  attachments: FileReader;
-}
+// interface QuoteRequestOptions {
+//   subject: string;
+//   html: string;
+//   pdfContent: string | undefined;
+// }
 
 const sendEmailUrl = process.env.REACT_APP_SENDEMAIL_URL as string;
 
@@ -41,32 +41,42 @@ const QuoteRequest = () => {
   }
 
   const onSelectChange = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
+    (event: ChangeEvent<HTMLSelectElement>) => {
       setRequester(event.target.value);
     },
     [],
   );
 
   const onButtonSubmit = useCallback(
-    async (event: React.ChangeEvent<HTMLFormElement>) => {
+    async (event: ChangeEvent<HTMLFormElement>) => {
       event.preventDefault();
       // setIsQuoteRequestSending(true);
 
       const fd: FormData = new FormData(event.target);
-      const reader: FileReader = new FileReader();
       const data = Object.fromEntries(fd.entries());
-      const file = data["fileInput"] as File;
+      // const file = event.target.files && event.target.files[0];
+      // if (!file) {
+      //   return;
+      // }
+      // const reader = new FileReader();
 
-      reader.onerror = (e) => {
-        console.error("FileReader error", e);
-      };
-      reader.readAsArrayBuffer(file);
+      // reader.onloadend = async () => {
+      //   // The file's text will be printed here
+      //   // Skip the prefix: "data:application/pdf;base64,"
+      //   const base64String = reader.result
+      //     ?.toString()
+      //     .replace(/^data:.+;base64,/, "");
+      //
 
-      const QuoteRequestOptions: QuoteRequestOptions = {
-        subject: "Orçamento",
-        html: `<h4>Nome: ${data["fullName"]}</h4><h4>Email: ${data["email"]}</h4><h4>Telefone: ${data["phone"]}</h4><h4>Mensagem</h4><p>${data["msg"]}</p>`,
-        attachments: reader,
-      };
+      // };
+      // reader.readAsDataURL(file);
+
+      // Post data
+      // const QuoteRequestOptions: QuoteRequestOptions = {
+      //   subject: "Orçamento",
+      //   html: `<h4>Nome: ${data["fullName"]}</h4><h4>Email: ${data["email"]}</h4><h4>Telefone: ${data["phone"]}</h4><h4>Mensagem</h4><p>${data["msg"]}</p>`,
+      //   pdfContent: base64String,
+      // };
 
       const response = await fetch(sendEmailUrl, {
         mode: "cors",
@@ -74,9 +84,9 @@ const QuoteRequest = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(QuoteRequestOptions),
+        body: JSON.stringify(data),
       });
-      event.target.reset();
+
       // setTimeout(function () {
       //   setIsQuoteRequestSending(false);
       // }, 2000);
@@ -87,6 +97,8 @@ const QuoteRequest = () => {
       }
       console.log("Success!!!");
       // setQuoteRequestSentSuccessfully(true);
+
+      event.target.reset();
     },
     [],
   );
@@ -102,8 +114,13 @@ const QuoteRequest = () => {
             xxl={{ span: 6, offset: 0 }}
           >
             <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label name="fullName">Nome Completo</Form.Label>
-              <Form.Control type="text" placeholder="Nome" className="mb-3" />
+              <Form.Label>Nome Completo</Form.Label>
+              <Form.Control
+                type="text"
+                name="fullName"
+                placeholder="Nome"
+                className="mb-3"
+              />
             </Form.Group>
           </Col>
           <Col
@@ -112,10 +129,11 @@ const QuoteRequest = () => {
             xxl={{ span: 4, offset: 0 }}
           >
             <Form.Group controlId="formBasicEmail" className="mb-3">
-              <Form.Label name="email">Endereço de email</Form.Label>
+              <Form.Label>Endereço de email</Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Endereço de email"
+                name="email"
                 required
               />
             </Form.Group>
@@ -126,7 +144,7 @@ const QuoteRequest = () => {
             xxl={{ span: 2, offset: 0 }}
           >
             <Form.Group controlId="formBasicPhone" className="mb-3">
-              <Form.Label name="phone">Celular</Form.Label>
+              <Form.Label>Celular</Form.Label>
               <ReactInputMask
                 className="form-control"
                 mask="(99)99999-9999"
@@ -195,7 +213,11 @@ const QuoteRequest = () => {
           >
             <Form.Group controlId="formFile" className="mb-3">
               <Form.Label>Adicionar arquivo</Form.Label>
-              <Form.Control type="file" name="fileInput" />
+              <Form.Control
+                type="file"
+                name="fileInput"
+                accept="application/pdf"
+              />
             </Form.Group>
           </Col>
         </Row>
@@ -205,7 +227,7 @@ const QuoteRequest = () => {
               className="mb-3"
               controlId="exampleForm.ControlTextarea1"
             >
-              <Form.Label name="msg">Mensagem</Form.Label>
+              <Form.Label name="msgToolTip">Mensagem</Form.Label>
               <OverlayTrigger
                 overlay={
                   <Tooltip id="1">

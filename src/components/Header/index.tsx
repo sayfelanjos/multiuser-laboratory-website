@@ -4,8 +4,6 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Offcanvas from "react-bootstrap/Offcanvas";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
 import logo from "../../assets/images/FEM_monocromatica.png";
 
 const navbarBrandStyle = {
@@ -99,6 +97,9 @@ const Header = () => {
                 <NavDropdown title="Agendamentos">
                   <NavDropdown.Item className="" href="/calendar/mts">
                     MTS
+                  </NavDropdown.Item>
+                  <NavDropdown.Item className="" href="/calendar/mev">
+                    MEV
                   </NavDropdown.Item>
                   <NavDropdown.Item className="" href="/calendar/impact">
                     Impacto
