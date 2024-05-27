@@ -1,11 +1,11 @@
 import React from "react";
-import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
-const ImpactCalendar = () => {
+const ScanningElectronMicroscopyCalendar = () => {
   return (
-    <Container fluid className="impact-calendar__ctn">
+    <Container fluid className="scanning-electron-microscopy-calendar__ctn">
       <Row>
         <Col
           xs={{ span: 12, offset: 0 }}
@@ -16,7 +16,7 @@ const ImpactCalendar = () => {
           xxl={{ span: 10, offset: 1 }}
         >
           <iframe
-            src="https://calendar.app.google/rDVkNcAQ8KhMuAKW6"
+            src="https://calendar.app.google/gP4MpLir5k1rLZ5s8"
             style={{ border: 0 }}
             width="100%"
             height="800px"
@@ -27,4 +27,4 @@ const ImpactCalendar = () => {
   );
 };
 
-export default ImpactCalendar;
+export default ScanningElectronMicroscopyCalendar;

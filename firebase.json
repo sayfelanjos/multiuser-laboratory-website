@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "multiuser-laboratory-website",
     "public": "build",
     "ignore": [
       "firebase.json",

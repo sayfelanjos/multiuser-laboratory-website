@@ -3,7 +3,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-const MTSCalendar = () => {
+const MechanicTestCalendar = () => {
   return (
     <Container fluid className="mts-calendar__ctn">
       <Row>
@@ -16,7 +16,7 @@ const MTSCalendar = () => {
           xxl={{ span: 10, offset: 1 }}
         >
           <iframe
-            src="https://calendar.app.google/uS8wRSqEphCqBkF47"
+            src="https://calendar.app.google/WBbHZehLsyBeLqNa6"
             style={{ border: 0 }}
             width="100%"
             height="800px"
@@ -27,4 +27,4 @@ const MTSCalendar = () => {
   );
 };
 
-export default MTSCalendar;
+export default MechanicTestCalendar;

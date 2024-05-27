@@ -21,10 +21,14 @@ import FlexionTest from "./pages/Services/FlexionTest";
 import FadigueTest from "./pages/Services/FadigueTest";
 import CharpyImpactTest from "./pages/Services/CharpyImpactTest";
 import TenacityTest from "./pages/Services/TenacityTest";
-import ImpactCalendar from "./pages/ImpactCalendar";
-import MTSCalendar from "./pages/MTSCalendar";
+import ScanningElectronMicroscopyCalendar from "./pages/ScanningElectronMicroscopyCalendar";
 import DurometerCalendar from "./pages/DurometerCalendar";
-import MEVCalendar from "./pages/MEVCalendar";
+import ImpactPendulumCalendar from "./pages/ImpactPendulumCalendar";
+import MechanicTestCalendar from "./pages/MechanicTestCalendar";
+import { logEvent } from "firebase/analytics";
+import analytics from "./firebase";
+
+logEvent(analytics, "page_view");
 
 const router = createBrowserRouter([
   {
@@ -48,20 +52,16 @@ const router = createBrowserRouter([
             element: <DurometerCalendar />,
           },
           {
-            path: "impact",
-            element: <ImpactCalendar />,
+            path: "mechanic-test",
+            element: <MechanicTestCalendar />,
           },
           {
-            path: "mts",
-            element: <MTSCalendar />,
+            path: "scanning-electron-microscopy",
+            element: <ScanningElectronMicroscopyCalendar />,
           },
           {
-            path: "mev",
-            element: <MTSCalendar />,
-          },
-          {
-            path: "mev",
-            element: <MEVCalendar />,
+            path: "impact-pendulum",
+            element: <ImpactPendulumCalendar />,
           },
         ],
       },

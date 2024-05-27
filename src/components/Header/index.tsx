@@ -98,14 +98,21 @@ const Header = () => {
                   <NavDropdown.Item className="" href="/calendar/durometer">
                     Durômetro
                   </NavDropdown.Item>
-                  <NavDropdown.Item className="" href="/calendar/impact">
-                    Impacto
+                  <NavDropdown.Item className="" href="/calendar/mechanic-test">
+                    Ensaio Mecânico
                   </NavDropdown.Item>
-                  <NavDropdown.Item className="" href="/calendar/mts">
-                    MTS
+
+                  <NavDropdown.Item
+                    className=""
+                    href="/calendar/scanning-electron-microscopy"
+                  >
+                    Microscopia Eletrônica de Varredura
                   </NavDropdown.Item>
-                  <NavDropdown.Item className="" href="/calendar/mev">
-                    MEV
+                  <NavDropdown.Item
+                    className=""
+                    href="/calendar/impact-pendulum"
+                  >
+                    Pêndulo de Impacto
                   </NavDropdown.Item>
                 </NavDropdown>
                 <Nav.Link

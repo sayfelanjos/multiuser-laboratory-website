@@ -176,7 +176,7 @@ const QuoteRequest = () => {
                 xl={{ span: 4, offset: 0 }}
                 xxl={{ span: 4, offset: 0 }}
               >
-                <Form.Group controlId="formBasicEmail" className="mb-3">
+                <Form.Group controlId="email" className="mb-3">
                   <Form.Label>Endereço de email</Form.Label>
                   <Form.Control
                     type="email"
@@ -194,10 +194,11 @@ const QuoteRequest = () => {
                 <Form.Group controlId="formBasicPhone" className="mb-3">
                   <Form.Label>Celular</Form.Label>
                   <ReactInputMask
+                    id="formBasicPhone"
                     className="form-control"
                     mask="(99)99999-9999"
                     maskChar="_"
-                    placeholder="Telefone"
+                    placeholder="Celular"
                     required
                     name="phone"
                   />
@@ -210,7 +211,7 @@ const QuoteRequest = () => {
                 xl={{ span: 2, offset: 0 }}
                 xxl={{ span: 2, offset: 0 }}
               >
-                <Form.Group as={Col} controlId="formGridZip">
+                <Form.Group as={Col} controlId="requester">
                   <Form.Label>Solicitante</Form.Label>
                   <Form.Select
                     aria-label="Select service"
@@ -230,7 +231,7 @@ const QuoteRequest = () => {
                 xl={{ span: 2, offset: 0 }}
                 xxl={{ span: 2, offset: 0 }}
               >
-                <Form.Group className="mb-3" controlId="formGridAddress2">
+                <Form.Group className="mb-3" controlId="requesterId">
                   <Form.Label>{requesterId}</Form.Label>
                   <Form.Control
                     name="requesterId"
@@ -244,9 +245,13 @@ const QuoteRequest = () => {
                 xl={{ span: 4, offset: 0 }}
                 xxl={{ span: 4, offset: 0 }}
               >
-                <Form.Group as={Col} controlId="formGridZip">
+                <Form.Group as={Col} controlId="services">
                   <Form.Label name="service">Serviço pretendido</Form.Label>
-                  <Form.Select aria-label="Select service" className="mb-3">
+                  <Form.Select
+                    aria-label="Select service"
+                    className="mb-3"
+                    id="services"
+                  >
                     <option value="1">Ensaio de Tenacidade</option>
                     <option value="1">Ensaio de Compressão</option>
                     <option value="1">Ensaio de Tração</option>

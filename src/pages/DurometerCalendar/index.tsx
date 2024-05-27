@@ -16,7 +16,7 @@ const DurometerCalendar = () => {
           xxl={{ span: 10, offset: 1 }}
         >
           <iframe
-            src="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1gVF4LW8Yi-RgRqVWR2rzTDpPsisOZtRfJwyQ4KUNIRPHc0PHQcphspkTXVJ7R8V0oFIW_Jo3I?gv=true"
+            src="https://calendar.app.google/fFLeQTsixhTyz9VB9"
             style={{ border: 0 }}
             width="100%"
             height="800px"
