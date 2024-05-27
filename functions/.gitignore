@@ -2,3 +2,4 @@ node_modules/
 build/
 .env.development
 .env.production
+firebase-debug.log

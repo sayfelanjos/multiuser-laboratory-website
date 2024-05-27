@@ -3,8 +3,9 @@ import sgMail from "@sendgrid/mail";
 
 export const sendEmail = onRequest(
   { cors: true, region: "southamerica-east1" },
-  async (request, response) => {
+  (request, response) => {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    console.log(process.env.NOD_ENV);
     const { subject, html } = request.body;
     const msg = {
       to: process.env.SENDGRID_EMAIL_TO,
@@ -14,6 +15,7 @@ export const sendEmail = onRequest(
     };
     response.setHeader("Access-Control-Allow-Origin", "*");
     response.setHeader("Access-Control-Request-Method", "POST");
+    console.log(msg);
     sgMail
       .send(msg)
       .then(() => {

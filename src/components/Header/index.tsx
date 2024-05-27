@@ -98,9 +98,6 @@ const Header = () => {
                   <NavDropdown.Item className="" href="/calendar/durometer">
                     Durômetro
                   </NavDropdown.Item>
-                  <NavDropdown.Item className="" href="/calendar/mev">
-                    MEV
-                  </NavDropdown.Item>
                   <NavDropdown.Item className="" href="/calendar/impact">
                     Impacto
                   </NavDropdown.Item>
@@ -116,7 +113,7 @@ const Header = () => {
                   active={location.pathname === "/about"}
                   className="text-truncate"
                 >
-                  Sobre o LEM
+                  Sobre o LMU
                 </Nav.Link>
                 <Nav.Link
                   href="/contact"

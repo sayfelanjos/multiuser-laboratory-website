@@ -11,7 +11,7 @@ const About = () => {
     <>
       <Container className="about__ctn">
         <h2 className="text-black text-center my-3">
-          O Laboratório de Ensaios Mecânicos - LEM
+          O Laboratório Multi Usuários - LMU
         </h2>
         <Row xs={1} sm={1} md={1} lg={2} xl={2} xxl={2}>
           <Col>

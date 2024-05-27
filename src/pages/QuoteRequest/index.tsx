@@ -7,42 +7,50 @@ import ReactInputMask from "react-input-mask";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import TooltipIcon from "../../assets/icons/TooltipIcon";
 import Button from "react-bootstrap/Button";
+import Image from "react-bootstrap/Image";
+import check from "../../assets/images/check.png";
+import cross from "../../assets/images/cross.png";
+import Spinner from "react-bootstrap/Spinner";
 
-// interface QuoteRequestOptions {
-//   subject: string;
-//   html: string;
-//   pdfContent: string | undefined;
-// }
+interface MailOptions {
+  subject: string;
+  html: string;
+}
 
 const sendEmailUrl = process.env.REACT_APP_SENDEMAIL_URL as string;
 
 const QuoteRequest = () => {
-  const [requester, setRequester] = useState("RA");
-  // const [isQuoteRequestSending, setIsQuoteRequestSending] =
-  //   useState<boolean>(false);
-  // const [emailQuoteRequestSuccessfully, setQuoteRequestSentSuccessfully] =
-  //   useState<boolean>(false);
-  // const [showForm, setShowForm] = useState<boolean>(true);
+  const [requesterId, setRequesterId] = useState("RA");
+  const [showForm, setShowForm] = useState<boolean>(true);
+  const [isQuoteRequestSending, setIsQuoteRequestSending] =
+    useState<boolean>(false);
+  const [sentQuoteRequestSuccessfully, setQuoteRequestSentSuccessfully] =
+    useState<boolean>(false);
   let requesterIdPlaceholder = "";
+  let requesterType = "";
 
-  switch (requester) {
+  switch (requesterId) {
     case "RA": {
       requesterIdPlaceholder = "999999";
+      requesterType = "Aluno";
       break;
     }
     case "CPF": {
       requesterIdPlaceholder = "999.999.999-99";
+      requesterType = "Externo";
       break;
     }
     case "Matrícula": {
       requesterIdPlaceholder = "999.999-9";
+      requesterType = "Professor";
       break;
     }
   }
 
   const onSelectChange = useCallback(
     (event: ChangeEvent<HTMLSelectElement>) => {
-      setRequester(event.target.value);
+      event.preventDefault();
+      setRequesterId(event.target.value);
     },
     [],
   );
@@ -50,214 +58,276 @@ const QuoteRequest = () => {
   const onButtonSubmit = useCallback(
     async (event: ChangeEvent<HTMLFormElement>) => {
       event.preventDefault();
-      // setIsQuoteRequestSending(true);
+      setIsQuoteRequestSending(true);
 
       const fd: FormData = new FormData(event.target);
       const data = Object.fromEntries(fd.entries());
-      // const file = event.target.files && event.target.files[0];
-      // if (!file) {
-      //   return;
-      // }
-      // const reader = new FileReader();
 
-      // reader.onloadend = async () => {
-      //   // The file's text will be printed here
-      //   // Skip the prefix: "data:application/pdf;base64,"
-      //   const base64String = reader.result
-      //     ?.toString()
-      //     .replace(/^data:.+;base64,/, "");
-      //
-
-      // };
-      // reader.readAsDataURL(file);
-
-      // Post data
-      // const QuoteRequestOptions: QuoteRequestOptions = {
-      //   subject: "Orçamento",
-      //   html: `<h4>Nome: ${data["fullName"]}</h4><h4>Email: ${data["email"]}</h4><h4>Telefone: ${data["phone"]}</h4><h4>Mensagem</h4><p>${data["msg"]}</p>`,
-      //   pdfContent: base64String,
-      // };
-
+      const mailOptions: MailOptions = {
+        subject: "Orçamento",
+        html: `<h4>Nome: ${data["fullName"]}</h4>
+               <h4>Email: ${data["email"]}</h4>
+               <h4>Solicitante: ${requesterType}</h4>
+               <h4>${requesterId}: ${data["requesterId"]}</h4>
+               </h4><h4>Telefone: ${data["phone"]}</h4>
+               <h4>Mensagem</h4><p>${data["msg"]}</p>`,
+      };
       const response = await fetch(sendEmailUrl, {
         mode: "cors",
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "Application/Json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(mailOptions),
       });
 
-      // setTimeout(function () {
-      //   setIsQuoteRequestSending(false);
-      // }, 2000);
-      // setShowForm(false);
+      setTimeout(function () {
+        setIsQuoteRequestSending(false);
+      }, 2000);
+      setShowForm(false);
       if (!response.ok) {
-        throw Error("Something get wrong!");
-        // setQuoteRequestSentSuccessfully(false);
+        setQuoteRequestSentSuccessfully(false);
       }
-      console.log("Success!!!");
-      // setQuoteRequestSentSuccessfully(true);
-
+      setQuoteRequestSentSuccessfully(true);
       event.target.reset();
     },
     [],
   );
+  // const onControlChange = useCallback(
+  //   (event: React.ChangeEvent<HTMLInputElement>) => {
+  //     const files = event.target.files;
+  //     setFileInput(files);
+  //   },
+  //   [],
+  // );
 
   return (
-    <Container className="quote-request__ctn">
-      <h2 className="text-center my-3">Solicite um Orçamento</h2>
-      <Form onSubmit={onButtonSubmit}>
-        <Row className="mb-3" xs={1} sm={1} md={1} lg={3} xl={3} xxl={3}>
-          <Col
-            lg={{ span: 6, offset: 0 }}
-            xl={{ span: 6, offset: 0 }}
-            xxl={{ span: 6, offset: 0 }}
-          >
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Nome Completo</Form.Label>
-              <Form.Control
-                type="text"
-                name="fullName"
-                placeholder="Nome"
-                className="mb-3"
-              />
-            </Form.Group>
-          </Col>
-          <Col
-            lg={{ span: 4, offset: 0 }}
-            xl={{ span: 4, offset: 0 }}
-            xxl={{ span: 4, offset: 0 }}
-          >
-            <Form.Group controlId="formBasicEmail" className="mb-3">
-              <Form.Label>Endereço de email</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Endereço de email"
-                name="email"
-                required
-              />
-            </Form.Group>
-          </Col>
-          <Col
-            lg={{ span: 2, offset: 0 }}
-            xl={{ span: 2, offset: 0 }}
-            xxl={{ span: 2, offset: 0 }}
-          >
-            <Form.Group controlId="formBasicPhone" className="mb-3">
-              <Form.Label>Celular</Form.Label>
-              <ReactInputMask
-                className="form-control"
-                mask="(99)99999-9999"
-                maskChar="_"
-                placeholder="Telefone"
-                required
-                name="phone"
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row className="mb-3" xs={1} sm={1} md={2} lg={4} xl={4} xxl={4}>
-          <Col
-            lg={{ span: 2, offset: 0 }}
-            xl={{ span: 2, offset: 0 }}
-            xxl={{ span: 2, offset: 0 }}
-          >
-            <Form.Group as={Col} controlId="formGridZip">
-              <Form.Label name="requester">Solicitante</Form.Label>
-              <Form.Select
-                aria-label="Select service"
-                className="mb-3"
-                onChange={onSelectChange}
+    <>
+      {!showForm && sentQuoteRequestSuccessfully && (
+        <Container className="contact-page__ctn px-0">
+          <span className="contact-page__check-ctn">
+            <span className="contact-page__check-image-ctn">
+              <Image
+                src={check}
+                alt="Successful check"
+                className="contact-page__check-image"
+                width="400"
+                height="400"
+              ></Image>
+            </span>
+            <span className="contact-page__check-text-ctn">
+              <div>
+                <h2 className="contact-page__check-msg">
+                  Sua mensagem foi enviada.
+                </h2>
+                <p className="notranslate">
+                  Logo entraremos em contato com você.
+                </p>
+              </div>
+            </span>
+          </span>
+        </Container>
+      )}
+      {!showForm && !sentQuoteRequestSuccessfully && (
+        <Container className="contact-page__ctn">
+          <span className="contact-page__check-ctn">
+            <span className="contact-page__check-image-ctn">
+              <Image
+                src={cross}
+                alt="Fail check"
+                className="contact-page__check-image"
+                width="400"
+                height="400"
+              ></Image>
+            </span>
+            <span className="contact-page__check-text-ctn">
+              <div>
+                <h2 className="contact-page__check-msg">
+                  Sua mensagem não foi enviada.
+                </h2>
+                <p>Verifique suas informações e tente novamente.</p>
+              </div>
+            </span>
+          </span>
+        </Container>
+      )}
+      {showForm && (
+        <Container className="quote-request__ctn">
+          <h2 className="text-center my-3">Solicite um Orçamento</h2>
+          <Form onSubmit={onButtonSubmit}>
+            <Row className="mb-3" xs={1} sm={1} md={1} lg={3} xl={3} xxl={3}>
+              <Col
+                lg={{ span: 6, offset: 0 }}
+                xl={{ span: 6, offset: 0 }}
+                xxl={{ span: 6, offset: 0 }}
               >
-                <option value="RA">Aluno</option>
-                <option value="Matrícula">Professor</option>
-                <option value="Matrícula">Funcionário</option>
-                <option value="CPF">Pessoa física</option>
-              </Form.Select>
-            </Form.Group>
-          </Col>
-          <Col
-            lg={{ span: 2, offset: 0 }}
-            xl={{ span: 2, offset: 0 }}
-            xxl={{ span: 2, offset: 0 }}
-          >
-            <Form.Group className="mb-3" controlId="formGridAddress2">
-              <Form.Label>{requester}</Form.Label>
-              <Form.Control
-                placeholder={requesterIdPlaceholder}
-                className="mb-3"
-              />
-            </Form.Group>
-          </Col>
-          <Col
-            lg={{ span: 4, offset: 0 }}
-            xl={{ span: 4, offset: 0 }}
-            xxl={{ span: 4, offset: 0 }}
-          >
-            <Form.Group as={Col} controlId="formGridZip">
-              <Form.Label name="service">Serviço pretendido</Form.Label>
-              <Form.Select aria-label="Select service" className="mb-3">
-                <option value="1">Ensaio de Tenacidade</option>
-                <option value="1">Ensaio de Compressão</option>
-                <option value="1">Ensaio de Tração</option>
-                <option value="1">Ensaio de Fadiga</option>
-                <option value="1">Ensaio de Flexão</option>
-                <option value="1">Ensaio de Impacto Charpy</option>
-              </Form.Select>
-            </Form.Group>
-          </Col>
-          <Col
-            lg={{ span: 4, offset: 0 }}
-            xl={{ span: 4, offset: 0 }}
-            xxl={{ span: 4, offset: 0 }}
-          >
-            <Form.Group controlId="formFile" className="mb-3">
-              <Form.Label>Adicionar arquivo</Form.Label>
-              <Form.Control
-                type="file"
-                name="fileInput"
-                accept="application/pdf"
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label name="msgToolTip">Mensagem</Form.Label>
-              <OverlayTrigger
-                overlay={
-                  <Tooltip id="1">
-                    {"Qual a temperatura? (ex: ambiente, aquecida, resfriada)\n" +
-                      "Qual a atmosfera? (ex: não monitorada oxidativa, inerte)\n" +
-                      "Qual a técnica? (ex: análise espectroscópica)"}
-                  </Tooltip>
-                }
+                <Form.Group as={Col} controlId="formGridEmail">
+                  <Form.Label>Nome Completo</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="fullName"
+                    placeholder="Nome"
+                    className="mb-3"
+                  />
+                </Form.Group>
+              </Col>
+              <Col
+                lg={{ span: 4, offset: 0 }}
+                xl={{ span: 4, offset: 0 }}
+                xxl={{ span: 4, offset: 0 }}
               >
-                {
-                  <span className="m-2">
-                    <TooltipIcon />
-                  </span>
-                }
-              </OverlayTrigger>
+                <Form.Group controlId="formBasicEmail" className="mb-3">
+                  <Form.Label>Endereço de email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    placeholder="Endereço de email"
+                    name="email"
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col
+                lg={{ span: 2, offset: 0 }}
+                xl={{ span: 2, offset: 0 }}
+                xxl={{ span: 2, offset: 0 }}
+              >
+                <Form.Group controlId="formBasicPhone" className="mb-3">
+                  <Form.Label>Celular</Form.Label>
+                  <ReactInputMask
+                    className="form-control"
+                    mask="(99)99999-9999"
+                    maskChar="_"
+                    placeholder="Telefone"
+                    required
+                    name="phone"
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row className="mb-3" xs={1} sm={1} md={2} lg={4} xl={4} xxl={4}>
+              <Col
+                lg={{ span: 2, offset: 0 }}
+                xl={{ span: 2, offset: 0 }}
+                xxl={{ span: 2, offset: 0 }}
+              >
+                <Form.Group as={Col} controlId="formGridZip">
+                  <Form.Label>Solicitante</Form.Label>
+                  <Form.Select
+                    aria-label="Select service"
+                    className="mb-3"
+                    onChange={onSelectChange}
+                    name="requester"
+                  >
+                    <option value="RA">Aluno</option>
+                    <option value="Matrícula">Professor</option>
+                    <option value="Matrícula">Funcionário</option>
+                    <option value="CPF">Pessoa física</option>
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+              <Col
+                lg={{ span: 2, offset: 0 }}
+                xl={{ span: 2, offset: 0 }}
+                xxl={{ span: 2, offset: 0 }}
+              >
+                <Form.Group className="mb-3" controlId="formGridAddress2">
+                  <Form.Label>{requesterId}</Form.Label>
+                  <Form.Control
+                    name="requesterId"
+                    placeholder={requesterIdPlaceholder}
+                    className="mb-3"
+                  />
+                </Form.Group>
+              </Col>
+              <Col
+                lg={{ span: 4, offset: 0 }}
+                xl={{ span: 4, offset: 0 }}
+                xxl={{ span: 4, offset: 0 }}
+              >
+                <Form.Group as={Col} controlId="formGridZip">
+                  <Form.Label name="service">Serviço pretendido</Form.Label>
+                  <Form.Select aria-label="Select service" className="mb-3">
+                    <option value="1">Ensaio de Tenacidade</option>
+                    <option value="1">Ensaio de Compressão</option>
+                    <option value="1">Ensaio de Tração</option>
+                    <option value="1">Ensaio de Fadiga</option>
+                    <option value="1">Ensaio de Flexão</option>
+                    <option value="1">Ensaio de Impacto Charpy</option>
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+              {/*<Col*/}
+              {/*  lg={{ span: 4, offset: 0 }}*/}
+              {/*  xl={{ span: 4, offset: 0 }}*/}
+              {/*  xxl={{ span: 4, offset: 0 }}*/}
+              {/*>*/}
+              {/*  <Form.Group controlId="formFile" className="mb-3">*/}
+              {/*    <Form.Label>Adicionar arquivo</Form.Label>*/}
+              {/*    <Form.Control*/}
+              {/*      type="file"*/}
+              {/*      name="fileInput"*/}
+              {/*      multiple*/}
+              {/*      onChange={onControlChange}*/}
+              {/*    />*/}
+              {/*  </Form.Group>*/}
+              {/*</Col>*/}
+            </Row>
+            <Row>
+              <Col>
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlTextarea1"
+                >
+                  <Form.Label name="msgToolTip">Mensagem</Form.Label>
+                  <OverlayTrigger
+                    overlay={
+                      <Tooltip id="1">
+                        {"Qual a temperatura? (ex: ambiente, aquecida, resfriada)\n" +
+                          "Qual a atmosfera? (ex: não monitorada oxidativa, inerte)\n" +
+                          "Qual a técnica? (ex: análise espectroscópica)"}
+                      </Tooltip>
+                    }
+                  >
+                    {
+                      <span className="m-2">
+                        <TooltipIcon />
+                      </span>
+                    }
+                  </OverlayTrigger>
 
-              <Form.Control
-                as="textarea"
-                rows={3}
-                name="msg"
-                placeholder={"Mensagem"}
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Button variant="dark" type="submit" className="px-5">
-          Enviar
-        </Button>
-      </Form>
-    </Container>
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
+                    name="msg"
+                    placeholder={"Mensagem"}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Button
+              type="submit"
+              className="btn-dark btn"
+              disabled={isQuoteRequestSending}
+            >
+              {isQuoteRequestSending ? (
+                <span className="mx-2">
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                  <span className="ms-3">Enviando...</span>
+                </span>
+              ) : (
+                <span className="mx-5">Enviar</span>
+              )}
+            </Button>
+          </Form>
+        </Container>
+      )}
+    </>
   );
 };
 

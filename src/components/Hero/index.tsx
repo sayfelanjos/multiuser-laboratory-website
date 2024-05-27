@@ -17,8 +17,8 @@ const Hero = () => {
                 <Image
                   src={hero.imagePath}
                   alt={hero.imageDesc}
-                  width="1800"
-                  height="1200"
+                  width="1280"
+                  height="720"
                   loading="lazy"
                   className="hero-img"
                   srcSet={hero.imageSet}

@@ -8,7 +8,7 @@ const RootLayout = () => {
   return (
     <Container fluid className="p-0 root-layout__ctn">
       <Header />
-      <Container fluid className=" p-0 root-layout__main">
+      <Container fluid className="p-0 root-layout__main">
         <Outlet />
       </Container>
       <Footer />
