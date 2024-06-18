@@ -1,0 +1,18 @@
+.signup-page__{
+  &ctn {
+    background: rgb(97, 98, 105);
+    background: linear-gradient(90deg, rgb(55, 57, 63) 0%, rgba(87,91,99,1) 24%, rgba(129,134,152,1) 85%, rgba(158,165,177,1) 98%);
+  }
+
+  &form-ctn {
+    width: 420px;
+    height: fit-content;
+  }
+
+  &button-ctn {
+    display: flex;
+    flex-direction: column;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}

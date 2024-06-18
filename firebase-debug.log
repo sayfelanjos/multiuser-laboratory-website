@@ -1,0 +1,135 @@
+[debug] [2024-06-18T02:49:30.489Z] ----------------------------------------------------------------------
+[debug] [2024-06-18T02:49:30.491Z] Command:       /home/saymon.anjos/.nvm/versions/node/v20.13.0/bin/node /usr/bin/firebase emulators:start
+[debug] [2024-06-18T02:49:30.491Z] CLI Version:   13.4.0
+[debug] [2024-06-18T02:49:30.491Z] Platform:      linux
+[debug] [2024-06-18T02:49:30.492Z] Node Version:  v20.13.0
+[debug] [2024-06-18T02:49:30.492Z] Time:          Mon Jun 17 2024 23:49:30 GMT-0300 (Brasilia Standard Time)
+[debug] [2024-06-18T02:49:30.492Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-06-18T02:49:30.598Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-06-18T02:49:30.599Z] > authorizing via signed-in user (saymon.anjos@minasinfotech.com.br)
+[info] i  emulators: Starting emulators: functions, hosting {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: functions, hosting"}}
+[debug] [2024-06-18T02:49:30.604Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-06-18T02:49:30.604Z] [hosting] Hosting Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-06-18T02:49:30.605Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"hosting":[{"address":"127.0.0.1","family":"IPv4","port":5000}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2024-06-18T02:49:30.610Z] [hub] writing locator at /tmp/hub-multiuser-laboratory-website.json
+[debug] [2024-06-18T02:49:30.621Z] [functions] Functions Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-06-18T02:49:30.621Z] [eventarc] Eventarc Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-06-18T02:49:30.621Z] late-assigned ports for functions and eventarc emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"hosting":[{"address":"127.0.0.1","family":"IPv4","port":5000}],"functions":[{"address":"127.0.0.1","family":"IPv4","port":5001}],"eventarc":[{"address":"127.0.0.1","family":"IPv4","port":9299}]},"metadata":{"message":"late-assigned ports for functions and eventarc emulators"}}
+[warn] ⚠  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: auth, firestore, database, pubsub, storage {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mauth, firestore, database, pubsub, storage\u001b[22m"}}
+[debug] [2024-06-18T02:49:30.625Z] defaultcredentials: writing to file /home/saymon.anjos/.config/firebase/saymon_anjos_minasinfotech.com.br_application_default_credentials.json
+[debug] [2024-06-18T02:49:30.636Z] Setting GAC to /home/saymon.anjos/.config/firebase/saymon_anjos_minasinfotech.com.br_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to /home/saymon.anjos/.config/firebase/saymon_anjos_minasinfotech.com.br_application_default_credentials.json"}}
+[debug] [2024-06-18T02:49:30.637Z] > refreshing access token with scopes: []
+[debug] [2024-06-18T02:49:30.639Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-06-18T02:49:30.639Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-06-18T02:49:30.862Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2024-06-18T02:49:30.863Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-06-18T02:49:30.873Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/multiuser-laboratory-website/adminSdkConfig [none]
+[debug] [2024-06-18T02:49:31.552Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/multiuser-laboratory-website/adminSdkConfig 200
+[debug] [2024-06-18T02:49:31.552Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/multiuser-laboratory-website/adminSdkConfig {"projectId":"multiuser-laboratory-website","storageBucket":"multiuser-laboratory-website.appspot.com","locationId":"southamerica-east1"}
+[debug] [2024-06-18T02:49:31.566Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/multiuser-laboratory-website/sites 
+[debug] [2024-06-18T02:49:33.079Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/multiuser-laboratory-website/sites 200
+[debug] [2024-06-18T02:49:33.080Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/multiuser-laboratory-website/sites {"sites":[{"name":"projects/multiuser-laboratory-website/sites/multiuser-laboratory-website","defaultUrl":"https://multiuser-laboratory-website.web.app","appId":"1:310372615529:web:15e36e1fa197d23cb029f8","type":"DEFAULT_SITE"}]}
+[debug] [2024-06-18T02:49:33.080Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/multiuser-laboratory-website/webApps/1:310372615529:web:15e36e1fa197d23cb029f8/config [none]
+[debug] [2024-06-18T02:49:34.079Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/multiuser-laboratory-website/webApps/1:310372615529:web:15e36e1fa197d23cb029f8/config 200
+[debug] [2024-06-18T02:49:34.079Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/multiuser-laboratory-website/webApps/1:310372615529:web:15e36e1fa197d23cb029f8/config {"projectId":"multiuser-laboratory-website","appId":"1:310372615529:web:15e36e1fa197d23cb029f8","storageBucket":"multiuser-laboratory-website.appspot.com","locationId":"southamerica-east1","apiKey":"AIzaSyDz4XKiLpwbRTt9JpkMEsfHoCP8WiVJu98","authDomain":"multiuser-laboratory-website.firebaseapp.com","messagingSenderId":"310372615529","measurementId":"G-PT0D6LTQED"}
+[debug] [2024-06-18T02:49:34.086Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/multiuser-laboratory-website [none]
+[debug] [2024-06-18T02:49:34.507Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/multiuser-laboratory-website 200
+[debug] [2024-06-18T02:49:34.507Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/multiuser-laboratory-website {"projectId":"multiuser-laboratory-website","projectNumber":"310372615529","displayName":"multiuser-laboratory-website","name":"projects/multiuser-laboratory-website","resources":{"hostingSite":"multiuser-laboratory-website","storageBucket":"multiuser-laboratory-website.appspot.com","locationId":"southamerica-east1"},"state":"ACTIVE","etag":"1_8c7b2949-7ff9-4877-9d83-f9745e7cf62d"}
+[info] i  hosting[multiuser-laboratory-website]: Serving hosting files from: build {"metadata":{"emulator":{"name":"hosting"},"message":"Serving hosting files from: \u001b[1mbuild\u001b[22m"}}
+[info] ✔  hosting[multiuser-laboratory-website]: Local server: http://127.0.0.1:5000 {"metadata":{"emulator":{"name":"hosting"},"message":"Local server: \u001b[4m\u001b[1mhttp://127.0.0.1:5000\u001b[22m\u001b[24m"}}
+[debug] [2024-06-18T02:49:34.518Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2024-06-18T02:49:34.518Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2024-06-18T02:49:34.518Z] Starting Emulator UI with command {"binary":"node","args":["/home/saymon.anjos/.cache/firebase/emulators/ui-v1.11.7/server/server.js"],"optionalArgs":[],"joinArgs":false} {"metadata":{"emulator":{"name":"ui"},"message":"Starting Emulator UI with command {\"binary\":\"node\",\"args\":[\"/home/saymon.anjos/.cache/firebase/emulators/ui-v1.11.7/server/server.js\"],\"optionalArgs\":[],\"joinArgs\":false}"}}
+[info] i  ui: Emulator UI logging to ui-debug.log {"metadata":{"emulator":{"name":"ui"},"message":"Emulator UI logging to \u001b[1mui-debug.log\u001b[22m"}}
+[debug] [2024-06-18T02:49:34.606Z] Web / API server started at 127.0.0.1:4000
+ {"metadata":{"emulator":{"name":"ui"},"message":"Web / API server started at 127.0.0.1:4000\n"}}
+[debug] [2024-06-18T02:49:34.606Z] Web / API server started at ::1:4000
+ {"metadata":{"emulator":{"name":"ui"},"message":"Web / API server started at ::1:4000\n"}}
+[info] i  functions: Watching "/home/saymon.anjos/Backup/Portifolio/multiuser-laboratory-website/functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"/home/saymon.anjos/Backup/Portifolio/multiuser-laboratory-website/functions\" for Cloud Functions..."}}
+[debug] [2024-06-18T02:49:34.785Z] Validating nodejs source
+[debug] [2024-06-18T02:49:35.564Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log",
+    "build": "babel ./src --out-dir ./build"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.3.0",
+    "@google-cloud/secret-manager": "^5.3.0",
+    "@sendgrid/mail": "^8.1.3",
+    "dotenv": "^16.4.5",
+    "firebase-admin": "^11.8.0",
+    "firebase-functions": "^5.0.1",
+    "regenerator-runtime": "^0.14.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.24.1",
+    "@babel/core": "^7.24.4",
+    "@babel/preset-env": "^7.24.4",
+    "eslint": "^8.15.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^9.1.0",
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
+[debug] [2024-06-18T02:49:35.564Z] Building nodejs source
+[debug] [2024-06-18T02:49:35.565Z] Failed to find version of module node: reached end of search path /home/saymon.anjos/Backup/Portifolio/multiuser-laboratory-website/functions/node_modules
+[info] ✔  functions: Using node@20 from host. 
+[debug] [2024-06-18T02:49:35.568Z] Could not find functions.yaml. Must use http discovery
+[debug] [2024-06-18T02:49:35.571Z] Found firebase-functions binary at '/home/saymon.anjos/Backup/Portifolio/multiuser-laboratory-website/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8486
+
+[debug] [2024-06-18T02:49:35.805Z] Got response from /__/functions.yaml {"endpoints":{"sendEmail":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","region":["southamerica-east1"],"labels":{},"httpsTrigger":{},"entryPoint":"sendEmail"}},"specVersion":"v1alpha1","requiredAPIs":[]}
+[info] ✔  functions: Loaded functions definitions from source: sendEmail. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: sendEmail."}}
+[info] ✔  functions[southamerica-east1-sendEmail]: http function initialized (http://127.0.0.1:5001/multiuser-laboratory-website/southamerica-east1/sendEmail). {"metadata":{"emulator":{"name":"functions"},"message":"\u001b[1mhttp\u001b[22m function initialized (http://127.0.0.1:5001/multiuser-laboratory-website/southamerica-east1/sendEmail)."}}
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://127.0.0.1:4000/               │
+└─────────────────────────────────────────────────────────────┘
+
+┌───────────┬────────────────┬─────────────────────────────────┐
+│ Emulator  │ Host:Port      │ View in Emulator UI             │
+├───────────┼────────────────┼─────────────────────────────────┤
+│ Functions │ 127.0.0.1:5001 │ http://127.0.0.1:4000/functions │
+├───────────┼────────────────┼─────────────────────────────────┤
+│ Hosting   │ 127.0.0.1:5000 │ n/a                             │
+└───────────┴────────────────┴─────────────────────────────────┘
+  Emulator Hub running at 127.0.0.1:4400
+  Other reserved ports: 4500
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
+[info] i  hosting: 127.0.0.1 - - [18/Jun/2024:02:50:13 +0000] "GET / HTTP/1.1" 200 614 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [18/Jun/2024:02:50:13 +0000] \"GET / HTTP/1.1\" 200 614 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [18/Jun/2024:02:50:13 +0000] "GET /static/css/main.c53cede4.css HTTP/1.1" 200 - "http://127.0.0.1:5000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [18/Jun/2024:02:50:13 +0000] \"GET /static/css/main.c53cede4.css HTTP/1.1\" 200 - \"http://127.0.0.1:5000/\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [18/Jun/2024:02:50:13 +0000] "GET /static/js/main.dbecc372.js HTTP/1.1" 200 - "http://127.0.0.1:5000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [18/Jun/2024:02:50:13 +0000] \"GET /static/js/main.dbecc372.js HTTP/1.1\" 200 - \"http://127.0.0.1:5000/\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [18/Jun/2024:02:50:29 +0000] "GET /static/css/main.c53cede4.css HTTP/1.1" 200 - "http://127.0.0.1:5000/signin" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [18/Jun/2024:02:50:29 +0000] \"GET /static/css/main.c53cede4.css HTTP/1.1\" 200 - \"http://127.0.0.1:5000/signin\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [18/Jun/2024:02:50:29 +0000] "GET /static/css/main.c53cede4.css.map HTTP/1.1" 200 - "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [18/Jun/2024:02:50:29 +0000] \"GET /static/css/main.c53cede4.css.map HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36\""}}
+[info] i  hosting: 127.0.0.1 - - [18/Jun/2024:02:50:29 +0000] "GET /static/js/main.dbecc372.js.map HTTP/1.1" 200 - "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36" {"metadata":{"emulator":{"name":"hosting"},"message":"127.0.0.1 - - [18/Jun/2024:02:50:29 +0000] \"GET /static/js/main.dbecc372.js.map HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36\""}}
+[debug] [2024-06-18T02:51:09.569Z] Received signal SIGINT (Ctrl-C) 1
+[info]  
+[info] i  emulators: Received SIGINT (Ctrl-C) for the first time. Starting a clean shutdown. 
+[info] i  emulators: Please wait for a clean shutdown or send the SIGINT (Ctrl-C) signal again to stop right now. 
+[info] i  emulators: Shutting down emulators. {"metadata":{"emulator":{"name":"hub"},"message":"Shutting down emulators."}}
+[info] i  ui: Stopping Emulator UI {"metadata":{"emulator":{"name":"ui"},"message":"Stopping Emulator UI"}}
+[warn] ⚠  Emulator UI has exited upon receiving signal: SIGINT 
+[info] i  functions: Stopping Functions Emulator {"metadata":{"emulator":{"name":"functions"},"message":"Stopping Functions Emulator"}}
+[info] i  hosting: Stopping Hosting Emulator {"metadata":{"emulator":{"name":"hosting"},"message":"Stopping Hosting Emulator"}}
+[info] i  eventarc: Stopping Eventarc Emulator {"metadata":{"emulator":{"name":"eventarc"},"message":"Stopping Eventarc Emulator"}}
+[info] i  hub: Stopping emulator hub {"metadata":{"emulator":{"name":"hub"},"message":"Stopping emulator hub"}}
+[info] i  logging: Stopping Logging Emulator {"metadata":{"emulator":{"name":"logging"},"message":"Stopping Logging Emulator"}}
+[debug] [2024-06-18T02:51:14.765Z] Error: Timed out.
+    at Timeout._onTimeout (/usr/lib/node_modules/firebase-tools/lib/utils.js:258:49)
+    at listOnTimeout (node:internal/timers:573:17)
+    at process.processTimers (node:internal/timers:514:7)
+[error] 
+[error] Error: An unexpected error has occurred.

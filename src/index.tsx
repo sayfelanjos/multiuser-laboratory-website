@@ -25,10 +25,9 @@ import ScanningElectronMicroscopyCalendar from "./pages/ScanningElectronMicrosco
 import DurometerCalendar from "./pages/DurometerCalendar";
 import ImpactPendulumCalendar from "./pages/ImpactPendulumCalendar";
 import MechanicTestCalendar from "./pages/MechanicTestCalendar";
-import { logEvent } from "firebase/analytics";
-import analytics from "./firebase";
-
-logEvent(analytics, "page_view");
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -37,12 +36,20 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       {
-        path: "",
+        path: "home",
         element: <HomePage />,
       },
       {
-        path: "home",
-        element: <Navigate to="/" />,
+        path: "/signin",
+        element: <SignIn />,
+      },
+      {
+        path: "/signup",
+        element: <SignUp />,
+      },
+      {
+        path: "",
+        element: <Navigate to="/home" />,
       },
       {
         path: "calendar",
@@ -67,7 +74,11 @@ const router = createBrowserRouter([
       },
       {
         path: "quote-request",
-        element: <QuoteRequest />,
+        element: (
+          <ProtectedRoute>
+            <QuoteRequest />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "about",
