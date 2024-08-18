@@ -46,9 +46,9 @@ const Contact: React.FC = () => {
         body: JSON.stringify(mailOptions),
       });
       event.target.reset();
-      setTimeout(function () {
+      setTimeout(() => {
         setIsEmailSending(false);
-      }, 2000);
+      }, 3000);
       setShowForm(false);
       if (!response.ok) {
         setEmailSentSuccessfully(false);

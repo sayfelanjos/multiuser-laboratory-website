@@ -225,16 +225,25 @@ const Footer = () => {
               "flex-xxl-column"
             }
           >
-            <Link to="#" className="link-dark icon-link-hover">
+            <Link
+              to="https://www.instagram.com/lmudemm/"
+              className="link-dark icon-link-hover"
+            >
               <InstagramIcon />
             </Link>
-            <Link to="#" className="link-dark icon-link-hover">
+            <Link
+              to="https://www.linkedin.com/in/lmufemunicamp/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+              className="link-dark icon-link-hover"
+            >
               <LinkedInIcon />
             </Link>
             <Link to="#" className="link-dark icon-link-hover">
               <FacebookIcon />
             </Link>
-            <Link to="#" className="link-dark icon-link-hover">
+            <Link
+              to="https://wa.me/qr/CGPC3MLVEXLBH1"
+              className="link-dark icon-link-hover"
+            >
               <WhatsAppIcon />
             </Link>
           </Stack>

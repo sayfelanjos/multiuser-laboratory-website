@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/cypress-e2e-testing-automation.iml" filepath="$PROJECT_DIR$/cypress-e2e-testing-automation.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/multiuser-laboratory-website.iml" filepath="$PROJECT_DIR$/.idea/multiuser-laboratory-website.iml" />
+      <module fileurl="file://$PROJECT_DIR$/playwright-e2e-testing-automation.iml" filepath="$PROJECT_DIR$/playwright-e2e-testing-automation.iml" />
     </modules>
   </component>
 </project>

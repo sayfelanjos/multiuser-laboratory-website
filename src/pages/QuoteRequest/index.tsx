@@ -11,6 +11,8 @@ import Image from "react-bootstrap/Image";
 import check from "../../assets/images/check.png";
 import cross from "../../assets/images/cross.png";
 import Spinner from "react-bootstrap/Spinner";
+import { Link } from "react-router-dom";
+import "./_quote-request.scss";
 
 interface MailOptions {
   subject: string;
@@ -93,6 +95,14 @@ const QuoteRequest = () => {
     },
     [],
   );
+  const onLinkClick = useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+      setShowForm(true);
+    },
+    [],
+  );
+
   // const onControlChange = useCallback(
   //   (event: React.ChangeEvent<HTMLInputElement>) => {
   //     const files = event.target.files;
@@ -104,28 +114,43 @@ const QuoteRequest = () => {
   return (
     <>
       {!showForm && sentQuoteRequestSuccessfully && (
-        <Container className="contact-page__ctn px-0">
-          <span className="contact-page__check-ctn">
-            <span className="contact-page__check-image-ctn">
-              <Image
-                src={check}
-                alt="Successful check"
-                className="contact-page__check-image"
-                width="400"
-                height="400"
-              ></Image>
+        <Container className="quote-request__ctn px-0">
+          <div className="d-flex flex-column justify-content-evenly h-100">
+            <span className="contact-page__check-ctn">
+              <span className="contact-page__check-image-ctn">
+                <Image
+                  src={check}
+                  alt="Successful check"
+                  className="contact-page__check-image"
+                  width="400"
+                  height="400"
+                ></Image>
+              </span>
+              <span className="contact-page__check-text-ctn">
+                <div>
+                  <h2 className="contact-page__check-msg">
+                    Sua mensagem foi enviada.
+                  </h2>
+                  <p className="notranslate">
+                    Logo entraremos em contato com você.
+                  </p>
+                  <h6>Obrigado!</h6>
+                </div>
+              </span>
             </span>
-            <span className="contact-page__check-text-ctn">
-              <div>
-                <h2 className="contact-page__check-msg">
-                  Sua mensagem foi enviada.
-                </h2>
-                <p className="notranslate">
-                  Logo entraremos em contato com você.
-                </p>
-              </div>
-            </span>
-          </span>
+            <div className="d-flex justify-content-evenly">
+              <Link
+                to="/app/quote-request"
+                className="link-dark"
+                onClick={onLinkClick}
+              >
+                Novo Orçamento
+              </Link>
+              <Link to="/app/scheduler" className="link-dark">
+                Agenda
+              </Link>
+            </div>
+          </div>
         </Container>
       )}
       {!showForm && !sentQuoteRequestSuccessfully && (
@@ -153,183 +178,187 @@ const QuoteRequest = () => {
       )}
       {showForm && (
         <Container className="quote-request__ctn">
-          <h2 className="text-center my-3">Solicite um Orçamento</h2>
-          <Form onSubmit={onButtonSubmit}>
-            <Row className="mb-3" xs={1} sm={1} md={1} lg={3} xl={3} xxl={3}>
-              <Col
-                lg={{ span: 6, offset: 0 }}
-                xl={{ span: 6, offset: 0 }}
-                xxl={{ span: 6, offset: 0 }}
-              >
-                <Form.Group as={Col} controlId="formGridEmail">
-                  <Form.Label>Nome Completo</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="fullName"
-                    placeholder="Nome"
-                    className="mb-3"
-                  />
-                </Form.Group>
-              </Col>
-              <Col
-                lg={{ span: 4, offset: 0 }}
-                xl={{ span: 4, offset: 0 }}
-                xxl={{ span: 4, offset: 0 }}
-              >
-                <Form.Group controlId="email" className="mb-3">
-                  <Form.Label>Endereço de email</Form.Label>
-                  <Form.Control
-                    type="email"
-                    placeholder="Endereço de email"
-                    name="email"
-                    required
-                  />
-                </Form.Group>
-              </Col>
-              <Col
-                lg={{ span: 2, offset: 0 }}
-                xl={{ span: 2, offset: 0 }}
-                xxl={{ span: 2, offset: 0 }}
-              >
-                <Form.Group controlId="formBasicPhone" className="mb-3">
-                  <Form.Label>Celular</Form.Label>
-                  <ReactInputMask
-                    id="formBasicPhone"
-                    className="form-control"
-                    mask="(99)99999-9999"
-                    maskChar="_"
-                    placeholder="Celular"
-                    required
-                    name="phone"
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row className="mb-3" xs={1} sm={1} md={2} lg={4} xl={4} xxl={4}>
-              <Col
-                lg={{ span: 2, offset: 0 }}
-                xl={{ span: 2, offset: 0 }}
-                xxl={{ span: 2, offset: 0 }}
-              >
-                <Form.Group as={Col} controlId="requester">
-                  <Form.Label>Solicitante</Form.Label>
-                  <Form.Select
-                    aria-label="Select service"
-                    className="mb-3"
-                    onChange={onSelectChange}
-                    name="requester"
-                  >
-                    <option value="RA">Aluno</option>
-                    <option value="Matrícula">Professor</option>
-                    <option value="Matrícula">Funcionário</option>
-                    <option value="CPF">Pessoa física</option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-              <Col
-                lg={{ span: 2, offset: 0 }}
-                xl={{ span: 2, offset: 0 }}
-                xxl={{ span: 2, offset: 0 }}
-              >
-                <Form.Group className="mb-3" controlId="requesterId">
-                  <Form.Label>{requesterId}</Form.Label>
-                  <Form.Control
-                    name="requesterId"
-                    placeholder={requesterIdPlaceholder}
-                    className="mb-3"
-                  />
-                </Form.Group>
-              </Col>
-              <Col
-                lg={{ span: 4, offset: 0 }}
-                xl={{ span: 4, offset: 0 }}
-                xxl={{ span: 4, offset: 0 }}
-              >
-                <Form.Group as={Col} controlId="services">
-                  <Form.Label name="service">Serviço pretendido</Form.Label>
-                  <Form.Select
-                    aria-label="Select service"
-                    className="mb-3"
-                    id="services"
-                  >
-                    <option value="1">Ensaio de Tenacidade</option>
-                    <option value="1">Ensaio de Compressão</option>
-                    <option value="1">Ensaio de Tração</option>
-                    <option value="1">Ensaio de Fadiga</option>
-                    <option value="1">Ensaio de Flexão</option>
-                    <option value="1">Ensaio de Impacto Charpy</option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-              {/*<Col*/}
-              {/*  lg={{ span: 4, offset: 0 }}*/}
-              {/*  xl={{ span: 4, offset: 0 }}*/}
-              {/*  xxl={{ span: 4, offset: 0 }}*/}
-              {/*>*/}
-              {/*  <Form.Group controlId="formFile" className="mb-3">*/}
-              {/*    <Form.Label>Adicionar arquivo</Form.Label>*/}
-              {/*    <Form.Control*/}
-              {/*      type="file"*/}
-              {/*      name="fileInput"*/}
-              {/*      multiple*/}
-              {/*      onChange={onControlChange}*/}
-              {/*    />*/}
-              {/*  </Form.Group>*/}
-              {/*</Col>*/}
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group
-                  className="mb-3"
-                  controlId="exampleForm.ControlTextarea1"
+          <div className="shadow rounded-2 p-3">
+            <h2 className="text-center my-3">Solicite um Orçamento</h2>
+            <Form onSubmit={onButtonSubmit}>
+              <Row className="mb-3" xs={1} sm={1} md={1} lg={3} xl={3} xxl={3}>
+                <Col
+                  lg={{ span: 6, offset: 0 }}
+                  xl={{ span: 6, offset: 0 }}
+                  xxl={{ span: 6, offset: 0 }}
                 >
-                  <Form.Label name="msgToolTip">Mensagem</Form.Label>
-                  <OverlayTrigger
-                    overlay={
-                      <Tooltip id="1">
-                        {"Qual a temperatura? (ex: ambiente, aquecida, resfriada)\n" +
-                          "Qual a atmosfera? (ex: não monitorada oxidativa, inerte)\n" +
-                          "Qual a técnica? (ex: análise espectroscópica)"}
-                      </Tooltip>
-                    }
+                  <Form.Group as={Col} controlId="formGridEmail">
+                    <Form.Label>Nome Completo</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="fullName"
+                      placeholder="Nome"
+                      className="mb-3"
+                    />
+                  </Form.Group>
+                </Col>
+                <Col
+                  lg={{ span: 4, offset: 0 }}
+                  xl={{ span: 4, offset: 0 }}
+                  xxl={{ span: 4, offset: 0 }}
+                >
+                  <Form.Group controlId="email" className="mb-3">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                      type="email"
+                      placeholder="Endereço de email"
+                      name="email"
+                      required
+                    />
+                  </Form.Group>
+                </Col>
+                <Col
+                  lg={{ span: 2, offset: 0 }}
+                  xl={{ span: 2, offset: 0 }}
+                  xxl={{ span: 2, offset: 0 }}
+                >
+                  <Form.Group controlId="formBasicPhone" className="mb-3">
+                    <Form.Label>Celular</Form.Label>
+                    <ReactInputMask
+                      id="formBasicPhone"
+                      className="form-control"
+                      mask="(99)99999-9999"
+                      maskChar="_"
+                      placeholder="Celular"
+                      required
+                      name="phone"
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row className="mb-3" xs={1} sm={1} md={2} lg={4} xl={4} xxl={4}>
+                <Col
+                  lg={{ span: 2, offset: 0 }}
+                  xl={{ span: 2, offset: 0 }}
+                  xxl={{ span: 2, offset: 0 }}
+                >
+                  <Form.Group as={Col} controlId="requester">
+                    <Form.Label>Solicitante</Form.Label>
+                    <Form.Select
+                      aria-label="Select service"
+                      className="mb-3"
+                      onChange={onSelectChange}
+                      name="requester"
+                    >
+                      <option value="RA">Aluno</option>
+                      <option value="Matrícula">Professor</option>
+                      <option value="Matrícula">Funcionário</option>
+                      <option value="CPF">Pessoa física</option>
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                <Col
+                  lg={{ span: 2, offset: 0 }}
+                  xl={{ span: 2, offset: 0 }}
+                  xxl={{ span: 2, offset: 0 }}
+                >
+                  <Form.Group className="mb-3" controlId="requesterId">
+                    <Form.Label>{requesterId}</Form.Label>
+                    <Form.Control
+                      name="requesterId"
+                      placeholder={requesterIdPlaceholder}
+                      className="mb-3"
+                    />
+                  </Form.Group>
+                </Col>
+                <Col
+                  lg={{ span: 4, offset: 0 }}
+                  xl={{ span: 4, offset: 0 }}
+                  xxl={{ span: 4, offset: 0 }}
+                >
+                  <Form.Group as={Col} controlId="services">
+                    <Form.Label name="service">Serviço pretendido</Form.Label>
+                    <Form.Select
+                      aria-label="Select service"
+                      className="mb-3"
+                      id="services"
+                    >
+                      <option value="1">Ensaio de Tenacidade</option>
+                      <option value="1">Ensaio de Compressão</option>
+                      <option value="1">Ensaio de Tração</option>
+                      <option value="1">Ensaio de Fadiga</option>
+                      <option value="1">Ensaio de Flexão</option>
+                      <option value="1">Ensaio de Impacto Charpy</option>
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                {/*<Col*/}
+                {/*  lg={{ span: 4, offset: 0 }}*/}
+                {/*  xl={{ span: 4, offset: 0 }}*/}
+                {/*  xxl={{ span: 4, offset: 0 }}*/}
+                {/*>*/}
+                {/*  <Form.Group controlId="formFile" className="mb-3">*/}
+                {/*    <Form.Label>Adicionar arquivo</Form.Label>*/}
+                {/*    <Form.Control*/}
+                {/*      type="file"*/}
+                {/*      name="fileInput"*/}
+                {/*      multiple*/}
+                {/*      onChange={onControlChange}*/}
+                {/*    />*/}
+                {/*  </Form.Group>*/}
+                {/*</Col>*/}
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group
+                    className="mb-3"
+                    controlId="exampleForm.ControlTextarea1"
                   >
-                    {
-                      <span className="m-2">
-                        <TooltipIcon />
-                      </span>
-                    }
-                  </OverlayTrigger>
+                    <Form.Label name="msgToolTip">Mensagem</Form.Label>
+                    <OverlayTrigger
+                      overlay={
+                        <Tooltip id="1">
+                          {"Qual a temperatura? (ex: ambiente, aquecida, resfriada)\n" +
+                            "Qual a atmosfera? (ex: não monitorada oxidativa, inerte)\n" +
+                            "Qual a técnica? (ex: análise espectroscópica)"}
+                        </Tooltip>
+                      }
+                    >
+                      {
+                        <span className="m-2">
+                          <TooltipIcon />
+                        </span>
+                      }
+                    </OverlayTrigger>
 
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    name="msg"
-                    placeholder={"Mensagem"}
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Button
-              type="submit"
-              className="btn-dark btn"
-              disabled={isQuoteRequestSending}
-            >
-              {isQuoteRequestSending ? (
-                <span className="mx-2">
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                  <span className="ms-3">Enviando...</span>
-                </span>
-              ) : (
-                <span className="mx-5">Enviar</span>
-              )}
-            </Button>
-          </Form>
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      name="msg"
+                      placeholder={"Mensagem"}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <div className="d-flex justify-content-end">
+                <Button
+                  type="submit"
+                  className="btn-dark btn"
+                  disabled={isQuoteRequestSending}
+                >
+                  {isQuoteRequestSending ? (
+                    <span className="mx-2">
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                      <span className="ms-3">Enviando...</span>
+                    </span>
+                  ) : (
+                    <span className="mx-5">Enviar</span>
+                  )}
+                </Button>
+              </div>
+            </Form>
+          </div>
         </Container>
       )}
     </>

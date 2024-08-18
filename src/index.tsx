@@ -27,7 +27,15 @@ import ImpactPendulumCalendar from "./pages/ImpactPendulumCalendar";
 import MechanicTestCalendar from "./pages/MechanicTestCalendar";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import ProtectedRoute from "./components/ProtectedRoute";
+import SchedulerAppLayout from "./components/SchedulerLayout";
+import SchedulePage from "./pages/Scheduler";
+import UsersList from "./pages/UsersList";
+import UserRegister from "./pages/UserAdd";
+import UserEdit from "./pages/UserEdit";
+import { Provider } from "react-redux";
+import { doc, getDoc } from "firebase/firestore";
+import { firestore as db } from "./firebase";
+import store from "./redux/store/store";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +63,10 @@ const router = createBrowserRouter([
         path: "calendar",
         children: [
           {
+            path: "",
+            element: <Navigate to="/calendar/durometer" />,
+          },
+          {
             path: "durometer",
             element: <DurometerCalendar />,
           },
@@ -72,14 +84,7 @@ const router = createBrowserRouter([
           },
         ],
       },
-      {
-        path: "quote-request",
-        element: (
-          <ProtectedRoute>
-            <QuoteRequest />
-          </ProtectedRoute>
-        ),
-      },
+
       {
         path: "about",
         element: <AboutPage />,
@@ -119,20 +124,62 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "app",
+    element: <SchedulerAppLayout />,
+    children: [
+      {
+        path: "",
+        element: <Navigate to="/app/scheduler" />,
+      },
+      {
+        path: "scheduler",
+        element: <SchedulePage />,
+      },
+      {
+        path: "users",
+        children: [
+          {
+            path: "list",
+            element: <UsersList />,
+          },
+          {
+            path: "add",
+            element: <UserRegister />,
+          },
+          {
+            path: "edit/:userId",
+            element: <UserEdit />,
+            loader: async ({ params }) => {
+              const docRef = doc(db, "users", `${params.userId}`);
+              const docSnap = await getDoc(docRef);
+              return { key: docSnap.id, userId: docSnap.id, ...docSnap.data() };
+            },
+          },
+        ],
+      },
+      {
+        path: "quote-request",
+        element: <QuoteRequest />,
+      },
+    ],
+  },
 ]);
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
 root.render(
-  <React.StrictMode>
-    <DevSupport
-      ComponentPreviews={ComponentPreviews}
-      useInitialHook={useInitial}
-    >
-      <RouterProvider router={router} />
-    </DevSupport>
-  </React.StrictMode>,
+  <Provider store={store}>
+    <React.StrictMode>
+      <DevSupport
+        ComponentPreviews={ComponentPreviews}
+        useInitialHook={useInitial}
+      >
+        <RouterProvider router={router} />
+      </DevSupport>
+    </React.StrictMode>
+  </Provider>,
 );
 
 // If you want to start measuring performance in your app, pass a function

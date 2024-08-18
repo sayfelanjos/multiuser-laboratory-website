@@ -1,0 +1,27 @@
+.scheduler-sidebar__ {
+  &btn-link {
+    border-radius: 0;
+    width: 100%;
+    height: 48px;
+    color: #FFFFFF8C;
+    border-left: 2px solid rgba(var(--bs-dark-rgb), var(--bs-bg-opacity));
+    &:hover {
+      color: #FFFFFF8C;
+      &:active {
+        color: #FFFFFF8C;
+      }
+    }
+  }
+
+  &ctn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+  }
+}
+
+.btn-check:checked + .btn, :not(.btn-check) + .btn:active, .btn:first-child:active, .btn.active, .btn.show {
+  border-left: 2px solid #FFFFFF8C;
+  color: #FFFFFF8C;
+}

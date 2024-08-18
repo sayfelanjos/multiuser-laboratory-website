@@ -1,0 +1,16 @@
+.users-list__ {
+  &action-btn {
+    font-size: 14px;
+    padding: 0;
+    color: black;
+    &:hover {
+      color: rgba(0, 0, 0, 0.5) !important;
+      background: none;
+      text-decoration: none;
+    }
+
+    &:active {
+      background: none !important;
+    }
+  }
+}
