@@ -65,6 +65,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@eslint/js": "^9.0.0",
     "@react-buddy/palette-react-intl": "^5.20.2",
+    "@types/serviceworker": "^0.0.95",
     "concurrently": "^8.2.2",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",

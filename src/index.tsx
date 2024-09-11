@@ -36,6 +36,7 @@ import { Provider } from "react-redux";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore as db } from "./firebase";
 import store from "./redux/store/store";
+import ResetPassword from "./pages/ResetPassword";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignUp />,
+      },
+      {
+        path: "reset-password",
+        element: <ResetPassword />,
       },
       {
         path: "",
@@ -165,6 +170,19 @@ const router = createBrowserRouter([
     ],
   },
 ]);
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js").then(
+      (registration) => {
+        console.log("ServiceWorker registration successful: ", registration);
+      },
+      (err) => {
+        console.log("ServiceWorker registration failed: ", err);
+      },
+    );
+  });
+}
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,

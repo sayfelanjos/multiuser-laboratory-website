@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged, getIdToken } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 
@@ -24,6 +24,26 @@ export const analytics = getAnalytics(app);
 
 // Initialize Firebase Authentication and get a reference to the service
 export const auth = getAuth(app);
+
+const getIdTokenPromise = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      unsubscribe();
+      if (user) {
+        getIdToken(user).then(
+          (idToken) => {
+            resolve(idToken);
+          },
+          (error) => {
+            resolve(null);
+          },
+        );
+      } else {
+        resolve(null);
+      }
+    });
+  });
+};
 
 // Initialize Firebase Firestore and get a reference to the service
 export const firestore = getFirestore(app);

@@ -3,12 +3,12 @@
     border-radius: 0;
     width: 100%;
     height: 48px;
-    color: #FFFFFF8C;
+    color: #ffffff8c;
     border-left: 2px solid rgba(var(--bs-dark-rgb), var(--bs-bg-opacity));
     &:hover {
-      color: #FFFFFF8C;
+      color: #ffffff8c;
       &:active {
-        color: #FFFFFF8C;
+        color: #ffffff8c;
       }
     }
   }
@@ -21,7 +21,11 @@
   }
 }
 
-.btn-check:checked + .btn, :not(.btn-check) + .btn:active, .btn:first-child:active, .btn.active, .btn.show {
-  border-left: 2px solid #FFFFFF8C;
-  color: #FFFFFF8C;
+.btn-check:checked + .btn,
+:not(.btn-check) + .btn:active,
+.btn:first-child:active,
+.btn.active,
+.btn.show {
+  border-left: 2px solid #ffffff8c;
+  color: #ffffff8c;
 }
