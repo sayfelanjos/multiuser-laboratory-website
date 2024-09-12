@@ -155,7 +155,7 @@ const SignIn = () => {
                 <Row>
                   <span className="d-flex justify-content-center align-items-center mb-3">
                     Esqueceu a sua senha?
-                    <Link to="/reset-password" className="ms-2">
+                    <Link to="/request-to-reset-password" className="ms-2">
                       Criar nova senha
                     </Link>
                   </span>
