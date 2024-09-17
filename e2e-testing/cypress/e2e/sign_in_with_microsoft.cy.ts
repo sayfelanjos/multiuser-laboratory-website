@@ -1,1 +1,1 @@
-describe("Signing in with Microsoft (Single Sign On)", () => {});
+describe("signing in with Microsoft (Single Sign On)", () => {});

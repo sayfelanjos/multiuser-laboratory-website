@@ -1,1 +1,1 @@
-describe("Signing in with Google (Single Sign On)", () => {});
+describe("signing in with Google (Single Sign On)", () => {});

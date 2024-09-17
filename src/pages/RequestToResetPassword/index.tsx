@@ -47,9 +47,9 @@ const RequestToResetPassword = () => {
   return (
     <Container
       fluid
-      className="d-flex justify-content-center align-items-center vh-100 signin-page__ctn"
+      className="d-flex justify-content-center align-items-center vh-100 request-to-reset-password__ctn"
     >
-      <Container className="signin-page__form-ctn bg-light rounded-3">
+      <Container className="request-to-reset-password__form-ctn bg-light rounded-3">
         <Formik
           validationSchema={userSchema}
           initialValues={initialValues}
@@ -59,15 +59,20 @@ const RequestToResetPassword = () => {
             <Form noValidate onSubmit={handleSubmit}>
               <Stack gap={3} className="p-3">
                 {isEmailSentSuccessfully ? (
-                  <Container className="d-flex justify-content-evenly align-items-center">
-                    <Image
-                      className="me-2"
-                      src={check}
-                      alt="Successful check"
-                      width="40"
-                      height="40"
-                    />
-                    <h5 className="m-0">Email enviado com sucesso!</h5>
+                  <Container>
+                    <Container className="d-flex justify-content-evenly align-items-center mb-3">
+                      <Image
+                        className="me-2"
+                        src={check}
+                        alt="Successful check"
+                        width="40"
+                        height="40"
+                      />
+                      <h5 className="m-0">Email enviado com sucesso!</h5>
+                    </Container>
+                    <p className="text-center m-0 text-bg-secondary p-2">
+                      Abra o seu email e click no link para redefinir sua senha.
+                    </p>
                   </Container>
                 ) : (
                   <>
@@ -83,7 +88,7 @@ const RequestToResetPassword = () => {
                           placeholder="Digite o seu email"
                           onChange={handleChange}
                           isValid={touched.email && !errors.email}
-                          isInvalid={touched.email && !!errors.email}
+                          isInvalid={!!errors.email}
                         />
                         <Form.Control.Feedback
                           type="invalid"
@@ -94,10 +99,10 @@ const RequestToResetPassword = () => {
                       </Form.Group>
                     </Row>
                     <Row>
-                      <Container className="signin-page__button-ctn mb-3">
-                        <p className="text-center">
-                          Nós iremos enviar um email com link para redefinição
-                          de senha.
+                      <Container className="request-to-reset-password__button-ctn mb-3">
+                        <p className="text-center text-bg-secondary p-2">
+                          Nós iremos enviar um email com um link para
+                          redefinição de senha.
                         </p>
                         <Button
                           variant="dark"
@@ -124,10 +129,10 @@ const RequestToResetPassword = () => {
                   </>
                 )}
                 <Row>
-                  <Container className="signin-page__button-ctn mb-3">
+                  <Container className="request-to-reset-password__button-ctn mb-3">
                     <Link
                       to="/signin"
-                      className="reset-password__back-link btn text-decoration-none text-dark d-flex justify-content-center align-items-center"
+                      className="request-to-reset-password__back-link btn text-decoration-none text-dark d-flex justify-content-center align-items-center"
                     >
                       Voltar para o login
                     </Link>

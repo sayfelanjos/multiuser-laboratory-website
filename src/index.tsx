@@ -36,7 +36,7 @@ import { Provider } from "react-redux";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore as db } from "./firebase";
 import store from "./redux/store/store";
-import ResetPassword from "./pages/RequestToResetPassword";
+import ResetPassword from "./pages/ResetPassword";
 import RequestToResetPassword from "./pages/RequestToResetPassword";
 
 const router = createBrowserRouter([
