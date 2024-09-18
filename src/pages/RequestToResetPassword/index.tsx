@@ -88,7 +88,7 @@ const RequestToResetPassword = () => {
                           placeholder="Digite o seu email"
                           onChange={handleChange}
                           isValid={touched.email && !errors.email}
-                          isInvalid={!!errors.email}
+                          isInvalid={touched.email && !!errors.email}
                         />
                         <Form.Control.Feedback
                           type="invalid"
