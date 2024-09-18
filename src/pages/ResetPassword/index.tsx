@@ -61,7 +61,7 @@ const ResetPassword = () => {
           initialValues={passwordValue}
           onSubmit={handleOnSubmit}
         >
-          {({ handleSubmit, handleChange, values, touched, errors }) => (
+          {({ handleSubmit, touched, errors }) => (
             <Form noValidate onSubmit={handleSubmit}>
               <Stack gap={3} className="p-3">
                 <Row>
@@ -86,7 +86,6 @@ const ResetPassword = () => {
                       type={passwordVisible ? "text" : "password"}
                       name="newPassword"
                       placeholder="Insira sua nova senha"
-                      value={values.password}
                       onChange={(event) =>
                         setPasswordValue((prevValues) => ({
                           ...prevValues,
@@ -96,19 +95,19 @@ const ResetPassword = () => {
                       isValid={touched.password && !errors.password}
                       isInvalid={!!errors.password}
                     />
-                    <InputGroup.Text className="p-0 m-0">
-                      <Button
-                        className="p-1"
-                        variant="link"
-                        onClick={togglePasswordVisibility}
-                      >
-                        {passwordVisible ? (
-                          <EyeOpenedIcon />
-                        ) : (
-                          <EyeClosedIcon />
-                        )}
-                      </Button>
-                    </InputGroup.Text>
+                    {/*<InputGroup.Text className="p-0 m-0">*/}
+                    {/*  <Button*/}
+                    {/*    className="p-1"*/}
+                    {/*    variant="link"*/}
+                    {/*    onClick={togglePasswordVisibility}*/}
+                    {/*  >*/}
+                    {/*    {passwordVisible ? (*/}
+                    {/*      <EyeOpenedIcon />*/}
+                    {/*    ) : (*/}
+                    {/*      <EyeClosedIcon />*/}
+                    {/*    )}*/}
+                    {/*  </Button>*/}
+                    {/*</InputGroup.Text>*/}
                     <Form.Control.Feedback
                       type="invalid"
                       data-cy="newPassword-feedback"
@@ -124,7 +123,6 @@ const ResetPassword = () => {
                       type={passwordVisible ? "text" : "password"}
                       name="repeat-password"
                       placeholder="Digite sua senha novamente"
-                      value={values.newPassword}
                       onChange={(event) =>
                         setPasswordValue((prevValues) => ({
                           ...prevValues,
@@ -135,19 +133,19 @@ const ResetPassword = () => {
                       isInvalid={!!errors.newPassword}
                     />
 
-                    <InputGroup.Text className="p-0 m-0">
-                      <Button
-                        className="p-1"
-                        variant="link"
-                        onClick={togglePasswordVisibility}
-                      >
-                        {passwordVisible ? (
-                          <EyeOpenedIcon />
-                        ) : (
-                          <EyeClosedIcon />
-                        )}
-                      </Button>
-                    </InputGroup.Text>
+                    {/*<InputGroup.Text className="p-0 m-0">*/}
+                    {/*  <Button*/}
+                    {/*    className="p-1"*/}
+                    {/*    variant="link"*/}
+                    {/*    onClick={togglePasswordVisibility}*/}
+                    {/*  >*/}
+                    {/*    {passwordVisible ? (*/}
+                    {/*      <EyeOpenedIcon />*/}
+                    {/*    ) : (*/}
+                    {/*      <EyeClosedIcon />*/}
+                    {/*    )}*/}
+                    {/*  </Button>*/}
+                    {/*</InputGroup.Text>*/}
                     <Form.Control.Feedback
                       type="invalid"
                       data-cy="newPassword-feedback"
