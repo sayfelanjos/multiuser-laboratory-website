@@ -9,10 +9,6 @@ import * as formik from "formik";
 import * as yup from "yup";
 import Alert from "react-bootstrap/Alert";
 import "./_reset-password.scss";
-import { getCurrentUser } from "../../helpers/getCurrentUser";
-import { InputGroup } from "react-bootstrap";
-import EyeOpenedIcon from "../../assets/icons/EyeOpenedIcon";
-import EyeClosedIcon from "../../assets/icons/EyeClosedIcon";
 
 const ResetPassword = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -21,6 +17,7 @@ const ResetPassword = () => {
   };
   const { Formik } = formik;
   const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [validated, setValidated] = useState(false);
   const resetPasswordSchema = yup.object().shape({
     password: yup
       .string()
@@ -41,13 +38,16 @@ const ResetPassword = () => {
   type ResetPasswordType = yup.InferType<typeof resetPasswordSchema>;
 
   // Initial form values
-  const [passwordValue, setPasswordValue] = useState<ResetPasswordType>({
-    password: "",
-    newPassword: "",
-  });
+  const initialValues: ResetPasswordType = { password: "", newPassword: "" };
 
-  const handleOnSubmit = useCallback(async (value: ResetPasswordType) => {
-    const currentUser = await getCurrentUser();
+  const handleOnSubmit = useCallback((value: ResetPasswordType) => {
+    if (value.password !== value.newPassword) {
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    }
+    setValidated(true);
   }, []);
 
   return (
@@ -58,23 +58,22 @@ const ResetPassword = () => {
       <Container className="reset-password__form-ctn bg-light rounded-3">
         <Formik
           validationSchema={resetPasswordSchema}
-          initialValues={passwordValue}
+          initialValues={initialValues}
           onSubmit={handleOnSubmit}
         >
-          {({ handleSubmit, touched, errors }) => (
-            <Form noValidate onSubmit={handleSubmit}>
+          {({ handleSubmit, handleChange, values, touched, errors }) => (
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
               <Stack gap={3} className="p-3">
                 <Row>
                   <Container className="d-flex justify-content-center align-items-center flex-column">
                     <h4>Acessar sua conta</h4>
                     {showAlert && (
                       <Alert
-                        variant="warning"
+                        variant="danger"
                         className="w-100 mb-0 mt-3"
                         data-cy="alert"
                       >
-                        Credenciais inválidas!
-                        <br /> Verifique e tente novamente.
+                        As senhas devem ser iguais!
                       </Alert>
                     )}
                   </Container>
@@ -84,30 +83,13 @@ const ResetPassword = () => {
                     <Form.Label column={true}>Nova senha</Form.Label>
                     <Form.Control
                       type={passwordVisible ? "text" : "password"}
-                      name="newPassword"
+                      name="password"
                       placeholder="Insira sua nova senha"
-                      onChange={(event) =>
-                        setPasswordValue((prevValues) => ({
-                          ...prevValues,
-                          [event.target.name]: event.target.value,
-                        }))
-                      }
+                      value={values.password}
+                      onChange={handleChange}
                       isValid={touched.password && !errors.password}
-                      isInvalid={!!errors.password}
+                      isInvalid={touched.password && !!errors.password}
                     />
-                    {/*<InputGroup.Text className="p-0 m-0">*/}
-                    {/*  <Button*/}
-                    {/*    className="p-1"*/}
-                    {/*    variant="link"*/}
-                    {/*    onClick={togglePasswordVisibility}*/}
-                    {/*  >*/}
-                    {/*    {passwordVisible ? (*/}
-                    {/*      <EyeOpenedIcon />*/}
-                    {/*    ) : (*/}
-                    {/*      <EyeClosedIcon />*/}
-                    {/*    )}*/}
-                    {/*  </Button>*/}
-                    {/*</InputGroup.Text>*/}
                     <Form.Control.Feedback
                       type="invalid"
                       data-cy="newPassword-feedback"
@@ -121,31 +103,13 @@ const ResetPassword = () => {
                     <Form.Label column={true}>Confirmar sua senha</Form.Label>
                     <Form.Control
                       type={passwordVisible ? "text" : "password"}
-                      name="repeat-password"
+                      name="newPassword"
                       placeholder="Digite sua senha novamente"
-                      onChange={(event) =>
-                        setPasswordValue((prevValues) => ({
-                          ...prevValues,
-                          [event.target.name]: event.target.value,
-                        }))
-                      }
+                      onChange={handleChange}
+                      value={values.newPassword}
                       isValid={touched.newPassword && !errors.newPassword}
-                      isInvalid={!!errors.newPassword}
+                      isInvalid={touched.newPassword && !!errors.newPassword}
                     />
-
-                    {/*<InputGroup.Text className="p-0 m-0">*/}
-                    {/*  <Button*/}
-                    {/*    className="p-1"*/}
-                    {/*    variant="link"*/}
-                    {/*    onClick={togglePasswordVisibility}*/}
-                    {/*  >*/}
-                    {/*    {passwordVisible ? (*/}
-                    {/*      <EyeOpenedIcon />*/}
-                    {/*    ) : (*/}
-                    {/*      <EyeClosedIcon />*/}
-                    {/*    )}*/}
-                    {/*  </Button>*/}
-                    {/*</InputGroup.Text>*/}
                     <Form.Control.Feedback
                       type="invalid"
                       data-cy="newPassword-feedback"
