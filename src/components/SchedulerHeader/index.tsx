@@ -67,7 +67,7 @@ const SchedulerHeader = () => {
               <Image src={photoURL} style={avatarStyle} roundedCircle />
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <Dropdown.Item href="#/action-1">Perfil</Dropdown.Item>
+              <Dropdown.Item href="/app/users/profile">Perfil</Dropdown.Item>
               <Dropdown.Item href="#/action-2">Configurações</Dropdown.Item>
               <Dropdown.Divider />
               <Dropdown.Item onClick={onButtonClick}>Logout</Dropdown.Item>

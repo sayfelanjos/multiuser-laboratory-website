@@ -83,19 +83,23 @@ const UsersList = () => {
   useEffect(() => {
     setIsLoading(true);
     const users: Array<User> = [];
-    getDocs(collection(db, "users")).then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        const { firstName, lastName, email, phone } = doc.data() as User;
-        users.push({
-          key: doc.id,
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          phone: phone,
+    getDocs(collection(db, "users"))
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const { firstName, lastName, email, phone } = doc.data() as User;
+          users.push({
+            key: doc.id,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phone: phone,
+          });
         });
+        setData(users);
+      })
+      .catch((error) => {
+        console.error(error.message);
       });
-      setData(users);
-    });
     setIsLoading(false);
   }, [key]);
 

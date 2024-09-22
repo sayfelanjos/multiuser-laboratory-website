@@ -38,6 +38,8 @@ import { firestore as db } from "./firebase";
 import store from "./redux/store/store";
 import ResetPassword from "./pages/ResetPassword";
 import RequestToResetPassword from "./pages/RequestToResetPassword";
+import UserProfile from "./pages/UserProfile";
+import { App } from "antd";
 
 const router = createBrowserRouter([
   {
@@ -158,6 +160,10 @@ const router = createBrowserRouter([
             element: <UserRegister />,
           },
           {
+            path: "profile",
+            element: <UserProfile />,
+          },
+          {
             path: "edit/:userId",
             element: <UserEdit />,
             loader: async ({ params }) => {
@@ -193,16 +199,18 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
 root.render(
-  <Provider store={store}>
-    <React.StrictMode>
-      <DevSupport
-        ComponentPreviews={ComponentPreviews}
-        useInitialHook={useInitial}
-      >
-        <RouterProvider router={router} />
-      </DevSupport>
-    </React.StrictMode>
-  </Provider>,
+  <App>
+    <Provider store={store}>
+      <React.StrictMode>
+        <DevSupport
+          ComponentPreviews={ComponentPreviews}
+          useInitialHook={useInitial}
+        >
+          <RouterProvider router={router} />
+        </DevSupport>
+      </React.StrictMode>
+    </Provider>
+  </App>,
 );
 
 // If you want to start measuring performance in your app, pass a function

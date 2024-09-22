@@ -3,7 +3,6 @@ import Header from "../Header";
 import Footer from "../Footer";
 import Container from "react-bootstrap/Container";
 import { Outlet, ScrollRestoration } from "react-router-dom";
-
 const RootLayout = () => {
   return (
     <Container fluid className="p-0 root-layout__ctn">

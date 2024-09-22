@@ -16,15 +16,22 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { firestore as db } from "../../firebase";
-import { Link, useLoaderData, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { App } from "antd";
 import User from "../../interfaces/user";
 import Modal from "react-bootstrap/Modal";
 import WarningIcon from "../../assets/icons/WarningIcon";
 import { showNotification } from "../../helpers/showNotification";
+
 const UserForm = () => {
   const currentUser = useLoaderData() as User;
-  const [changed, setChanged] = useState<boolean>(false);
+  const location = useLocation();
+  const [isInputChanged, setIsInputChanged] = useState<boolean>(false);
   const [user, setUser] = useState<User>({
     key: "",
     firstName: "",
@@ -52,7 +59,7 @@ const UserForm = () => {
       event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
       field: keyof User,
     ) => {
-      setChanged(true);
+      setIsInputChanged(true);
       setUser((currentState) => ({
         ...currentState,
         [field]: event.target.value,
@@ -66,7 +73,7 @@ const UserForm = () => {
       event.preventDefault();
       setIsLoading(true);
       if (user.key) {
-        if (changed) {
+        if (isInputChanged) {
           updateDoc(doc(db, "users", `${user.key}`), {
             firstName: user.firstName,
             lastName: user.lastName,
@@ -209,7 +216,9 @@ const UserForm = () => {
                 aria-hidden="true"
                 className={`me-2 ${isLoading ? "" : "d-none"}`}
               />
-              Alterar
+              {location.pathname.match("/app/users/edit")
+                ? "Salvar"
+                : "Adicionar"}
             </Button>
           </Form.Group>
         </Row>

@@ -13,9 +13,12 @@ import "./_request-to-reset-password.scss";
 import Spinner from "react-bootstrap/Spinner";
 import Image from "react-bootstrap/Image";
 import check from "../../assets/images/check.png";
+import Alert from "react-bootstrap/Alert";
 
 const RequestToResetPassword = () => {
   const { Formik } = formik;
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<string>("");
   const userSchema = yup.object().shape({
     email: yup.string().email("Email inválido").required("Email is required"),
   });
@@ -32,16 +35,27 @@ const RequestToResetPassword = () => {
     sendPasswordResetEmail(auth, value.email)
       .then(() => {
         setIsEmailSending(true);
+        setTimeout(() => {
+          setIsEmailSending(false);
+          setEmailSentSuccessfully(true);
+        }, 1000);
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
+        switch (error.code) {
+          case "auth/too-many-requests": {
+            setAlertMessage(
+              "O process de redefinição de senha foi bloqueado temporariamente devido a muitas tentativas. Você poderá tentar novamente mais tarde.",
+            );
+            setShowAlert(true);
+            console.error(error.message);
+            break;
+          }
+          default: {
+            console.error("Unknown error:", error.message);
+            break;
+          }
+        }
       });
-    setTimeout(() => {
-      setIsEmailSending(false);
-      setEmailSentSuccessfully(true);
-    }, 1000);
   }, []);
 
   return (
@@ -55,27 +69,50 @@ const RequestToResetPassword = () => {
           initialValues={initialValues}
           onSubmit={onClickEnterButton}
         >
-          {({ handleSubmit, handleChange, values, touched, errors }) => (
+          {({
+            handleSubmit,
+            handleChange,
+            handleBlur,
+            values,
+            touched,
+            errors,
+          }) => (
             <Form noValidate onSubmit={handleSubmit}>
               <Stack gap={3} className="p-3">
                 {isEmailSentSuccessfully ? (
-                  <Container>
-                    <Container className="d-flex justify-content-evenly align-items-center mb-3">
-                      <Image
-                        className="me-2"
-                        src={check}
-                        alt="Successful check"
-                        width="40"
-                        height="40"
-                      />
-                      <h5 className="m-0">Email enviado com sucesso!</h5>
+                  <Row>
+                    <Container>
+                      <Container className="d-flex justify-content-evenly align-items-center mb-3">
+                        <Image
+                          className="me-2"
+                          src={check}
+                          alt="Successful check"
+                          width="40"
+                          height="40"
+                        />
+                        <h5 className="m-0">Email enviado com sucesso!</h5>
+                      </Container>
+                      <p className="text-center m-0 text-bg-secondary p-2">
+                        Abra o seu email e click no link para redefinir sua
+                        senha.
+                      </p>
                     </Container>
-                    <p className="text-center m-0 text-bg-secondary p-2">
-                      Abra o seu email e click no link para redefinir sua senha.
-                    </p>
-                  </Container>
+                  </Row>
                 ) : (
                   <>
+                    <Row>
+                      <Container className="d-flex justify-content-center align-items-center flex-column">
+                        {showAlert && (
+                          <Alert
+                            variant="warning"
+                            className="w-100 mb-0 mt-3"
+                            data-cy="alert"
+                          >
+                            {alertMessage}
+                          </Alert>
+                        )}
+                      </Container>
+                    </Row>
                     <Row>
                       <Form.Group className="mb-3" controlId="formGroupEmail">
                         <h4 className="mb-3 text-center">
@@ -87,6 +124,7 @@ const RequestToResetPassword = () => {
                           value={values.email}
                           placeholder="Digite o seu email"
                           onChange={handleChange}
+                          onBlur={handleBlur}
                           isValid={touched.email && !errors.email}
                           isInvalid={touched.email && !!errors.email}
                         />
@@ -102,7 +140,7 @@ const RequestToResetPassword = () => {
                       <Container className="request-to-reset-password__button-ctn mb-3">
                         <p className="text-center text-bg-secondary p-2">
                           Nós iremos enviar um email com um link para
-                          redefinição de senha.
+                          redefinição de sua senha.
                         </p>
                         <Button
                           variant="dark"

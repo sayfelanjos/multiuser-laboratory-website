@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Stack from "react-bootstrap/Stack";
@@ -22,15 +22,16 @@ const SignIn = () => {
   const navigate = useNavigate();
   const { Formik } = formik;
   const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<string>("");
   const userSchema = yup.object().shape({
-    email: yup.string().email("Email inválido").required("Email is required"),
+    email: yup.string().email("Email inválido").required("Email é obrigatório"),
     password: yup
       .string()
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&>=])[A-Za-z\d@$!%*?&>=]{8,}$/,
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#@$!%*?&>=._-])[A-Za-z\d#@$!%*?&>=._-]{8,}$/,
         "A senha deve conter pelo menos 8 caracteres, uma letra maiúscula, uma letra minúscula, um número e um caractere especial.",
       )
-      .required("Password is required"),
+      .required("Senha é obrigatória"),
   });
 
   type User = yup.InferType<typeof userSchema>;
@@ -39,6 +40,7 @@ const SignIn = () => {
   const initialValues: User = { email: "", password: "" };
 
   const onClickEnterButton = useCallback(async (value: User) => {
+    setShowAlert(false);
     try {
       await signInUser(value.email, value.password);
       navigate("/app/scheduler");
@@ -47,11 +49,19 @@ const SignIn = () => {
         // Handle Firebase Auth errors
         switch (error.code) {
           case "auth/invalid-credential": {
+            setAlertMessage(
+              "Credenciais inválidas! Verifique e tente novamente.",
+            );
             setShowAlert(true);
-            console.error("Invalid credentials.");
-            setTimeout(() => {
-              setShowAlert(false);
-            }, 5000);
+            console.error(error.message);
+            break;
+          }
+          case "auth/too-many-requests": {
+            setAlertMessage(
+              "O acesso foi bloqueado temporariamente devido a muitas tentativas. Você pode tentar novamente em alguns minutos ou trocar a sua senha para acessar a sua conta.",
+            );
+            setShowAlert(true);
+            console.error(error.message);
             break;
           }
           default: {
@@ -94,7 +104,14 @@ const SignIn = () => {
           initialValues={initialValues}
           onSubmit={onClickEnterButton}
         >
-          {({ handleSubmit, handleChange, values, touched, errors }) => (
+          {({
+            handleSubmit,
+            handleChange,
+            handleBlur,
+            values,
+            touched,
+            errors,
+          }) => (
             <Form noValidate onSubmit={handleSubmit}>
               <Stack gap={3} className="p-3">
                 <Row>
@@ -106,8 +123,7 @@ const SignIn = () => {
                         className="w-100 mb-0 mt-3"
                         data-cy="alert"
                       >
-                        Credenciais inválidas!
-                        <br /> Verifique e tente novamente.
+                        {alertMessage}
                       </Alert>
                     )}
                   </Container>
@@ -121,6 +137,7 @@ const SignIn = () => {
                       value={values.email}
                       placeholder="Digite o seu email"
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       isValid={touched.email && !errors.email}
                       isInvalid={touched.email && !!errors.email}
                     />
@@ -141,6 +158,7 @@ const SignIn = () => {
                       value={values.password}
                       placeholder="Digite a sua senha"
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       isValid={touched.password && !errors.password}
                       isInvalid={touched.password && !!errors.password}
                     />
