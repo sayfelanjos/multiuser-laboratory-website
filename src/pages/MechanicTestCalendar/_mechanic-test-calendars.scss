@@ -1,5 +1,9 @@
 .mts-calendar__ {
   &ctn {
-    padding-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    //padding-top: 3rem;
   }
 }
