@@ -2,9 +2,11 @@ import { configureStore } from "@reduxjs/toolkit";
 import successAlertSlice from "../reducers/successAlertSlice";
 import dangerAlertSlice from "../reducers/dangerAlertSlice";
 import warningOfDeletingUserModalSlice from "../reducers/warningOfDeletingUserModalSlice";
+import toggleSidebarSlice from "../reducers/toggleSidebarSlice";
 
 const store = configureStore({
   reducer: {
+    isSidebarOpen: toggleSidebarSlice,
     successAlert: successAlertSlice,
     dangerAlert: dangerAlertSlice,
     warningOfDeletingUserModal: warningOfDeletingUserModalSlice,

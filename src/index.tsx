@@ -43,6 +43,14 @@ import { App } from "antd";
 
 const router = createBrowserRouter([
   {
+    path: "/signin",
+    element: <SignIn />,
+  },
+  {
+    path: "/signup",
+    element: <SignUp />,
+  },
+  {
     path: "/",
     element: <RootLayout />,
     errorElement: <NotFound />,
@@ -50,14 +58,6 @@ const router = createBrowserRouter([
       {
         path: "home",
         element: <HomePage />,
-      },
-      {
-        path: "/signin",
-        element: <SignIn />,
-      },
-      {
-        path: "/signup",
-        element: <SignUp />,
       },
       {
         path: "request-to-reset-password",
