@@ -1,0 +1,16 @@
+.scheduler-navbar__ {
+  &ctn {
+  }
+
+  &sidebar-btn {
+    :hover {
+      border: 2px solid #ffffff8c;
+      border-radius: 6px;
+    }
+  }
+
+  &brand {
+    margin: 0 !important;
+    filter: invert(1);
+  }
+}

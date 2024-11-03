@@ -6,6 +6,7 @@ import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
 import HamburgerIcon from "../../assets/icons/HamburgerIcon";
+import CloseIcon from "../../assets/icons/CloseIcon";
 import Dropdown from "react-bootstrap/Dropdown";
 import "./_scheduler-navbar.scss";
 import { signOutUser } from "../../helpers/signOutUser";
@@ -25,7 +26,7 @@ const avatarStyle = {
   height: "40px",
 };
 
-const SchedulerHeader = () => {
+const SchedulerNavbar = () => {
   const navigate = useNavigate();
   const isSidebarOpen = useAppSelector((state) => state.isSidebarOpen.value);
   const dispatch = useAppDispatch();
@@ -56,23 +57,25 @@ const SchedulerHeader = () => {
   );
   const toogleSidebar = useCallback(() => {
     dispatch(setIsSidebarOpen());
-    console.log(isSidebarOpen);
   }, [isSidebarOpen]);
 
   return (
     <Navbar bg="dark" data-bs-theme="dark" fixed="top">
       <Container fluid className="d-flex justify-content-between">
-        <div className="p-0 d-flex gap-2">
+        <div className="d-flex gap-3">
           <Button
-            className="border-0 p-0 bg-transparent"
+            className="p-0 m-0 bg-transparent scheduler-navbar__sidebar-btn border-0"
             onClick={toogleSidebar}
           >
-            <HamburgerIcon />
+            {isSidebarOpen ? <CloseIcon /> : <HamburgerIcon />}
           </Button>
-          <Navbar.Brand href="/home" className="scheduler-navbar__brand">
+          <Navbar.Brand
+            href="/home"
+            className="scheduler-navbar__brand p-0 my-auto"
+          >
             <Image src={brandIcon} style={brandStyle}></Image>
           </Navbar.Brand>
-          <Navbar.Text className="d-none d-lg-block">
+          <Navbar.Text className="d-none d-lg-block p-0 my-auto">
             LMU [Agendamentos]
           </Navbar.Text>
         </div>
@@ -81,7 +84,7 @@ const SchedulerHeader = () => {
             {displayName}
           </Navbar.Text>
           <Dropdown drop="down" align="end">
-            <Dropdown.Toggle className="bg-transparent border-0 p-0">
+            <Dropdown.Toggle className="bg-transparent p-0 m-0 border-0">
               <Image src={photoURL} style={avatarStyle} roundedCircle />
             </Dropdown.Toggle>
             <Dropdown.Menu>
@@ -97,4 +100,4 @@ const SchedulerHeader = () => {
   );
 };
 
-export default SchedulerHeader;
+export default SchedulerNavbar;

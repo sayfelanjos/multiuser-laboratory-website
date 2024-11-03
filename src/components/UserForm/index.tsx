@@ -146,7 +146,7 @@ const UserForm = () => {
     <>
       <Form
         onSubmit={handleOnSubmit}
-        className="bg-light shadow rounded-2 p-3 user-add-page__form-ctn d-flex justify-content-center flex-column"
+        className="bg-light shadow rounded-2 p-3 d-flex justify-content-center flex-column"
       >
         <Row className="mb-3">
           <Form.Group as={Col} md="6" controlId="validationCustom01">

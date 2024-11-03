@@ -1,92 +1,98 @@
 import React from "react";
-// import { Calendar, Badge } from "antd";
-// import type { BadgeProps, CalendarProps } from "antd";
 import Container from "react-bootstrap/Container";
-import dayjs, { Dayjs } from "dayjs";
-import "dayjs/locale/pt-br";
-import MechanicTestCalendar from "../MechanicTestCalendar";
-dayjs.locale("pt-br");
-
-// const getListData = (value: Dayjs) => {
-//   let listData: { type: string; content: string }[] = []; // Specify the type of listData
-//   switch (value.date()) {
-//     case 8:
-//       listData = [
-//         { type: "warning", content: "This is warning event." },
-//         { type: "success", content: "This is usual event." },
-//       ];
-//       break;
-//     case 10:
-//       listData = [
-//         { type: "warning", content: "This is warning event." },
-//         { type: "success", content: "This is usual event." },
-//         { type: "error", content: "This is error event." },
-//       ];
-//       break;
-//     case 15:
-//       listData = [
-//         { type: "warning", content: "This is warning event" },
-//         { type: "success", content: "This is very long usual event......" },
-//         { type: "error", content: "This is error event 1." },
-//         { type: "error", content: "This is error event 2." },
-//         { type: "error", content: "This is error event 3." },
-//         { type: "error", content: "This is error event 4." },
-//       ];
-//       break;
-//     default:
-//   }
-//   return listData || [];
-// };
-
-// const getMonthData = (value: Dayjs) => {
-//   if (value.month() === 8) {
-//     return 1394;
-//   }
-// };
+import Tab from "react-bootstrap/Tab";
+import Tabs from "react-bootstrap/Tabs";
+import "./_scheduler.scss";
 
 const Scheduler = () => {
-  // const monthCellRender = (value: Dayjs) => {
-  //   const num = getMonthData(value);
-  //   return num ? (
-  //     <div className="notes-month">
-  //       <section>{num}</section>
-  //       <span>Backlog number</span>
-  //     </div>
-  //   ) : null;
-  // };
-  //
-  // const dateCellRender = (value: Dayjs) => {
-  //   const listData = getListData(value);
-  //   return (
-  //     <ul className="events">
-  //       {listData.map((item) => (
-  //         <li key={item.content}>
-  //           <Badge
-  //             status={item.type as BadgeProps["status"]}
-  //             text={item.content}
-  //           />
-  //         </li>
-  //       ))}
-  //     </ul>
-  //   );
-  // };
-
-  // const cellRender: CalendarProps<Dayjs>["cellRender"] = (current, info) => {
-  //   if (info.type === "date") return dateCellRender(current);
-  //   if (info.type === "month") return monthCellRender(current);
-  //   return info.originNode;
-  // };
   return (
-    <Container className="h-100 p-0 d-flex align-items-center">
-      <MechanicTestCalendar />
-      {/*<div className="shadow rounded-2 p-2">*/}
-      {/*<Calendar*/}
-      {/*  className=""*/}
-      {/*  cellRender={cellRender}*/}
-      {/*  // fullCellRender={cellRender}*/}
-      {/*  fullscreen={false}*/}
-      {/*></Calendar>*/}
-      {/*</div>*/}
+    <Container className="h-100 p-2 overflow-y-auto">
+      <Tabs
+        defaultActiveKey="mechanic-test01"
+        transition
+        id="noanim-tab-example"
+        className="mb-3"
+        fill
+      >
+        <Tab
+          className="h-100"
+          eventKey="mechanic-test03"
+          title="Análise Térmica e Reologia"
+        >
+          <Container className="calendar__ctn">
+            <iframe
+              src="https://calendar.app.google/efvtfrUCMceyZB4b6"
+              style={{ border: 0 }}
+              width="100%"
+              height="100%"
+            ></iframe>
+          </Container>
+        </Tab>
+        <Tab className="h-100" eventKey="mechanic-test06" title="Charpy">
+          <Container className="calendar__ctn">
+            <iframe
+              src="https://calendar.app.google/CApvLZ7oBXSQ9zos6"
+              style={{ border: 0 }}
+              width="100%"
+              height="100%"
+            ></iframe>
+          </Container>
+        </Tab>
+        <Tab
+          className="h-100"
+          eventKey="mechanic-test04"
+          title="Dureza, Microcopia Ótica e Metalografia"
+        >
+          <Container className="calendar__ctn">
+            <iframe
+              src="https://calendar.app.google/7wKZUQeeX4REKfVP7"
+              style={{ border: 0 }}
+              width="100%"
+              height="100%"
+            ></iframe>
+          </Container>
+        </Tab>
+        <Tab className="h-100" eventKey="mechanic-test02" title="FT-IR">
+          <Container className="calendar__ctn">
+            <iframe
+              src="https://calendar.app.google/EWrgre5rd3aXjbN1A"
+              style={{ border: 0 }}
+              width="100%"
+              height="100%"
+            ></iframe>
+          </Container>
+        </Tab>
+        <Tab className="h-100" eventKey="mechanic-test07" title="Impressão 3D">
+          <Container className="calendar__ctn">
+            <iframe
+              src="https://calendar.app.google/4Lxzw4hsfu9ec6vn6"
+              style={{ border: 0 }}
+              width="100%"
+              height="100%"
+            ></iframe>
+          </Container>
+        </Tab>
+        <Tab className="h-100" eventKey="mechanic-test05" title="MEV">
+          <Container className="calendar__ctn">
+            <iframe
+              src="https://calendar.app.google/Wu7T1wmY9gHE961j8"
+              style={{ border: 0 }}
+              width="100%"
+              height="100%"
+            ></iframe>
+          </Container>
+        </Tab>
+        <Tab className="h-100" eventKey="mechanic-test01" title="MTS">
+          <Container className="calendar__ctn">
+            <iframe
+              src="https://calendar.app.google/DkSLgKdF92DGGMBo6"
+              style={{ border: 0 }}
+              width="100%"
+              height="100%"
+            ></iframe>
+          </Container>
+        </Tab>
+      </Tabs>
     </Container>
   );
 };

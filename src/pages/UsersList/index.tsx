@@ -139,8 +139,11 @@ const UsersList = () => {
   }, [key]);
 
   return (
-    <Container className="d-flex h-100 flex-column justify-content-center">
-      <div className="shadow rounded-2 p-3">
+    <Container
+      fluid
+      className="d-flex w-100 h-100 flex-column justify-content-center overflow-y-auto"
+    >
+      <Container className="shadow rounded-2 p-3">
         <h3>Lista de Usuários</h3>
         <Divider />
         <div className="d-flex justify-content-end">
@@ -169,7 +172,7 @@ const UsersList = () => {
             scroll={{ x: 1500, y: 300 }}
           />
         )}
-      </div>
+      </Container>
       <Modal
         show={isOpened}
         aria-labelledby="contained-modal-title-vcenter"

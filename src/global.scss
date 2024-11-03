@@ -6,7 +6,6 @@
 @import "./pages/About/about";
 @import "pages/Contact/contact-page";
 @import "./pages/NotFound/not-found";
-@import "./pages/QuoteRequest/quote-request";
 @import "./components/CardsGrid/cards-grid";
 @import "./components/Footer/footer";
 @import "pages/Services/TensileTest/tensile-test";
@@ -14,3 +13,10 @@
 @import "pages/MechanicTestCalendar/mechanic-test-calendars";
 @import "pages/ImpactCalendar/impact-calendar";
 @import "pages/DurometerCalendar/durometer-calendar";
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}

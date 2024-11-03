@@ -103,18 +103,10 @@ const QuoteRequest = () => {
     [],
   );
 
-  // const onControlChange = useCallback(
-  //   (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     const files = event.target.files;
-  //     setFileInput(files);
-  //   },
-  //   [],
-  // );
-
   return (
     <>
       {!showForm && sentQuoteRequestSuccessfully && (
-        <Container className="quote-request__ctn px-0">
+        <Container className="quote-request__ctn">
           <div className="d-flex flex-column justify-content-evenly h-100">
             <span className="contact-page__check-ctn">
               <span className="contact-page__check-image-ctn">
@@ -154,7 +146,7 @@ const QuoteRequest = () => {
         </Container>
       )}
       {!showForm && !sentQuoteRequestSuccessfully && (
-        <Container className="contact-page__ctn">
+        <Container className="quote-request__ctn">
           <span className="contact-page__check-ctn">
             <span className="contact-page__check-image-ctn">
               <Image
@@ -188,7 +180,7 @@ const QuoteRequest = () => {
                   xxl={{ span: 6, offset: 0 }}
                 >
                   <Form.Group as={Col} controlId="formGridEmail">
-                    <Form.Label>Nome Completo</Form.Label>
+                    <Form.Label column={true}>Nome Completo</Form.Label>
                     <Form.Control
                       type="text"
                       name="fullName"
@@ -203,7 +195,7 @@ const QuoteRequest = () => {
                   xxl={{ span: 4, offset: 0 }}
                 >
                   <Form.Group controlId="email" className="mb-3">
-                    <Form.Label>Email</Form.Label>
+                    <Form.Label column={true}>Email</Form.Label>
                     <Form.Control
                       type="email"
                       placeholder="Endereço de email"
@@ -218,7 +210,7 @@ const QuoteRequest = () => {
                   xxl={{ span: 2, offset: 0 }}
                 >
                   <Form.Group controlId="formBasicPhone" className="mb-3">
-                    <Form.Label>Celular</Form.Label>
+                    <Form.Label column={true}>Celular</Form.Label>
                     <ReactInputMask
                       id="formBasicPhone"
                       className="form-control"
@@ -238,7 +230,7 @@ const QuoteRequest = () => {
                   xxl={{ span: 2, offset: 0 }}
                 >
                   <Form.Group as={Col} controlId="requester">
-                    <Form.Label>Solicitante</Form.Label>
+                    <Form.Label column={true}>Solicitante</Form.Label>
                     <Form.Select
                       aria-label="Select service"
                       className="mb-3"
@@ -258,7 +250,7 @@ const QuoteRequest = () => {
                   xxl={{ span: 2, offset: 0 }}
                 >
                   <Form.Group className="mb-3" controlId="requesterId">
-                    <Form.Label>{requesterId}</Form.Label>
+                    <Form.Label column={true}>{requesterId}</Form.Label>
                     <Form.Control
                       name="requesterId"
                       placeholder={requesterIdPlaceholder}
@@ -272,7 +264,9 @@ const QuoteRequest = () => {
                   xxl={{ span: 4, offset: 0 }}
                 >
                   <Form.Group as={Col} controlId="services">
-                    <Form.Label name="service">Serviço pretendido</Form.Label>
+                    <Form.Label name="service" column={true}>
+                      Serviço pretendido
+                    </Form.Label>
                     <Form.Select
                       aria-label="Select service"
                       className="mb-3"
@@ -287,21 +281,6 @@ const QuoteRequest = () => {
                     </Form.Select>
                   </Form.Group>
                 </Col>
-                {/*<Col*/}
-                {/*  lg={{ span: 4, offset: 0 }}*/}
-                {/*  xl={{ span: 4, offset: 0 }}*/}
-                {/*  xxl={{ span: 4, offset: 0 }}*/}
-                {/*>*/}
-                {/*  <Form.Group controlId="formFile" className="mb-3">*/}
-                {/*    <Form.Label>Adicionar arquivo</Form.Label>*/}
-                {/*    <Form.Control*/}
-                {/*      type="file"*/}
-                {/*      name="fileInput"*/}
-                {/*      multiple*/}
-                {/*      onChange={onControlChange}*/}
-                {/*    />*/}
-                {/*  </Form.Group>*/}
-                {/*</Col>*/}
               </Row>
               <Row>
                 <Col>
@@ -309,7 +288,9 @@ const QuoteRequest = () => {
                     className="mb-3"
                     controlId="exampleForm.ControlTextarea1"
                   >
-                    <Form.Label name="msgToolTip">Mensagem</Form.Label>
+                    <Form.Label name="msgToolTip" column={true}>
+                      Mensagem
+                    </Form.Label>
                     <OverlayTrigger
                       overlay={
                         <Tooltip id="1">

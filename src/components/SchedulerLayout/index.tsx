@@ -1,6 +1,6 @@
 import React from "react";
 import Container from "react-bootstrap/Container";
-import SchedulerNavbar from "../SchedulerHeader";
+import SchedulerNavbar from "../SchedulerNavbar";
 import { Outlet } from "react-router-dom";
 import SchedulerSidebar from "../SchedulerSidebar";
 import "./_scheduler-layout.scss";
@@ -11,14 +11,12 @@ const SchedulerLayout = () => {
     <>
       <ProtectedRoute>
         <Container fluid className="p-0 scheduler-layout__ctn">
-          <Container className="scheduler-layout__navbar-wrapper">
+          <Container>
             <SchedulerNavbar />
           </Container>
           <Container fluid className="scheduler-layout__content-wrapper">
-            <Container className="scheduler-layout__sidebar p-0">
-              <SchedulerSidebar />
-            </Container>
-            <Container className="scheduler-layout__main">
+            <SchedulerSidebar />
+            <Container fluid className="p-0 h-100">
               <Outlet />
             </Container>
           </Container>

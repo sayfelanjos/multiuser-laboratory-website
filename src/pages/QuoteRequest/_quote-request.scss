@@ -1,9 +1,11 @@
 .quote-request__ {
   &ctn {
-    height: 100%;
-    padding: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    height: 100%;
+    width: 100%;
+    padding: 1rem;
+    overflow-y: auto;
   }
 }

@@ -13,11 +13,28 @@
     }
   }
 
-  &ctn {
+  &ctn_desktop {
     display: flex;
     flex-direction: column;
     align-items: center;
     flex-grow: 1;
+    border-top: 1px solid #ffffff8c;
+    margin: 0;
+    overflow-y: auto;
+  }
+
+  &ctn_mobile {
+    display: block;
+    position: fixed;
+    top: 56px;
+    left: 0;
+    z-index: 2000;
+    background-color: rgba(0, 0, 0, 0.13);
+    height: 100vh;
+    width: 280px;
+    border-top: 1px solid #ffffff8c;
+    margin: 0;
+    overflow-y: auto;
   }
 }
 
