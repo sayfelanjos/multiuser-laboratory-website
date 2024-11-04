@@ -3,6 +3,60 @@ import Container from "react-bootstrap/Container";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import "./_scheduler.scss";
+import { map } from "react-bootstrap/ElementChildren";
+
+const calendars = [
+  {
+    calendarKey: "0",
+    calendarName: "Análise Térmica e Reologia",
+    calendarId: "efvtfrUCMceyZB4b6",
+  },
+  {
+    calendarKey: "1",
+    calendarName: "Apóio Técnico",
+    calendarId: "Mcp16sQXcyS8NcTu5",
+  },
+  {
+    calendarKey: "2",
+    calendarName: "Charpy",
+    calendarId: "CApvLZ7oBXSQ9zos6",
+  },
+  {
+    calendarKey: "3",
+    calendarName: "Dureza, Microcopia Ótica e Metalografia",
+    calendarId: "7wKZUQeeX4REKfVP7",
+  },
+  {
+    calendarKey: "4",
+    calendarName: "FT-IR",
+    calendarId: "EWrgre5rd3aXjbN1A",
+  },
+  {
+    calendarKey: "5",
+    calendarName: "Impressão 3D",
+    calendarId: "4Lxzw4hsfu9ec6vn6",
+  },
+  {
+    calendarKey: "6",
+    calendarName: "MEV",
+    calendarId: "Wu7T1wmY9gHE961j8",
+  },
+  {
+    calendarKey: "7",
+    calendarName: "MTS",
+    calendarId: "DkSLgKdF92DGGMBo6",
+  },
+  {
+    calendarKey: "8",
+    calendarName: "Treinamento",
+    calendarId: "BQxHFrmnJ5FdyLhx6",
+  },
+  {
+    calendarKey: "9",
+    calendarName: "Metalografia",
+    calendarId: "1DwCpfPmwMDDwpfh9",
+  },
+];
 
 const Scheduler = () => {
   return (
@@ -14,84 +68,25 @@ const Scheduler = () => {
         className="mb-3"
         fill
       >
-        <Tab
-          className="h-100"
-          eventKey="mechanic-test03"
-          title="Análise Térmica e Reologia"
-        >
-          <Container className="calendar__ctn">
-            <iframe
-              src="https://calendar.app.google/efvtfrUCMceyZB4b6"
-              style={{ border: 0 }}
-              width="100%"
-              height="100%"
-            ></iframe>
-          </Container>
-        </Tab>
-        <Tab className="h-100" eventKey="mechanic-test06" title="Charpy">
-          <Container className="calendar__ctn">
-            <iframe
-              src="https://calendar.app.google/CApvLZ7oBXSQ9zos6"
-              style={{ border: 0 }}
-              width="100%"
-              height="100%"
-            ></iframe>
-          </Container>
-        </Tab>
-        <Tab
-          className="h-100"
-          eventKey="mechanic-test04"
-          title="Dureza, Microcopia Ótica e Metalografia"
-        >
-          <Container className="calendar__ctn">
-            <iframe
-              src="https://calendar.app.google/7wKZUQeeX4REKfVP7"
-              style={{ border: 0 }}
-              width="100%"
-              height="100%"
-            ></iframe>
-          </Container>
-        </Tab>
-        <Tab className="h-100" eventKey="mechanic-test02" title="FT-IR">
-          <Container className="calendar__ctn">
-            <iframe
-              src="https://calendar.app.google/EWrgre5rd3aXjbN1A"
-              style={{ border: 0 }}
-              width="100%"
-              height="100%"
-            ></iframe>
-          </Container>
-        </Tab>
-        <Tab className="h-100" eventKey="mechanic-test07" title="Impressão 3D">
-          <Container className="calendar__ctn">
-            <iframe
-              src="https://calendar.app.google/4Lxzw4hsfu9ec6vn6"
-              style={{ border: 0 }}
-              width="100%"
-              height="100%"
-            ></iframe>
-          </Container>
-        </Tab>
-        <Tab className="h-100" eventKey="mechanic-test05" title="MEV">
-          <Container className="calendar__ctn">
-            <iframe
-              src="https://calendar.app.google/Wu7T1wmY9gHE961j8"
-              style={{ border: 0 }}
-              width="100%"
-              height="100%"
-            ></iframe>
-          </Container>
-        </Tab>
-        <Tab className="h-100" eventKey="mechanic-test01" title="MTS">
-          <Container className="calendar__ctn">
-            <iframe
-              src="https://calendar.app.google/DkSLgKdF92DGGMBo6"
-              style={{ border: 0 }}
-              width="100%"
-              height="100%"
-            ></iframe>
-          </Container>
-        </Tab>
+        {calendars.map((calendar) => {
+          return (
+            <Tab
+              key={calendar.calendarKey}
+              className="h-100"
+              eventKey={calendar.calendarKey}
+              title={calendar.calendarName}
+            >
+              <Container className="calendar__ctn">
+                <iframe
+                  src={`https://calendar.app.google/${calendar.calendarId}`}
+                  style={{ border: 0 }}
+                  width="100%"
+                  height="100%"
+                ></iframe>
+              </Container>
+            </Tab>
+          );
+        })}
       </Tabs>
     </Container>
   );

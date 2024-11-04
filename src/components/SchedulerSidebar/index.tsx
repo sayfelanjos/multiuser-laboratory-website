@@ -44,20 +44,20 @@ const sidebarMenu = (isSidebarOpen: boolean, breakPoint: string) => {
       {/*    width: "90%",*/}
       {/*  }}*/}
       {/*/>*/}
-      <Navbar.Text
-        className={`navbar-dark w-100 px-3 ${isSidebarOpen ? "d-flex" : "d-none"}`}
-      >
-        Administração
-      </Navbar.Text>
-      <NavLink
-        to="/app/users/list"
-        className={`scheduler-sidebar__btn-link btn btn-link btn-dark text-decoration-none d-flex align-items-center ${isSidebarOpen ? "justify-content-start" : "justify-content-center"}`}
-      >
-        <CustomersIcon />
-        <span className={`ms-2 ${isSidebarOpen ? "d-flex" : "d-none"}`}>
-          Usuários
-        </span>
-      </NavLink>
+      {/*<Navbar.Text*/}
+      {/*  className={`navbar-dark w-100 px-3 ${isSidebarOpen ? "d-flex" : "d-none"}`}*/}
+      {/*>*/}
+      {/*  Administração*/}
+      {/*</Navbar.Text>*/}
+      {/*<NavLink*/}
+      {/*  to="/app/users/list"*/}
+      {/*  className={`scheduler-sidebar__btn-link btn btn-link btn-dark text-decoration-none d-flex align-items-center ${isSidebarOpen ? "justify-content-start" : "justify-content-center"}`}*/}
+      {/*>*/}
+      {/*  <CustomersIcon />*/}
+      {/*  <span className={`ms-2 ${isSidebarOpen ? "d-flex" : "d-none"}`}>*/}
+      {/*    Usuários*/}
+      {/*  </span>*/}
+      {/*</NavLink>*/}
     </>
   );
 };
