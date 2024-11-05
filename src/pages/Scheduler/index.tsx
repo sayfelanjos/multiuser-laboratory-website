@@ -38,7 +38,7 @@ const calendars = [
   },
   {
     calendarKey: "9",
-    calendarName: "Microcopia Ótica",
+    calendarName: "Microscopia Ótica",
     calendarId: "1DwCpfPmwMDDwpfh9",
   },
   {
