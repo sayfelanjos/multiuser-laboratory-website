@@ -3,7 +3,6 @@ import Container from "react-bootstrap/Container";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import "./_scheduler.scss";
-import { map } from "react-bootstrap/ElementChildren";
 
 const calendars = [
   {
@@ -13,7 +12,7 @@ const calendars = [
   },
   {
     calendarKey: "1",
-    calendarName: "Apóio Técnico",
+    calendarName: "Apoio (DEMM)",
     calendarId: "Mcp16sQXcyS8NcTu5",
   },
   {
