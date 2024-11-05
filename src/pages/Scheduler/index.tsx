@@ -37,6 +37,11 @@ const calendars = [
     calendarId: "4Lxzw4hsfu9ec6vn6",
   },
   {
+    calendarKey: "9",
+    calendarName: "Metalografia",
+    calendarId: "1DwCpfPmwMDDwpfh9",
+  },
+  {
     calendarKey: "6",
     calendarName: "MEV",
     calendarId: "Wu7T1wmY9gHE961j8",
@@ -46,15 +51,11 @@ const calendars = [
     calendarName: "MTS",
     calendarId: "DkSLgKdF92DGGMBo6",
   },
+
   {
     calendarKey: "8",
     calendarName: "Treinamento",
     calendarId: "BQxHFrmnJ5FdyLhx6",
-  },
-  {
-    calendarKey: "9",
-    calendarName: "Metalografia",
-    calendarId: "1DwCpfPmwMDDwpfh9",
   },
 ];
 
