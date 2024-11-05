@@ -23,13 +23,13 @@ const calendars = [
   },
   {
     calendarKey: "3",
-    calendarName: "Dureza, Microcopia Ótica e Metalografia",
+    calendarName: "Dureza, Metalografia",
     calendarId: "7wKZUQeeX4REKfVP7",
   },
   {
     calendarKey: "4",
     calendarName: "FT-IR",
-    calendarId: "EWrgre5rd3aXjbN1A",
+    calendarId: "ZEvAhqmKTDXDKpyQ6",
   },
   {
     calendarKey: "5",
@@ -38,7 +38,7 @@ const calendars = [
   },
   {
     calendarKey: "9",
-    calendarName: "Metalografia",
+    calendarName: "Microcopia Ótica",
     calendarId: "1DwCpfPmwMDDwpfh9",
   },
   {
