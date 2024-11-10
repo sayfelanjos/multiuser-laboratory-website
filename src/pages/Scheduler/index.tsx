@@ -12,7 +12,7 @@ const calendars = [
   },
   {
     calendarKey: "1",
-    calendarTitle: "Apóio Técnico",
+    calendarTitle: "Apoio Técnico",
     calendarId: "Mcp16sQXcyS8NcTu5",
   },
   {
