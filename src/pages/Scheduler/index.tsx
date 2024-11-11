@@ -28,12 +28,12 @@ const calendars = [
   {
     calendarKey: "4",
     calendarTitle: "FT-IR",
-    calendarId: "EWrgre5rd3aXjbN1A",
+    calendarId: "RboqmvfRTJTWmfma6",
   },
   {
     calendarKey: "5",
     calendarTitle: "Impressão 3D",
-    calendarId: "4Lxzw4hsfu9ec6vn6",
+    calendarId: "g14CPyodnHLUMDnp9",
   },
   {
     calendarKey: "6",
