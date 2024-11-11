@@ -10,7 +10,7 @@ import Divider from "antd/lib/divider";
 
 const CardsGrid = () => {
   return (
-    <Container className="pb-3">
+    <Container>
       <Row
         xs={1}
         sm={2}
