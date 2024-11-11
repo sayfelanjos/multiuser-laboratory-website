@@ -26,12 +26,12 @@ const Hero = () => {
                 />
               </Container>
               <Carousel.Caption>
-                <h3>{hero.label}</h3>
-                <p>{hero.summary}</p>
-                <Link to={hero.buttonLink} className="px-3 btn btn-dark">
-                  <span className="me-1">{hero.buttonText}</span>
-                  <ChevronRightIcon />
-                </Link>
+                <h1>{hero.label}</h1>
+                <p className="fs-4">{hero.summary}</p>
+                {/*<Link to={hero.buttonLink} className="px-3 btn btn-dark">*/}
+                {/*  <span className="me-1">{hero.buttonText}</span>*/}
+                {/*  <ChevronRightIcon />*/}
+                {/*</Link>*/}
               </Carousel.Caption>
             </Carousel.Item>
           );
