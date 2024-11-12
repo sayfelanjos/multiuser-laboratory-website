@@ -35,7 +35,7 @@ export const heroData: HeroData[] = [
     id: 2,
     label: "Precisão",
     summary:
-      "As vezes 1mm pode estar entre o sucesso e o fracasso de um produto",
+      "Parâmetros muito pequenos podem ser a diferença entre o sucesso e o fracasso de um novo produto",
     imagePath: require("../../assets/images/Pachymeter-1280x720.jpeg"),
     imageSet: `${require("../../assets/images/Pachymeter-1280x720.jpeg")} 576w,
       ${require("../../assets/images/Pachymeter-1280x720.jpeg")} 768w,
