@@ -5,7 +5,7 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../../assets/images/FEM_monocromatica.png";
+import logo from "../../assets/images/fem-logo-monocromatica.png";
 import Stack from "react-bootstrap/Stack";
 import SiginIcon from "../../assets/icons/SignInIcon";
 import HomeIcon from "../../assets/icons/HomeIcon";
