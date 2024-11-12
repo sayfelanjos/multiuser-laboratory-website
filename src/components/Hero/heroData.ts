@@ -35,7 +35,7 @@ export const heroData: HeroData[] = [
     id: 2,
     label: "Precisão",
     summary:
-      "As vezes 1mm pode estar entre o sucesso e o fracasso do seu projeto",
+      "As vezes 1mm pode estar entre o sucesso e o fracasso de um produto",
     imagePath: require("../../assets/images/Pachymeter-1280x720.jpeg"),
     imageSet: `${require("../../assets/images/Pachymeter-1280x720.jpeg")} 576w,
       ${require("../../assets/images/Pachymeter-1280x720.jpeg")} 768w,
@@ -56,7 +56,7 @@ export const heroData: HeroData[] = [
     id: 3,
     label: "Academia",
     summary:
-      "Seja para o seu trabalho da faculdade ou para sua pesquisa científica, estudantes podem obter relatórios de testes mais precisos e realísticos",
+      "Seja para o seu trabalho da faculdade ou para sua pesquisa científica, pesquisadores podem obter relatórios de testes mais precisos",
     imagePath: require("../../assets/images/students-researching-1280x717.jpg"),
     imageSet: `${require("../../assets/images/students-researching-1280x717.jpg")} 576w,
       ${require("../../assets/images/students-researching-1280x717.jpg")} 768w,
@@ -77,7 +77,7 @@ export const heroData: HeroData[] = [
     id: 4,
     label: "P&D",
     summary:
-      "Pesquisadores podem se beneficiar dos testes mecânicos para garantir o sucesso de trabalho",
+      "Cientistas podem se beneficiar dos testes, ensaios e análises de características dos materiais em seus experimentos",
     imagePath: require("../../assets/images/robotic-hand-1280x717.jpg"),
     imageSet: `${require("../../assets/images/robotic-hand-1280x717.jpg")} 576w,
       ${require("../../assets/images/robotic-hand-1280x717.jpg")} 768w,
@@ -98,7 +98,7 @@ export const heroData: HeroData[] = [
     id: 5,
     label: "Empresas",
     summary:
-      "Empresas podem contar com a expertise dos nossos professores e estudantes universitários para testar a qualidade dos seus produtos antes de colocá-los no mercado",
+      "Empresas podem contar com a expertise dos professores, cientistas, pesquisadores e pós-graduados da universidade para testar a qualidade dos seus produtos antes de colocá-los no mercado",
     imagePath: require("../../assets/images/industry-40-1280x853.jpg"),
     imageSet: `${require("../../assets/images/industry-40-1280x853.jpg")} 576w,
       ${require("../../assets/images/industry-40-1280x853.jpg")} 768w,
@@ -117,9 +117,9 @@ export const heroData: HeroData[] = [
   },
   {
     id: 6,
-    label: "Governo",
+    label: "Governos",
     summary:
-      "Entidades governamentais podem utilizar de nossos serviços para perícias e outros trabalhos técnicos",
+      "Entidades governamentais podem utilizar-se de nossos serviços para perícias e outros trabalhos técnicos",
     imagePath: require("../../assets/images/closeup-of-geologist-examining-rock-1280x853.jpg"),
     imageSet: `${require("../../assets/images/closeup-of-geologist-examining-rock-1280x853.jpg")} 576w,
       ${require("../../assets/images/closeup-of-geologist-examining-rock-1280x853.jpg")} 768w,
