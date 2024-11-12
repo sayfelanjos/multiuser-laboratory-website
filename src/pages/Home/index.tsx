@@ -5,7 +5,6 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 import placeholder from "../../assets/images/pexels-mikhail-nilov-9242841.jpg";
-import CardsGrid from "../../components/CardsGrid";
 
 const Home = () => {
   return (
