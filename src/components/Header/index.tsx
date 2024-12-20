@@ -52,10 +52,13 @@ const Header = () => {
           data-bs-theme="light"
           className="navbar d-block"
         >
-          <Container fluid className="px-3">
+          <Container fluid={"lg"} className="px-3">
             <Nav.Link href="/home" className="py-0 px-3">
               <img src={logo} style={navbarBrandStyle} alt="FEM Unicamp Logo" />
             </Nav.Link>
+            <Navbar.Text className="fw-bold lh-sm fs-6 p-0">
+              [Laboratório Multi Usuário]
+            </Navbar.Text>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Navbar.Offcanvas
@@ -69,7 +72,7 @@ const Header = () => {
                   </Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
-                  <Nav className="justify-content-start flex-grow-1 pe-3">
+                  <Nav className="justify-content-end flex-grow-1 pe-3">
                     <Nav.Link
                       href="/"
                       active={
