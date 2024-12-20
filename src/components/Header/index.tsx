@@ -56,7 +56,7 @@ const Header = () => {
             <Nav.Link href="/home" className="py-0 px-3">
               <img src={logo} style={navbarBrandStyle} alt="FEM Unicamp Logo" />
             </Nav.Link>
-            <Navbar.Text className="fw-bold lh-sm fs-6 p-0">
+            <Navbar.Text className="fw-bold lh-sm fs-6 p-0 d-none d-lg-block">
               [Laboratório Multi Usuário]
             </Navbar.Text>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />

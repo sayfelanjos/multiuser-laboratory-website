@@ -10,7 +10,7 @@ const sectionsData = [
     title: "Controle de Qualidade",
     content:
       "Os testes mecânicos ajudam a garantir que materiais e componentes atendam às especificações e padrões exigidos. Isso é crucial para manter a qualidade e a consistência nos processos de fabricação.",
-    img: require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-375x281.jpg"),
+    img: require("../../assets/images/lmu-images/quality-control-1024x393.jpg"),
     alt: "",
   },
   {
@@ -72,10 +72,7 @@ const Home = () => {
         fluid={"lg"}
         className="p-0 d-flex flex-column my-3 bg-white rounded-3 shadow"
       >
-        <div
-          className="d-flex justify-content-center rounded-3 align-items-center px-3 pt-3 bg-white my-3"
-          style={{ backgroundColor: "" }}
-        >
+        <div className="d-flex justify-content-center rounded-3 align-items-center px-3 pt-3 bg-white my-3 flex-column flex-lg-row flex- gap-sm-3">
           <h1 className="m-auto text-center">LMU</h1>
           <p
             className="fs-6 border-start border-4 border-light ps-3 mb-0"
@@ -92,49 +89,43 @@ const Home = () => {
             universitária e a iniciativa privada.
           </p>
         </div>
-        <div className="d-flex bg-dark text-white p-0">
+        <div className="d-flex bg-dark text-white p-0 flex-column flex-md-row">
           <Image
-            className=""
-            width="500px"
-            height="100%"
+            className="mx-lg-0"
+            style={{ maxHeight: "375px" }}
             srcSet={`${require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-375x281.jpg")} 375w,
       ${require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-375x281.jpg")} 768w,
-      ${require("../../assets/images/Pachymeter-1280x720.jpeg")} 992w,
-      ${require("../../assets/images/Pachymeter-1280x720.jpeg")} 1200w,
+      ${require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-375x281.jpg")} 992w,
+      ${require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-375x281.jpg")} 1200w,
       ${require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-500x375.jpg")} 1440w`}
           />
-          <div className="d-flex flex-column justify-content-center align-items-start p-3">
-            <h1 className="mb-3">Para que Ensaios Mecânicos?</h1>
-            <p className="fs-6">
+          <div className="d-flex flex-column justify-content-center align-items-center align-items-lg-start p-3">
+            <h1 className="mb-3 text-center text-lg-start">
+              Para que Ensaios Mecânicos?
+            </h1>
+            <p className="fs-6 text-center text-lg-center">
               Os testes mecânicos são uma prática essencial utilizada para
               determinar as propriedades físicas e o comportamento de materiais
               e componentes sob várias condições.
             </p>
           </div>
         </div>
-        <div className="bg-info">
+        <div className="bg-white">
           {sectionsData.map((section, index) => (
             <>
-              <Divider
-                className={`border-dark m-0 ${index === 0 ? "border-0" : ""}`}
-              />
               <div
                 key={index}
-                className="d-flex gap-3 py-3 align-items-center justify-content-start text-dark"
-                style={{ height: "180px" }}
+                className="d-flex gap-3 align-items-center justify-content-center text-dark m-3 rounded-3 shadow p-3 flex-column flex-lg-row"
+                style={{
+                  minHeight: "180px",
+                }}
               >
-                {/*<Image*/}
-                {/*  src={section.img}*/}
-                {/*  alt={section.alt}*/}
-                {/*  width="300px"*/}
-                {/*  height="260px"*/}
-                {/*/>*/}
                 <h3 className="text-center" style={{ width: "300px" }}>
                   {section.title}
                 </h3>
                 <p
-                  className="border-start border-1 border-dark ps-3"
-                  style={{ width: "60%" }}
+                  className="border-start border-1 mx-3 mx-lg-0 my-sm-0 border-dark ps-3 w-auto"
+                  // style={{ width: "60%" }}
                 >
                   {section.content}
                 </p>
@@ -142,9 +133,9 @@ const Home = () => {
             </>
           ))}
         </div>
-        <div className="pb-3">
+        <div>
           <div className="d-flex justify-content-center">
-            <h1 className="bg-dark w-100 text-center py-3 text-white">
+            <h1 className="bg-dark w-100 text-center py-3 m-0 text-white">
               Tipos de Ensaios Mecânicos
             </h1>
           </div>
