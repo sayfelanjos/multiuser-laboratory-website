@@ -12,8 +12,9 @@ type HeroData = {
 export const heroData: HeroData[] = [
   {
     id: 1,
-    label: "Slide 1",
-    summary: "A summary of the hero",
+    label: "Engenharia",
+    summary:
+      "Planejamento é a chave para o sucesso do seu projeto, mas antes que ele se torne realidade é preciso testá-lo",
     imagePath: require("../../assets/images/AdobeStock_731454678-1280x720.jpg"),
     imageSet: `${require("../../assets/images/AdobeStock_731454678-1280x720.jpg")} 576w,
       ${require("../../assets/images/AdobeStock_731454678-1280x720.jpg")} 768w,
@@ -32,8 +33,9 @@ export const heroData: HeroData[] = [
   },
   {
     id: 2,
-    label: "Slide 2",
-    summary: "A summary of the hero",
+    label: "Precisão",
+    summary:
+      "Parâmetros muito pequenos podem ser a diferença entre o sucesso e o fracasso de um novo produto",
     imagePath: require("../../assets/images/Pachymeter-1280x720.jpeg"),
     imageSet: `${require("../../assets/images/Pachymeter-1280x720.jpeg")} 576w,
       ${require("../../assets/images/Pachymeter-1280x720.jpeg")} 768w,
@@ -52,14 +54,15 @@ export const heroData: HeroData[] = [
   },
   {
     id: 3,
-    label: "Slide 3",
-    summary: "A summary of the hero",
-    imagePath: require("../../assets/images/Pachymeter-1280x853.jpeg"),
-    imageSet: `${require("../../assets/images/Pachymeter-1280x853.jpeg")} 576w,
-      ${require("../../assets/images/Pachymeter-1280x853.jpeg")} 768w,
-      ${require("../../assets/images/Pachymeter-1280x853.jpeg")} 992w,
-      ${require("../../assets/images/Pachymeter-1280x853.jpeg")} 1200w,
-      ${require("../../assets/images/Pachymeter-1280x853.jpeg")} 1280w`,
+    label: "Academia",
+    summary:
+      "Seja para o seu trabalho da faculdade ou para sua pesquisa científica, pesquisadores podem obter relatórios de testes mais precisos",
+    imagePath: require("../../assets/images/students-researching-1280x717.jpg"),
+    imageSet: `${require("../../assets/images/students-researching-1280x717.jpg")} 576w,
+      ${require("../../assets/images/students-researching-1280x717.jpg")} 768w,
+      ${require("../../assets/images/students-researching-1280x717.jpg")} 992w,
+      ${require("../../assets/images/students-researching-1280x717.jpg")} 1200w,
+      ${require("../../assets/images/students-researching-1280x717.jpg")} 1280w`,
     imageSizes:
       "(max-width: 576px) 100vw," +
       "(min-width: 768px) 100vw," +
@@ -72,14 +75,57 @@ export const heroData: HeroData[] = [
   },
   {
     id: 4,
-    label: "Slide 4",
-    summary: "A summary of the hero",
-    imagePath: require("../../assets/images/AdobeStock_731454678-1280x720.jpg"),
-    imageSet: `${require("../../assets/images/AdobeStock_731454678-1280x720.jpg")} 576w,
-      ${require("../../assets/images/AdobeStock_731454678-1280x720.jpg")} 768w,
-      ${require("../../assets/images/AdobeStock_731454678-1280x720.jpg")} 992w,
-      ${require("../../assets/images/AdobeStock_731454678-1280x720.jpg")} 1200w,
-      ${require("../../assets/images/AdobeStock_731454678-1280x720.jpg")} 1280w`,
+    label: "P&D",
+    summary:
+      "Cientistas podem se beneficiar dos testes, ensaios e análises de características dos materiais em seus experimentos",
+    imagePath: require("../../assets/images/robotic-hand-1280x717.jpg"),
+    imageSet: `${require("../../assets/images/robotic-hand-1280x717.jpg")} 576w,
+      ${require("../../assets/images/robotic-hand-1280x717.jpg")} 768w,
+      ${require("../../assets/images/robotic-hand-1280x717.jpg")} 992w,
+      ${require("../../assets/images/robotic-hand-1280x717.jpg")} 1200w,
+      ${require("../../assets/images/robotic-hand-1280x717.jpg")} 1280w`,
+    imageSizes:
+      "(max-width: 576px) 100vw," +
+      "(min-width: 768px) 100vw," +
+      "(min-width: 1200px) 100vw," +
+      "(min-width: 1400px) 100vw)," +
+      "100vw",
+    imageDesc: "Description of de image",
+    buttonText: "Saiba Mais",
+    buttonLink: "#",
+  },
+  {
+    id: 5,
+    label: "Empresas",
+    summary:
+      "Empresas podem contar com a expertise dos professores, cientistas, pesquisadores e pós-graduados da universidade para testar a qualidade dos seus produtos antes de colocá-los no mercado",
+    imagePath: require("../../assets/images/industry-40-1280x853.jpg"),
+    imageSet: `${require("../../assets/images/industry-40-1280x853.jpg")} 576w,
+      ${require("../../assets/images/industry-40-1280x853.jpg")} 768w,
+      ${require("../../assets/images/industry-40-1280x853.jpg")} 992w,
+      ${require("../../assets/images/industry-40-1280x853.jpg")} 1200w,
+      ${require("../../assets/images/industry-40-1280x853.jpg")} 1280w`,
+    imageSizes:
+      "(max-width: 576px) 100vw," +
+      "(min-width: 768px) 100vw," +
+      "(min-width: 1200px) 100vw," +
+      "(min-width: 1400px) 100vw)," +
+      "100vw",
+    imageDesc: "Description of de image",
+    buttonText: "Saiba Mais",
+    buttonLink: "#",
+  },
+  {
+    id: 6,
+    label: "Governos",
+    summary:
+      "Entidades governamentais podem utilizar-se de nossos serviços para perícias e outros trabalhos técnicos",
+    imagePath: require("../../assets/images/closeup-of-geologist-examining-rock-1280x853.jpg"),
+    imageSet: `${require("../../assets/images/closeup-of-geologist-examining-rock-1280x853.jpg")} 576w,
+      ${require("../../assets/images/closeup-of-geologist-examining-rock-1280x853.jpg")} 768w,
+      ${require("../../assets/images/closeup-of-geologist-examining-rock-1280x853.jpg")} 992w,
+      ${require("../../assets/images/closeup-of-geologist-examining-rock-1280x853.jpg")} 1200w,
+      ${require("../../assets/images/closeup-of-geologist-examining-rock-1280x853.jpg")} 1280w`,
     imageSizes:
       "(max-width: 576px) 100vw," +
       "(min-width: 768px) 100vw," +

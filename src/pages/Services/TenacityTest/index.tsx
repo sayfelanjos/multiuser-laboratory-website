@@ -77,11 +77,9 @@ const TenacityTest = () => {
               />
             </Col>
           </Row>
-        </Container>
-        <Container>
           <hr className="bg-black border-1 my-5" />
+          <CardsGrid />
         </Container>
-        <CardsGrid />
       </Container>
     </>
   );

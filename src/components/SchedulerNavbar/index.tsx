@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
-import brandIcon from "../../assets/images/FEM_monocromatica.png";
+import brandIcon from "../../assets/images/fem-logo-monocromatica.png";
 import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";

@@ -48,10 +48,10 @@ const CompressionTest = () => {
               </Col>
             </Row>
           </Container>
-          <Container>
-            <hr className="bg-black border-1 my-5" />
-          </Container>
-          <CardsGrid />
+          {/*<Container>*/}
+          {/*  <hr className="bg-black border-1 my-5" />*/}
+          {/*</Container>*/}
+          {/*<CardsGrid />*/}
         </Container>
       </Container>
     </>
