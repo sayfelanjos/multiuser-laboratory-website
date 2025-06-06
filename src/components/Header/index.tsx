@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -17,6 +17,13 @@ import { signOutUser } from "../../helpers/signOutUser";
 import { useLocation } from "react-router-dom";
 import "./_header.scss";
 import ScheduleIcon from "../../assets/icons/ScheduleIcon";
+import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
+import Dropdown from "react-bootstrap/Dropdown";
+import Image from "react-bootstrap/Image";
+import { link } from "fs";
+import AvatarIcon from "../../assets/icons/AvatarIcon";
+import  Spinner  from "react-bootstrap/Spinner";
+import { resolve } from "path";
 
 const navbarBrandStyle = {
   width: "auto",
@@ -24,22 +31,62 @@ const navbarBrandStyle = {
 };
 
 const Header = () => {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const path = useLocation();
   const navigate = useNavigate();
 
+  const brandStyle = {
+    width: "auto",
+    height: "40px",
+  };
+  
+  const avatarStyle = {
+    width: "auto",
+    height: "40px",
+  };
+
+  let displayEmail;
+  let photoURL;
+  if (user?.email === null) {
+    displayEmail = "No identified";
+  } else {
+    displayEmail = user?.email;
+  }
+  if (user?.photoURL === null) {
+    photoURL = userAvatar;
+  } else {
+    photoURL = user?.photoURL;
+  }
+
+  const [loadingAction, setLoadingAction] = useState(false);
+
+  const from = path.state?.from?.pathname || "/home";
   const onButtonClick = useCallback(
     async (event: React.MouseEvent<HTMLElement>) => {
       event.preventDefault();
+      setLoadingAction(true);
       try {
-        await signOutUser();
-        navigate("/home");
+        const logoutMoment = signOutUser();
+        const minSpinnerTime = new Promise(resolve => setTimeout(resolve, 500));
+        await Promise.all([logoutMoment, minSpinnerTime]);
+        // navigate("/home");
+        navigate(from, {replace: true});
       } catch (error) {
         throw new Error("Error while signing out");
+      } finally {
+        setLoadingAction(false);
       }
     },
-    [],
+    [navigate, from],
   );
+
+  if(isLoading || loadingAction) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: "56px" }}>
+        <Spinner animation="border" role="status" />
+      </div>
+    );
+  }
 
   return (
     <Container fluid className="d-block p-0">
@@ -155,22 +202,14 @@ const Header = () => {
                         Contato
                       </Stack>
                     </Nav.Link>
-                    <hr />
-                    <Nav.Link
-                      href="/signin"
-                      className="text-truncate d-lg-none text-decoration-none nav-link p-2 text-decoration-none nav-link"
-                    >
-                      <Stack gap={2} direction="horizontal">
-                        <SiginIcon />
-                        Entrar
-                      </Stack>
-                    </Nav.Link>
                   </Nav>
                 </Offcanvas.Body>
               </Navbar.Offcanvas>
             </Navbar.Collapse>
+          <Stack direction="horizontal" className="ms-auto align-items-center me-3">
             <Link
-              to="/app/scheduler"
+              to={user ? "/app/scheduler" : "/signin"}
+              state={!user ? { from: { pathname: "/app/scheduler" } } : undefined}
               className="btn btn-dark d-none d-lg-block"
             >
               <Stack gap={2} direction="horizontal">
@@ -178,6 +217,39 @@ const Header = () => {
                 <ScheduleIcon />
               </Stack>
             </Link>
+                    {
+                      !user ? (
+                      <Nav.Link
+                      as={Link}
+                      to="/signin"
+                      state={{from: path.pathname}}
+                      className="text-truncate text-decoration-none nav-link p-2 text-decoration-none nav-link"
+                    >
+                      <Stack gap={2} direction="horizontal">
+                        <SiginIcon />
+                        Entrar
+                      </Stack>
+                    </Nav.Link>
+                      ) : (
+                    <Nav>
+                      <Dropdown drop="down" align="end" className="d-none d-lg-block">
+                        <Dropdown.Toggle 
+                        className="bg-transparent p-0 m-0 border-0 ms-3 text-black">
+                          <Image src={photoURL} style={avatarStyle} roundedCircle/>
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          <Dropdown.ItemText>{displayEmail}</Dropdown.ItemText>
+                          <Dropdown.Divider/> 
+                          <Dropdown.Item href="/app/users/profile">Perfil</Dropdown.Item>
+                          <Dropdown.Item href="#/action-2">Configurações</Dropdown.Item>
+                          <Dropdown.Divider />
+                          <Dropdown.Item onClick={onButtonClick}>Logout</Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                      </Nav>
+                      )
+                    }     
+            </Stack>
           </Container>
         </Navbar>
       </Container>

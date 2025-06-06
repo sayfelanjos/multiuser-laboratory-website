@@ -9,6 +9,7 @@ import Button from "react-bootstrap/Button";
 import GoogleIcon from "../../assets/icons/GoogleIcon";
 import MicrosoftIcon from "../../assets/icons/MicrosoftIcon";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Divider from "antd/lib/divider";
 import { signInUser } from "../../helpers/signInUser";
@@ -20,8 +21,11 @@ import "./_signin-page.scss";
 import { FirebaseError } from "firebase/app";
 import useBreakpoint from "../../hooks/getCurrentBreakpoint";
 
+
 const SignIn = () => {
+  const path = useLocation();
   const navigate = useNavigate();
+  const fromPath = path.state?.from?.pathname || "/home";
   const breakpoint = useBreakpoint();
   const { Formik } = formik;
   const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -42,11 +46,16 @@ const SignIn = () => {
   // Initial form values
   const initialValues: User = { email: "", password: "" };
 
+  // Verify signin process
+  const [isLoading, setIsLoading] = useState(false);
+
   const onClickEnterButton = useCallback(async (value: User) => {
     setShowAlert(false);
+    if(isLoading) return;
+    setIsLoading(true);
     try {
       await signInUser(value.email, value.password);
-      navigate("/app/scheduler");
+      navigate(fromPath, {replace: true});
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
         // Handle Firebase Auth errors
@@ -68,6 +77,8 @@ const SignIn = () => {
             break;
           }
           default: {
+            setAlertMessage("Ocorreu um erro inesperado");
+            setShowAlert(true);
             console.error("Unknown error:", error.message);
             break;
           }
@@ -75,25 +86,44 @@ const SignIn = () => {
       } else {
         console.error("Unknown non-Firebase error:", error);
       }
+    } finally {
+      setIsLoading(false);
     }
-  }, []);
+  }, [navigate, fromPath, isLoading]);
 
   const onClickButtonSignInWithGoogle = useCallback(
     async (event: React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
+      if(isLoading) return;
+      setIsLoading(true);
+      try {
       await signInWithGoogle();
-      navigate("/app/scheduler");
+      navigate(fromPath, {replace: true});
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false)
+      }
     },
-    [],
+    [navigate, fromPath, isLoading],
   );
 
   const onClickButtonSignInWithMicrosoft = useCallback(
     async (event: React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
-      await signInWithMicrosoft();
-      navigate("/app/scheduler");
+      if(isLoading) return;
+      setIsLoading(true);
+      try {
+        await signInWithMicrosoft();
+        navigate(fromPath, {replace: true});
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+      
     },
-    [],
+    [navigate, fromPath, isLoading],
   );
 
   return (

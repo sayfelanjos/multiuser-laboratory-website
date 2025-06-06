@@ -15,6 +15,8 @@ import { useAuth } from "../../hooks/useAuth";
 import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
 import { useAppSelector, useAppDispatch } from "../../hooks/reduxHooks";
 import { setIsSidebarOpen } from "../../redux/reducers/toggleSidebarSlice";
+import AvatarIcon from "../../assets/icons/AvatarIcon";
+import { Stack } from "react-bootstrap";
 
 const brandStyle = {
   width: "auto",
@@ -31,12 +33,12 @@ const SchedulerNavbar = () => {
   const isSidebarOpen = useAppSelector((state) => state.isSidebarOpen.value);
   const dispatch = useAppDispatch();
   const { user } = useAuth();
-  let displayName;
+  let displayEmail;
   let photoURL;
-  if (user?.displayName === null) {
-    displayName = "No identified";
+  if (user?.email === null) {
+    displayEmail = "No identified";
   } else {
-    displayName = user?.displayName;
+    displayEmail = user?.email;
   }
   if (user?.photoURL === null) {
     photoURL = userAvatar;
@@ -80,14 +82,14 @@ const SchedulerNavbar = () => {
           </Navbar.Text>
         </div>
         <Nav>
-          <Navbar.Text className="py-0 my-auto me-3 text d-none d-md-block">
-            {displayName}
-          </Navbar.Text>
           <Dropdown drop="down" align="end">
-            <Dropdown.Toggle className="bg-transparent p-0 m-0 border-0">
-              <Image src={photoURL} style={avatarStyle} roundedCircle />
+            <Dropdown.Toggle 
+            className="bg-transparent p-0 m-0 border-0 me-3">
+              <Image src={photoURL} style={avatarStyle} roundedCircle/>
             </Dropdown.Toggle>
             <Dropdown.Menu>
+              <Dropdown.ItemText>{displayEmail}</Dropdown.ItemText>
+              <Dropdown.Divider/> 
               <Dropdown.Item href="/app/users/profile">Perfil</Dropdown.Item>
               <Dropdown.Item href="#/action-2">Configurações</Dropdown.Item>
               <Dropdown.Divider />

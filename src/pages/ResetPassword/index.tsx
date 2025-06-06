@@ -4,7 +4,7 @@ import Form from "react-bootstrap/Form";
 import Stack from "react-bootstrap/Stack";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import * as formik from "formik";
 import * as yup from "yup";
 import Alert from "react-bootstrap/Alert";
@@ -17,6 +17,8 @@ import check from "../../assets/images/check.png";
 import { signInUser } from "../../helpers/signInUser";
 
 const ResetPassword = () => {
+  const path = useLocation();
+  const fromPath = path.state?.from?.pathname || "/home";
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [searchParams] = useSearchParams();
   const [accountEmail, setAccountEmail] = useState("");
@@ -55,6 +57,7 @@ const ResetPassword = () => {
 
   // Initial form values
   const initialValues: ResetPasswordType = { password: "", newPassword: "" };
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     verifyPasswordResetCode(auth, actionCode as string)
@@ -87,19 +90,27 @@ const ResetPassword = () => {
         confirmPasswordReset(auth, actionCode as string, value.password)
           .then(async (resp) => {
             setIsPasswordChangedSucessfully(true);
+            if(isLoading) return;
+            setIsLoading(true);
             // Password reset has been confirmed and new password updated.
-            await signInUser(accountEmail, value.password);
-            setShowCount(true);
-            const timer = setInterval(() => {
-              setCount((prevCount) => {
-                prevCount--;
-                if (prevCount === 0) {
-                  clearInterval(timer);
-                  navigate("/app/scheduler");
-                }
-                return prevCount;
-              });
-            }, 1000);
+            try {
+              await signInUser(accountEmail, value.password);
+              setShowCount(true);
+              const timer = setInterval(() => {
+                setCount((prevCount) => {
+                  prevCount--;
+                  if (prevCount === 0) {
+                    clearInterval(timer);
+                    navigate(fromPath, {replace: true});
+                  }
+                  return prevCount;
+                });
+              }, 1000);
+            } catch(error) {
+              console.error(error);
+            } finally {
+              setIsLoading(false);
+            }
           })
           .catch(function (error) {
             console.error(error.message);
@@ -246,15 +257,16 @@ const ResetPassword = () => {
                 <Row>
                   <Container className="reset-password__button-ctn mb-3">
                     <Link
-                      to={
+                      to="#"
+                      onClick={() => {
                         isPasswordChangedSucessfully
-                          ? "/app/scheduler"
+                          ? "/home"
                           : "/signin"
-                      }
+                      }}
                       className={`${isPasswordChangedSucessfully ? "btn-dark" : "reset-password__back-link text-dark"} btn text-decoration-none d-flex justify-content-center align-items-center mb-3`}
                     >
                       {isPasswordChangedSucessfully
-                        ? `Continuar para o LMU[Agendamentos]`
+                        ? `Continuar para o LMU`
                         : "Voltar para o login"}
                     </Link>
                     {showCount && (
