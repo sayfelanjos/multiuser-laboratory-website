@@ -40,6 +40,9 @@ import ResetPassword from "./pages/ResetPassword";
 import RequestToResetPassword from "./pages/RequestToResetPassword";
 import UserProfile from "./pages/UserProfile";
 import { App } from "antd";
+import OrderServicePage from "./pages/OrderServices/OrderServicePage";
+import SchedulerPage from "./pages/OrderServices/PagesAuxiliary/SchedulerPage";
+import ApprovalReq from "./pages/ApprovalRequest/ApprovalReq";
 
 const router = createBrowserRouter([
   {
@@ -177,6 +180,24 @@ const router = createBrowserRouter([
       {
         path: "quote-request",
         element: <QuoteRequest />,
+      },
+      {
+        path: "order-service",
+        element: <OrderServicePage/>,
+        // children: [
+        //   {
+        //     path: "",
+        //     element: <SchedulerPage/>
+        //   },
+        //   {
+        //     path: "quote-request",
+        //     element: <QuoteRequest/>
+        //   },
+        // ]
+      },
+      {
+        path: "approval-req",
+        element: <ApprovalReq/>,
       },
     ],
   },

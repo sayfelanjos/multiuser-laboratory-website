@@ -9,6 +9,7 @@ import CustomersIcon from "../../assets/icons/CustomersIcon";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import useBreakpoint from "../../hooks/getCurrentBreakpoint";
 import { setIsSidebarOpen } from "../../redux/reducers/toggleSidebarSlice";
+import EngineeringIcon from "../../assets/icons/EngineeringIcon";
 
 const sidebarMenu = (isSidebarOpen: boolean, breakPoint: string) => {
   return (
@@ -18,6 +19,29 @@ const sidebarMenu = (isSidebarOpen: boolean, breakPoint: string) => {
       >
         Recursos
       </Navbar.Text>
+
+      <NavLink
+        to="/app/order-service"
+        className={`scheduler-sidebar__btn-link btn btn-link btn-dark text-decoration-none d-flex align-items-center ${isSidebarOpen ? "justify-content-start" : "justify-content-center"}`}
+      >
+        <RequestQuoteIcon />
+        <span className={`ms-2 ${isSidebarOpen ? "d-flex" : "d-none"}`}>
+          Solicitar Orçamento
+        </span>
+      </NavLink>
+
+      <NavLink
+        to="/app/approval-req"
+        className={`scheduler-sidebar__btn-link btn btn-link btn-dark text-decoration-none d-flex align-items-center ${isSidebarOpen ? "justify-content-start" : "justify-content-center"}`}
+      >
+        <EngineeringIcon/>
+        <span
+        className={`ms-2 d-flex justify-content-center ${isSidebarOpen ? "d-flex" : "d-none"}`}
+        >
+          Aprovação da Solicitação
+        </span>
+      </NavLink>
+
       <NavLink
         to="/app/scheduler"
         className={`scheduler-sidebar__btn-link btn btn-link btn-dark text-decoration-none d-flex align-items-center ${isSidebarOpen ? "justify-content-start" : "justify-content-center"}`}
@@ -27,15 +51,6 @@ const sidebarMenu = (isSidebarOpen: boolean, breakPoint: string) => {
           className={`ms-2 d-flex justify-content-center ${isSidebarOpen ? "d-flex" : "d-none"}`}
         >
           Agendar Serviço
-        </span>
-      </NavLink>
-      <NavLink
-        to="/app/quote-request"
-        className={`scheduler-sidebar__btn-link btn btn-link btn-dark text-decoration-none d-flex align-items-center ${isSidebarOpen ? "justify-content-start" : "justify-content-center"}`}
-      >
-        <RequestQuoteIcon />
-        <span className={`ms-2 ${isSidebarOpen ? "d-flex" : "d-none"}`}>
-          Solicitar Orçamento
         </span>
       </NavLink>
       {/*<hr*/}
