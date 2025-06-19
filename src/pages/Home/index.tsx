@@ -103,7 +103,7 @@ const Home = () => {
             <h1 className="mb-3 text-center text-lg-start">
               Para que Ensaios Mecânicos?
             </h1>
-            <p className="fs-6 text-center text-lg-center">
+            <p className="fs-6 text-center text-lg-start">
               Os testes mecânicos são uma prática essencial utilizada para
               determinar as propriedades físicas e o comportamento de materiais
               e componentes sob várias condições.
