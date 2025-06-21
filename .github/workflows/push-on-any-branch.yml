@@ -65,7 +65,7 @@ jobs:
              -Dsonar.qualitygate.timeout=300 # Wait for 5 minutes
       - name: SonarQube Quality Gate Check
         if: success() && github.event_name == 'pull_request'
-        uses: SonarSource/sonarqube-quality-gate-action@ # Use the latest version
+        uses: SonarSource/sonarqube-quality-gate-action@v1.2.0 # Use the latest version
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
