@@ -8,3 +8,91 @@
     height: 100%;
   }
 }
+
+.type-of-info {
+  color: gray;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #ccc;
+  margin: 1rem;
+}
+
+.type-of-info {
+  font-weight: bold;
+  color: #666;
+  margin-right: 10rem;
+  min-width: 100px;
+}
+
+.info-value {
+  color: black;
+}
+
+.info-empty {
+  color: gray;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.delete-account {
+  margin: 3rem;
+}
+
+.user-photo {
+  width: 8rem;
+  border: 2px solid #666;
+  border-radius: 50%;
+  margin: 2rem;
+}
+.button-1 {
+  background-color: white;
+  color: black;
+  border: 2px solid black;
+  border-radius: 12px;
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-1:hover {
+  background-color: #f2f2f2;
+}
+
+.button-2 {
+  background-color: black;
+  color: white;
+  border: 2px solid black;
+  border-radius: 12px;
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-2:hover {
+  background-color: #333;
+}
+
+.modal-title {
+  text-align: center;
+  padding: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+}
+
+.center-content {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
