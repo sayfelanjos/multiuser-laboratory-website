@@ -1,6 +1,6 @@
 # Multiuser Laboratory Website
 
-The Multiuser Laboratory Website is a project developed by Unicamp students in collaboration with the FEM Administration ([Faculty of Mechanical Engineering](https://www.fem.unicamp.br/)). Its goal is to provide an online platform for organizing and scheduling mechanical tests conducted in FEM laboratories.
+The Multiuser Laboratory Website is a project developed by Unicamp students in collaboration with the administration of the Faculty of Mechanical Engineering at Unicamp ([Faculdade de Engenharia Elétrica - FEM](https://www.fem.unicamp.br/)). Its goal is to provide an online platform for organizing and scheduling mechanical tests conducted in FEM laboratories.
 
 Previously, the FEM laboratories had no dedicated website, and their usage was largely unregulated. This platform marks a significant advancement for the Faculty of Mechanical Engineering at Unicamp — benefiting students, professors, and collaborators alike. It also helps protect the laboratories' physical assets by enabling documented and traceable usage of equipment.
 
@@ -82,10 +82,12 @@ Below is a list of tools you’ll need to install or set up locally. Please ensu
     For Mac and linux, Git is typically intalled used via the terminal. Use the appropriate commands below to install it:
 
     - Ubuntu:
+
       ```sh
       sudo apt update # Update your package list
       sudo apt install git
       ```
+
     - macOS (via Homebrew):
 
       ```sh
