@@ -46,8 +46,8 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
-            -Dsonar.projectKey="sayfelanjos_${{ github.repository }}"
-            -Dsonar.projectName=${{ github.repository }}
+            -Dsonar.projectKey=sayfelanjos_multiuser-laboratory-website
+            -Dsonar.projectName=multiuser-laboratory-website
             -Dsonar.sources=src
             -Dsonar.qualitygate.wait=true
             -Dsonar.qualitygate.timeout=300
