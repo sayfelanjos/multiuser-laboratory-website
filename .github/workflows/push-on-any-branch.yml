@@ -50,7 +50,7 @@ jobs:
             -Dsonar.projectName=${{ github.repository }}
             -Dsonar.sources=src
             -Dsonar.qualitygate.wait=true
-            -Dsonar.qualitygate.timeout=300 # Wait for 5 minutes
+            -Dsonar.qualitygate.timeout=300
       - name: SonarQube Quality Gate Check
         if: success() && github.event_name == 'push'
         uses: SonarSource/sonarqube-quality-gate-action@v1.2.0 # Use the latest version
