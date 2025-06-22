@@ -46,6 +46,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
+            -Dsonar.organization=sayfelanjos
             -Dsonar.projectKey=sayfelanjos_multiuser-laboratory-website
             -Dsonar.projectName=multiuser-laboratory-website
             -Dsonar.sources=src
