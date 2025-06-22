@@ -6,12 +6,24 @@ name: Create a Firebase Hosting preview on push
   push:
     branches:
       - "**"
+permissions:
+  contents: read
+  pull-requests: write # Needed for SonarQube to comment on branches
+  checks: write # Needed for SonarQube quality gates
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build_and_preview:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for SonarQube to get all history
+
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -19,11 +31,19 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - name: Cache SonarQube packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
       - name: Install dependencies
-        run: npm install && npm install --prefix functions
+        run: |
+          npm ci
+          npm ci --prefix functions
 
       - name: Build
-        run: npm run build && npm run build --prefix functions
         env:
           CI: false
           REACT_APP_FIREBASE_API_KEY: ${{secrets.REACT_APP_FIREBASE_API_KEY}}
@@ -33,12 +53,17 @@ jobs:
           REACT_APP_FIREBASE_MESSAGE_SENDER_ID: ${{secrets.REACT_APP_FIREBASE_MESSAGE_SENDER_ID}}
           REACT_APP_FIREBASE_APP_ID: ${{secrets.REACT_APP_FIREBASE_APP_ID}}
           REACT_APP_FIREBASE_MEASUREMENT_ID: ${{secrets.REACT_APP_FIREBASE_MEASUREMENT_ID}}
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+        run: |
+          npm run build
+          npm run build --prefix functions
+      - name: Deploy to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_MULTIUSER_LABORATORY_WEBSITE }}"
           channelId: live
           projectId: "${{secrets.REACT_APP_FIREBASE_PROJECT_ID}}"
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v3
         env:
@@ -50,11 +75,17 @@ jobs:
             -Dsonar.projectKey=sayfelanjos_multiuser-laboratory-website
             -Dsonar.projectName=multiuser-laboratory-website
             -Dsonar.sources=src
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.qualitygate.wait=true
             -Dsonar.qualitygate.timeout=300
+
+      - name: Wait for SonarQube processing
+        run: sleep 30
+
       - name: SonarQube Quality Gate Check
-        if: success() && github.event_name == 'push'
+        if: success()
         uses: SonarSource/sonarqube-quality-gate-action@v1.2.0 # Use the latest version
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        timeout-minutes: 5
