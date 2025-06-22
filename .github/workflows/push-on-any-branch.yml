@@ -70,12 +70,12 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
-          args: >
-            -Dsonar.organization="sayfelanjos"
-            -Dsonar.projectKey="sayfelanjos_multiuser-laboratory-website"
-            -Dsonar.projectName="multiuser-laboratory-website"
-            -Dsonar.sources="src"
-            -Dsonar.javascript.lcov.reportPaths="coverage/lcov.info"
+          args: |
+            -Dsonar.organization='sayfelanjos'
+            -Dsonar.projectKey='sayfelanjos_multiuser-laboratory-website'
+            -Dsonar.projectName='multiuser-laboratory-website'
+            -Dsonar.sources='src'
+            -Dsonar.javascript.lcov.reportPaths='coverage/lcov.info'
             -Dsonar.qualitygate.wait=true
             -Dsonar.qualitygate.timeout=300
 
