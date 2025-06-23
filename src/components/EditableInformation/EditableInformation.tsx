@@ -14,7 +14,7 @@ const EditableInformation: React.FC<EditableInformationProps> = ({
     <div className="info-row">
       <div className="type-of-info">{title}:</div>
       <div className={info ? "info-value" : "info-value info-empty"}>
-        {info || "Adicione um nome"}
+        {info ||`Adicione um ${title}`}
       </div>
     </div>
   );

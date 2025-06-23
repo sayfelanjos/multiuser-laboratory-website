@@ -9,6 +9,9 @@ import { showNotification } from "../../helpers/showNotification";
 import { App } from "antd";
 import Modal from "../../components/Modal/Modal";
 import EditableInformation from "../../components/EditableInformation/EditableInformation";
+import { signOutUser } from "../../helpers/signOutUser";
+import { useNavigate } from "react-router-dom";
+
 
 const UserProfile = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -23,6 +26,9 @@ const UserProfile = () => {
   const firstName = name ? getFirstName(name) : "";
   const secondName = name ? getSecondName(name) : "";
   const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
+  const [isDeletAccountModalOpen, setDeletAccountModalOpen] = useState(false);
+  const navigate = useNavigate();
+
 
   const handleOnClick = useCallback(() => {
     const user = getCurrentUser();
@@ -49,6 +55,20 @@ const UserProfile = () => {
         });
     }, 2000);
   }, []);
+
+    const signOutButtonClick = useCallback(
+      
+      async (event: React.MouseEvent<HTMLElement>) => {
+        event.preventDefault();
+        try {
+          await signOutUser();
+          navigate("/home");
+        } catch (error) {
+          throw new Error("Error while signing out");
+        }
+      },
+      [],
+    );
 
   function getFirstName(fullName: string): string {
     const parts = fullName.trim().split(" ");
@@ -97,7 +117,7 @@ const UserProfile = () => {
           <div>
             <button
               className="button-1"
-              onClick={() => setLogoutModalOpen(false)}
+              onClick={signOutButtonClick}
             >
               Sair
             </button>
@@ -133,6 +153,38 @@ const UserProfile = () => {
           <span className="mx-5 fixed-bottom-btn ">Apagar conta</span>
         )}
       </Button>
+
+      <Button
+        className="btn-danger delete-account"
+        onClick={() => setDeletAccountModalOpen(true)}
+      >
+        <span className="mx-5 fixed-bottom-btn ">Apagar conta</span>
+      </Button>
+
+      <Modal
+        isOpen={isDeletAccountModalOpen}
+        onClose={() => setDeletAccountModalOpen(false)}
+      >
+        <h3 className="modal-title">Sua conta será deletada permanentemente</h3>
+        <div className="center-content">
+          <div>
+            <button
+              className="button-1"
+              onClick={() => setDeletAccountModalOpen(false)}
+            >
+              Apagar conta
+            </button>
+          </div>
+          <div>
+            <button
+              className="button-2"
+              onClick={() => setDeletAccountModalOpen(false)}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </Modal>
     </Container>
   );
 };
