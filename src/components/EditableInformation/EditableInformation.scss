@@ -1,0 +1,28 @@
+.info-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #ccc;
+  margin: 1rem;
+}
+
+.type-of-info {
+  color: gray;
+}
+
+.type-of-info {
+  font-weight: bold;
+  color: #666;
+  margin-right: 10rem;
+  min-width: 100px;
+}
+
+.info-value {
+  color: black;
+}
+
+.info-empty {
+  color: gray;
+  font-style: italic;
+  font-weight: 400;
+}

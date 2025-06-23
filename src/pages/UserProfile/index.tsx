@@ -7,7 +7,8 @@ import { getCurrentUser } from "../../helpers/getCurrentUser";
 import Spinner from "react-bootstrap/Spinner";
 import { showNotification } from "../../helpers/showNotification";
 import { App } from "antd";
-import Modal from "../../components/Modal/Modal"
+import Modal from "../../components/Modal/Modal";
+import EditableInformation from "../../components/EditableInformation/EditableInformation";
 
 const UserProfile = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -23,7 +24,6 @@ const UserProfile = () => {
   const secondName = name ? getSecondName(name) : "";
   const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
 
-  
   const handleOnClick = useCallback(() => {
     const user = getCurrentUser();
     const userEmail = user?.providerData[0].email;
@@ -74,42 +74,41 @@ const UserProfile = () => {
       />
 
       <div>
-        <div className="info-row">
-          <div className="type-of-info">Nome:</div>
-          <div className={name ? "info-value" : "info-value info-empty"}>
-            {name || "Adicione um nome"}
-          </div>
-        </div>
+        <EditableInformation title="Nome" info={name} />
 
-        <div className="info-row">
-          <div className="type-of-info">Email:</div>{" "}
-          <div className={email ? "info-value" : "info-value info-empty"}>
-            {email || "Adicione um e-mail"}
-          </div>
-        </div>
+        <EditableInformation title="Email" info={email} />
 
-        <div className="info-row">
-          <div className="type-of-info">Telefone:</div>{" "}
-          <div className={phone ? "info-value" : "info-value info-empty"}>
-            {phone || "Adicione um telefone"}
-          </div>
-        </div>
+        <EditableInformation title="Telefone" info={phone} />
       </div>
 
       <Button
         className="btn-danger delete-account"
-        onClick={() => setLogoutModalOpen(true)}>
+        onClick={() => setLogoutModalOpen(true)}
+      >
         <span className="mx-5 fixed-bottom-btn ">Sair</span>
       </Button>
 
-      <Modal isOpen={isLogoutModalOpen} onClose={() => setLogoutModalOpen(false)}>
-        <h3  className="modal-title">Tem certeza de que deseja sair?</h3>
+      <Modal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setLogoutModalOpen(false)}
+      >
+        <h3 className="modal-title">Tem certeza de que deseja sair?</h3>
         <div className="center-content">
           <div>
-            <button className="button-1" onClick={() => setLogoutModalOpen(false)}>Sair</button>
+            <button
+              className="button-1"
+              onClick={() => setLogoutModalOpen(false)}
+            >
+              Sair
+            </button>
           </div>
           <div>
-          <button className="button-2" onClick={() => setLogoutModalOpen(false)}>Cancelar</button>
+            <button
+              className="button-2"
+              onClick={() => setLogoutModalOpen(false)}
+            >
+              Cancelar
+            </button>
           </div>
         </div>
       </Modal>
