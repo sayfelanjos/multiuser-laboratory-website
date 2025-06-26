@@ -42,7 +42,7 @@ const Header = () => {
   );
 
   return (
-    <Container fluid className="d-block p-0">
+    <Container fluid className="d-block p-0 bg-white rounded-3 shadow">
       <Container fluid className="p-0">
         <Navbar
           collapseOnSelect
