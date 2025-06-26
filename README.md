@@ -8,20 +8,22 @@ The project is currently under development and initially supports only the LMU L
 
 ## How to Set Up the Project Locally
 
-| <h3>[**Installations**](#Installations)</h3> |
-| -------------------------------------------- |
-| [Install a code editor](#codeeditor)         |
-| [Install Node.js and NPM](#nodejs)           |
-| [Install Git](#git)                          |
-| [Git Configuration](#gitconfig)              |
-| [SSH-Key](#sshkey)                           |
+| <h3>[**Installations and Machine Setup**](#Installations)</h3> |
+| -------------------------------------------------------------- |
+| [Install a code editor](#codeeditor)                           |
+| [Install Node.js and NPM](#nodejs)                             |
+| [Install Git](#git)                                            |
+| [Git Configuration](#gitconfig)                                |
+| [Create a SSH-Key](#sshkey)                                    |
+| [Install the Java SDK](#java-jdk)                              |
+| [Get the Firebase Permissions](#permissions)                   |
+| [Install the firebase-tools](#firebase-tools)                  |
 
 | <h3>[Local Repo Setup](#repo)</h3>        |
 | ----------------------------------------- |
 | [Clone the Project](#gitclone)            |
 | [Add Enviroment Variables](#env-var)      |
-| [Install the firebase-tools](#firebase)   |
-| [Install the dependencies](#install)      |
+| [Install the dependencies](#npm-install)  |
 | [Run the Development Server](#dev-server) |
 | [Run the Firebase Emulators](#firebase)   |
 
@@ -51,13 +53,15 @@ Below is a list of tools you’ll need to install or set up locally. Please ensu
 
   Node.js and NPM are essential tools for running the project locally. Installing Node.js automatically includes NPM (Node Package Manager).
 
-  There are two main ways to install and use Node.js and NPM:
+  There are two main ways to install and use Node.js and NPM: directly from Node's website or via NVM:
 
   - **Option 1:** Install directly from the Node.js website
 
     This is the most straightforward approach and comes bundled with NPM:
 
     [Download Node.js](https://nodejs.org/en/download)
+
+    Search for version 20, since it is used in this project
 
   - **Option 2 (Recommended):** Via NVM (Node Version Manager)
 
@@ -73,9 +77,17 @@ Below is a list of tools you’ll need to install or set up locally. Please ensu
 
     > 💡 **Tip:** When using NVM, each Node.js version you install includes its own dedicated NPM instance—with separate global packages and configuration settings.
 
+    After that, run in your terminal:
+
+    ```sh
+      # current project's Node version
+      nvm install 20
+      nvm use 20
+    ```
+
 - ### Install Git <a id="git"></a>
 
-  Follow the steps below based on your operating system. If you prefer a full tutorial, visit https://git-scm.com/.
+  Follow the steps below based on your operating system. If you prefer a full tutorial, visit the [Git Home Page](https://git-scm.com/).
 
   - **macOS / Linux**
 
@@ -143,7 +155,11 @@ Below is a list of tools you’ll need to install or set up locally. Please ensu
 
   An SSH key is required to securely and easily access GitHub from your local machine — for example, when using `git push`.
 
-  While these steps may seem a bit clunky at first, they’re part of a one-time setup and are standard practice in professional development. Luckily, Atlassian provides an excellent tutorial that we highly recommend:
+  While these steps may seem a bit clunky at first, they’re part of a one-time setup and are standard practice in professional development. Luckily, GitHub provides an excellent tutorial that we highly recommend:
+
+  👉 [Generating a new SSH key and adding it to the ssh-agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+
+  Also, if you find it helpful, another great tutorial is offered by Atlassian:
 
   👉 [Atlassian - How to create an SSH Key](https://www.atlassian.com/git/tutorials/git-ssh)
 
@@ -151,67 +167,170 @@ Below is a list of tools you’ll need to install or set up locally. Please ensu
 
   Once you've generated your SSH public key, **contact a project administrator** to have it added to the repository's access list on GitHub.
 
-  > 💡 **Tip**: Atlassian has great tutorials on all [Git things](https://www.atlassian.com/git/glossary#commands). It's worth bookmarking their resources for future reference!
+- ### Installing the Java Development Kit (JDK) <a id="java-jdk"></a>
 
----
+  You will need the Java Development Kit (JDK) to use the Firebase Local Emulator Suite. Without it, you won't be able to simulate Firebase services on your machine.
 
-### Local Repository Setup <a id="repo"></a>
+  Firebase requires **JDK version 11 or higher**. We recommend one of the following options:
 
-After having the needed tools in place, follow the steps bellow to set up the project locally:
+  - [Eclipse Temurin JDK (Recommended)](https://adoptium.net/en-GB/temurin/releases/?os=any&arch=any&version=17):
 
-Once you have all the required tools installed, follow the steps below to set up the project locally:
+    Temurin is a free, open-source, and production-ready distribution of Java. It's the simplest option, as it doesn't require an account to download.
 
-- ### Clone the Project (Git Clone) <a id="gitclone"></a>
+    On the linked page, select the JDK 17 - LTS version for your operating system and follow the installation instructions.
 
-  [Cloning the repository with Git](https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-clone) is the easiest way to get a local copy of the project and automatically link it to the GitHub remote. Other options, like downloading a ZIP file, also work — but you'd need to manually configure the remote origin later.
+    > **! IMPORTANT**: During the installation process, ensure that you enable the options to **set JAVA_HOME** and **update PATH** are both enabled during installation. This allows terminal applications to find Java automatically.
 
-  Navigate to your `Desktop` or another desired location and run one of the following commands in your terminal:
+  - [Official Oracle JDK](https://www.oracle.com/br/java/technologies/downloads/#java11):
 
-  ```sh
-  # If you've successfully set up an SSH key:
-  git clone git@github.com:sayfelanjos/multiuser-laboratory-website.git
+    This is the official JDK from Oracle. Be aware that while it's free for development, its license for production use has some restrictions. You will also need to create a free Oracle account to download it.
 
-  # If you haven't set up an SSH key yet:
-  git clone https://github.com/sayfelanjos/multiuser-laboratory-website.git
-  ```
-
-  > **Note 1**: The clone command will automatically create a **folder** named `multiuser-laboratory-website`. You don’t need to create it manually.
-
-  > **Note 2**: Since the project is public, both **SSH** and **HTTPS** clone methods work without requiring a GitHub account or password. However, to use SSH later (e.g., for `git push`), you may need to update the remote URL.
-
-- ### Add Enviroment Variables <a id="env-var"></a>
-
-  Contact a project administrator to obtain the environment variables needed to run the project.
-
-  Navigate to the root directory of the project in your terminal, create a file named `.env`, and paste the provided text into that file.
+  After the installation is complete, open your terminal and run the following command to verify that it was successful.
 
   ```sh
-  cd multiuser-laboratory-website
-  nodepad ".env"
+  java -version
   ```
 
-- ### Install the Firebase Tools <a id="firebase"></a>
+  If you see your installed version number (e.g., 17.0.15), you're all set!
 
-  Run the command below in any terminal to install the Firebase tools globally.
+- ### Getting Firebase Permissions <a id="permissions"></a>
+
+  To continue, you'll need permission to access the project on Firebase. This is required to fetch the environment variables for your `.env` file in a later step.
+
+  If you haven't been added yet, please contact a project administrator.
+
+  You can check if you have access by visiting the link below. If the page loads and you see your account in the "Users and permissions" list, you are good to go.
+
+  [Firebase Console 🔥 -> Multiuser Laboratory Website -> ⚙️ Settings -> Users and permissions](https://console.firebase.google.com/u/0/project/multiuser-laboratory-website/settings/iam)
+
+  If you can access the link and you're on list, you're good to go.
+
+- ### Installing the firebase-tools package <a id="firebase-tools"></a>
+
+  Next, you need to install the firebase-tools CLI (Command Line Interface). We'll install it globally, which means you only have to do this once per machine.
+
+  Open your terminal and run this command:
 
   ```sh
   npm install -g firebase-tools
   ```
 
-  For more information, visit: [Firebase CLI Documentation](https://firebase.google.com/docs/cli)
+  Once the installation is complete, log in to Firebase with your Google account. This command will open a browser window for you to complete the process.
 
-- ### Install the dependencies <a id="install"></a>
+  ```sh
+  firebase login
+  ```
 
-  While in the root directory of the project, run the following commands in your terminal:
+  > ❕ NVM Note: If you use Node Version Manager (nvm), remember that global npm packages are tied to a specific Node.js version. If you switch your Node version (e.g., `nvm use 18`), you will need to re-install `firebase-tools`.
+
+  💡 For more information, visit the official [Firebase CLI Documentation](https://firebase.google.com/docs/cli).
+
+---
+
+### Local Repository Setup <a id="repo"></a>
+
+Having the required tools ready, follow the steps below to set up the project locally:
+
+- ### Clone the Project (Git Clone) <a id="gitclone"></a>
+
+  [Cloning the repository with Git](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) is the easiest way to get a local copy of the project and automatically link it to the GitHub remote. Other options, like downloading a ZIP file, also work — but you'd need to manually configure the remote origin later.
+
+  Navigate to your `Desktop` or another desired location and run one of the following commands in your terminal:
+
+  ```sh
+  > # If you successfully set up an SSH key:
+  > git clone git@github.com:sayfelanjos/multiuser-laboratory-website.
+
+  > # If you haven't set up an SSH key yet:
+  > git clone https://github.com/sayfelanjos/multiuser-laboratory-website.git
+  ```
+
+  > **Note 1**: The clone command will automatically create a **folder** named `multiuser-laboratory-website`. You don’t need to create it manually.
+  >
+  > **Note 2**: Since the project is public, both **SSH** and **HTTPS** clone methods work without requiring a GitHub account or password. However, to use SSH later (e.g., for `git push`), you may need to update the remote's URL.
+
+- ### Add the Enviroment Variables <a id="env-var"></a>
+
+  In order to run or emulate the project locally, you'll need the correct environment variables from the Firebase Console.
+
+  Contact an administrator and ask them to add you as a member of the project in the Firebase Console. Once added, you'll have access to the environment variables in the project settings. Click the link below to go directly to the page:
+
+  > [Firebase Console 🔥 > Multiuser Laboratory Website > ⚙️ Settings](https://console.firebase.google.com/u/0/project/multiuser-laboratory-website/settings/general/web:ZGRhODM4MzEtY2RlMi00OWE3LWFmOWYtNmQ4NjliOThmMDg2)
+
+  - Navigate to the root directory of the project in your terminal and create a file named `.env`:
+
+    - windows
+
+    ```sh
+    cd multiuser-laboratory-website
+    notepad ".env"
+    ```
+
+    - macOS / Linux
+
+    ```sh
+    cd multiuser-laboratory-website
+    touch ".env"
+    ```
+
+  - Paste the boilerplate below inside the file, then replace the variables inside angle brackets with the actual values from the Firebase Console.
+
+    > 👉 Tip: You can remove the helper comments after replacing the placeholders.
+
+    ```sh
+    # Paste inside the .env file:
+    REACT_APP_SENDEMAIL_URL="https://localhost:5001/multiuser-laboratory-website/southamerica-east1/sendEmail"
+    REACT_APP_FIREBASE_API_KEY="<apiKey (Web API Key)>" # example: "abcXYZ...123"
+    REACT_APP_FIREBASE_AUTH_DOMAIN="multiuser-laboratory-website.firebaseapp.com"
+    REACT_APP_FIREBASE_PROJECT_ID="multiuser-laboratory-website"
+    REACT_APP_FIREBASE_STORAGE_BUCKET="multiuser-laboratory-website.appspot.com"
+    REACT_APP_FIREBASE_MESSAGE_SENDER_ID="<messagingSenderId>" # example: "000000000000"
+    REACT_APP_FIREBASE_APP_ID="<App ID>" # example: "1:000000000000:web:abc123def456"
+    REACT_APP_FIREBASE_MEASUREMENT_ID="<measurementId>" # example: "G-XXXXXXXXXX"
+    REACT_APP_FIREBASE_APP_DOMAIN="http://localhost:3000"
+    ```
+
+- ### Install the dependencies <a id="npm-install"></a>
+
+  #### Project dependencies
+
+  Every time you initialize a local repository, you need to install its dependencies. This project also has a second set of dependencies for Firebase emulation, located in the functions folder. Both installations may take some time, but only need to be done once.
+
+  While in the root directory of the project, run:
 
   ```sh
   npm install
-  npm run functions:build
+  ```
+
+  If everything went right, you must be able to run the development server at this point.
+
+  #### Firebase dependencies
+
+  Now we need to install the `functions` dependencies. They will be need for running the firebase emulators. : then and build commands. You can just copy and paste altogether, but
+
+  Next, install the dependencies for `functions`, which are needed to run the Firebase emulators. First, navigate to the functions folder:
+
+  ```sh
+  cd functions
+  ```
+
+  Install the `functions` dependencies:
+
+  ```sh
+  npm install
+  ```
+
+  If there was no error, run the build command still at `functions`:
+
+  ```sh
+  npm run build
   ```
 
 - ### Run the Development Server <a id="dev-server"></a>
 
-  To run the development version of the project, use the following command. If everything is set up correctly, the webpage should open automatically in your browser at [localhost:3000](http://localhost:3000).
+  The development server reflects your latest code changes immediately upon saving. While it can be a bit slow at times, it’s essential for quickly testing front-end updates.
+
+  To start the development server, run the following command from the project root. If everything is set up correctly, the webpage will open automatically at [localhost:3000](http://localhost:3000).
 
   ```sh
   npm start
@@ -219,12 +338,21 @@ Once you have all the required tools installed, follow the steps below to set up
 
 - ### Run the Firebase Emulators <a id="firebase"></a>
 
-  For a more complete test of your project setup, use the Firebase emulators. This will give you a complete local emulation of the deployment version — it's a simulation of the production environment:
+  For a full local simulation of the deployment environment, you can run the Firebase emulators. This gives you a nearly complete preview of how the app will behave in production.
+
+  From the root directory, build the project to ensure your latest changes are included:
 
   ```sh
-  npm run build
-  firebase emulators:start
+    npm run build
   ```
+
+  Now, start the emulators by typing:
+
+  ```sh
+    firebase emulators:start
+  ```
+
+  A link to the local Firebase Console will be displayed in your terminal. Click it to open the console in your browser. You’ll be able to explore the inner workings of your app just like in a real deployment.
 
   > **Tip**: If the page doesn’t open automatically or appears blank, reach out to a teammate for help. Also, check your browser console for errors:
   >
