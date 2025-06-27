@@ -141,14 +141,15 @@ const Footer = () => {
             >
               Sistema de Bibliotecas da Unicamp - SBU
             </Link>
-
-            { /* <Link
+            
+            <Link
               to="http://www.unicamp.br/sipex/"
               className="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover link-light text-center text-sm-center text-md-start text-lg-start text-xl-start text-xxl-start"
             >
               Sistema de Informação de Pesquisa - SiPEx
             </Link>
-            <span className="d-inline">
+
+            { /* <span className="d-inline">
               <Link
                 to="http://www.capes.gov.br/"
                 className="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover link-light text-center text-sm-center text-md-start text-lg-start text-xl-start text-xxl-start"
