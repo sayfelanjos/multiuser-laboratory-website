@@ -42,17 +42,17 @@ const Header = () => {
   );
 
   return (
-    <Container fluid className="d-block p-0 bg-white rounded-3 shadow">
-      <Container fluid className="p-0">
+    <Container fluid className="d-block p-0 shadow bg-white">
+      <Container fluid className="p-0 bg-white">
         <Navbar
           collapseOnSelect
           expand="lg"
           id="navbar"
           bg="light"
           data-bs-theme="light"
-          className="navbar d-block"
+          className="navbar d-block bg-white"
         >
-          <Container fluid={"lg"} className="px-3">
+          <Container fluid={"lg"} className="px-3 bg-white">
             <Nav.Link href="/home" className="py-0 px-3">
               <img src={logo} style={navbarBrandStyle} alt="FEM Unicamp Logo" />
             </Nav.Link>
