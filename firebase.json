@@ -1,7 +1,7 @@
 {
   "hosting": {
     "site": "multiuser-laboratory-website",
-    "public": "build",
+    "public": "apps/template/build",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
