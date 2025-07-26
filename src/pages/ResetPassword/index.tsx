@@ -17,8 +17,8 @@ import check from "../../assets/images/check.png";
 import { signInUser } from "../../helpers/signInUser";
 
 const ResetPassword = () => {
-  const path = useLocation();
-  const fromPath = path.state?.from?.pathname || "/home";
+  const route = useLocation();
+  const previousPage = route.state?.from?.pathname || "/home";
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [searchParams] = useSearchParams();
   const [accountEmail, setAccountEmail] = useState("");
@@ -57,7 +57,7 @@ const ResetPassword = () => {
 
   // Initial form values
   const initialValues: ResetPasswordType = { password: "", newPassword: "" };
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSigningIn, setIsSigningIn] = useState(false);
 
   useEffect(() => {
     verifyPasswordResetCode(auth, actionCode as string)
@@ -90,8 +90,10 @@ const ResetPassword = () => {
         confirmPasswordReset(auth, actionCode as string, value.password)
           .then(async (resp) => {
             setIsPasswordChangedSucessfully(true);
-            if(isLoading) return;
-            setIsLoading(true);
+            if(isSigningIn){ 
+              return ;
+            }
+            setIsSigningIn(true);
             // Password reset has been confirmed and new password updated.
             try {
               await signInUser(accountEmail, value.password);
@@ -101,7 +103,7 @@ const ResetPassword = () => {
                   prevCount--;
                   if (prevCount === 0) {
                     clearInterval(timer);
-                    navigate(fromPath, {replace: true});
+                    navigate(previousPage, {replace: true});
                   }
                   return prevCount;
                 });
@@ -109,7 +111,7 @@ const ResetPassword = () => {
             } catch(error) {
               console.error(error);
             } finally {
-              setIsLoading(false);
+              setIsSigningIn(false);
             }
           })
           .catch(function (error) {

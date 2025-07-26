@@ -33,18 +33,8 @@ const SchedulerNavbar = () => {
   const isSidebarOpen = useAppSelector((state) => state.isSidebarOpen.value);
   const dispatch = useAppDispatch();
   const { user } = useAuth();
-  let displayEmail;
-  let photoURL;
-  if (user?.email === null) {
-    displayEmail = "No identified";
-  } else {
-    displayEmail = user?.email;
-  }
-  if (user?.photoURL === null) {
-    photoURL = userAvatar;
-  } else {
-    photoURL = user?.photoURL;
-  }
+
+  const photoURL = user?.photoURL === null ? userAvatar : user?.photoURL;
   const onButtonClick = useCallback(
     async (event: React.MouseEvent<HTMLElement>) => {
       event.preventDefault();
@@ -88,7 +78,7 @@ const SchedulerNavbar = () => {
               <Image src={photoURL} style={avatarStyle} roundedCircle/>
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <Dropdown.ItemText>{displayEmail}</Dropdown.ItemText>
+              <Dropdown.ItemText>{user?.email == null ? "No identified" : user?.email}</Dropdown.ItemText>
               <Dropdown.Divider/> 
               <Dropdown.Item href="/app/users/profile">Perfil</Dropdown.Item>
               <Dropdown.Item href="#/action-2">Configurações</Dropdown.Item>
