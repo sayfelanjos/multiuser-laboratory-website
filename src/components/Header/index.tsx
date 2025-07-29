@@ -42,8 +42,9 @@ const Header = () => {
   );
 
   return (
-    <Container fluid className="d-block p-0 shadow bg-white">
-      <Container fluid className="p-0 bg-white">
+    <Container fluid className="d-block p-0">
+      {/* TODO: Remove the outmost container: it's redundant. */}
+      <Container fluid className="p-0 shadow">
         <Navbar
           collapseOnSelect
           expand="lg"
@@ -52,7 +53,7 @@ const Header = () => {
           data-bs-theme="light"
           className="navbar d-block bg-white"
         >
-          <Container fluid={"lg"} className="px-3 bg-white">
+          <Container fluid={"lg"} className="px-3">
             <Nav.Link href="/home" className="py-0 px-3">
               <img src={logo} style={navbarBrandStyle} alt="FEM Unicamp Logo" />
             </Nav.Link>
