@@ -6,6 +6,8 @@ import { getCurrentUser } from "../../helpers/getCurrentUser";
 import { App } from "antd";
 import Modal from "../../components/Modal/Modal";
 import EditableInformation from "../../components/EditableInformation/EditableInformation";
+import EditableInformationPhone from "../../components/EditableInformation/EditableInformationPhone";
+import EditableInformationName from "../../components/EditableInformation/EditableInformationName";
 import { useNavigate } from "react-router-dom";
 import { deleteAccount } from "../../helpers/deleteAccount";
 
@@ -55,8 +57,8 @@ const UserProfile = () => {
       />
 
       <div>
-        <EditableInformation title="Nome" info={name} editable={true} />
-        <EditableInformation title="Telefone" info={phone} editable={true} />
+        <EditableInformationName title="Nome" info={name} editable={true} />
+        <EditableInformationPhone title="Telefone" info={"12992490691"} editable={true} />
         <EditableInformation title="Email" info={email} editable={false} />
       </div>
 

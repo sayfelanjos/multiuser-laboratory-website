@@ -9,7 +9,7 @@ type EditableInformationProps = {
   editable: boolean;
 };
 
-const EditableInformation: React.FC<EditableInformationProps> = ({
+const EditableInformationName: React.FC<EditableInformationProps> = ({
   title,
   info,
   editable,
@@ -17,7 +17,22 @@ const EditableInformation: React.FC<EditableInformationProps> = ({
   const [editPressed, setEditPressed] = useState(false);
   const [editedValue, setEditedValue] = useState(info || "");
 
+  function isValidName(name: string): boolean {
+    const trimmed = name.trim();
+
+    if (trimmed.length === 0) return false;
+
+    const regex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
+
+    return regex.test(trimmed);
+  }
+
   const handleSave = () => {
+    if (!isValidName(editedValue)) {
+      alert("Nome inválido.");
+      return;
+    }
+
     console.log("Novo valor salvo:", editedValue);
     setEditPressed(false);
   };
@@ -78,4 +93,4 @@ const EditableInformation: React.FC<EditableInformationProps> = ({
   );
 };
 
-export default EditableInformation;
+export default EditableInformationName;

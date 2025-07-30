@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./EditableInformation.scss";
 import { Button, FormControl } from "react-bootstrap";
-import { getCurrentUser } from "../../helpers/getCurrentUser";
 
 type EditableInformationProps = {
   title: string;
@@ -9,7 +8,7 @@ type EditableInformationProps = {
   editable: boolean;
 };
 
-const EditableInformation: React.FC<EditableInformationProps> = ({
+const EditableInformationPhone: React.FC<EditableInformationProps> = ({
   title,
   info,
   editable,
@@ -18,8 +17,17 @@ const EditableInformation: React.FC<EditableInformationProps> = ({
   const [editedValue, setEditedValue] = useState(info || "");
 
   const handleSave = () => {
+    if (!validPhoneNumber(editedValue)) {
+      alert("Número de telefone inválido. Insira 10 ou 11 dígitos numéricos.");
+      return;
+    }
     console.log("Novo valor salvo:", editedValue);
     setEditPressed(false);
+  };
+
+  const validPhoneNumber = (value: string): boolean => {
+    const onlyDigits = /^[0-9]{10,11}$/;
+    return onlyDigits.test(value);
   };
 
   const handleCancel = () => {
@@ -78,4 +86,4 @@ const EditableInformation: React.FC<EditableInformationProps> = ({
   );
 };
 
-export default EditableInformation;
+export default EditableInformationPhone;
