@@ -1,9 +1,11 @@
 .info-row {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 8px 0;
   border-bottom: 1px solid #ccc;
   margin: 1rem;
+  gap: 8rem;
 }
 
 .type-of-info {
@@ -13,12 +15,12 @@
 .type-of-info {
   font-weight: bold;
   color: #666;
-  margin-right: 10rem;
   min-width: 100px;
 }
 
 .info-value {
   color: black;
+  flex: 1;
 }
 
 .info-empty {
@@ -26,3 +28,11 @@
   font-style: italic;
   font-weight: 400;
 }
+
+.edit-button {
+  color: #0088cc;
+  border: none;
+  background: none;
+  font-size: small;
+}
+

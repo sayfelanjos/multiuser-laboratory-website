@@ -18,6 +18,7 @@
     "antd": "^5.16.5",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
+    "caniuse-lite": "^1.0.30001731",
     "eslint": "^8.57.0",
     "firebase": "^10.13.1",
     "firebase-functions": "^5.0.1",

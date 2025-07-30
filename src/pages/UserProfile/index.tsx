@@ -27,7 +27,7 @@ const UserProfile = () => {
       await deleteAccount();
       notification.success({ message: "Conta deletada com sucesso!" });
     } catch (err: any) {
-      alert(err.message);
+      notification.error({ message: "Erro ao deletar conta" });
     }
   };
 
@@ -55,11 +55,9 @@ const UserProfile = () => {
       />
 
       <div>
-        <EditableInformation title="Nome" info={name} />
-
-        <EditableInformation title="Email" info={email} />
-
-        <EditableInformation title="Telefone" info={phone} />
+        <EditableInformation title="Nome" info={name} editable={true} />
+        <EditableInformation title="Telefone" info={phone} editable={true} />
+        <EditableInformation title="Email" info={email} editable={false} />
       </div>
 
       <Button
@@ -81,7 +79,7 @@ const UserProfile = () => {
               onClick={() => {
                 setDeletAccountModalOpen(false);
                 handleDeleteUser();
-              }}    
+              }}
             >
               Apagar conta
             </button>
