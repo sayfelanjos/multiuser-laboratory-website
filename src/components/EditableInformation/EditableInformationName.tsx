@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./EditableInformation.scss";
 import { Button, FormControl } from "react-bootstrap";
 import { getCurrentUser } from "../../helpers/getCurrentUser";
+import validateName from "../../helpers/validateName"
 
 type EditableInformationProps = {
   title: string;
@@ -17,18 +18,8 @@ const EditableInformationName: React.FC<EditableInformationProps> = ({
   const [editPressed, setEditPressed] = useState(false);
   const [editedValue, setEditedValue] = useState(info || "");
 
-  function isValidName(name: string): boolean {
-    const trimmed = name.trim();
-
-    if (trimmed.length === 0) return false;
-
-    const regex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
-
-    return regex.test(trimmed);
-  }
-
   const handleSave = () => {
-    if (!isValidName(editedValue)) {
+    if (!validateName(editedValue)) {
       alert("Nome inválido.");
       return;
     }
