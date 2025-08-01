@@ -94,7 +94,9 @@ const SignIn = () => {
   const onClickButtonSignInWithGoogle = useCallback(
     async (event: React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
-      if(isSigningIn) return;
+      if(isSigningIn){ 
+        return;
+      }
       setIsSigningIn(true);
       try {
       await signInWithGoogle();
@@ -111,7 +113,9 @@ const SignIn = () => {
   const onClickButtonSignInWithMicrosoft = useCallback(
     async (event: React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
-      if(isSigningIn) return;
+      if(isSigningIn){ 
+        return;
+      }
       setIsSigningIn(true);
       try {
         await signInWithMicrosoft();

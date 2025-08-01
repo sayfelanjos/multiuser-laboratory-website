@@ -32,13 +32,6 @@ const Header = () => {
   const path = useLocation();
   const navigate = useNavigate();
 
-  let photoURL;
-  if (user?.photoURL === null) {
-    photoURL = userAvatar;
-  } else {
-    photoURL = user?.photoURL;
-  }
-
   const [isSigningOut, setIsSigningOut] = useState(false);
 
   const previousPath = path.state?.from?.pathname || "/home";
@@ -52,7 +45,6 @@ const Header = () => {
           setTimeout(resolve, 500),
         );
         await Promise.all([logoutMoment, minSpinnerTime]);
-        // navigate("/home");
         navigate(previousPath, { replace: true });
       } catch (error) {
         throw new Error("Error while signing out");
@@ -229,7 +221,7 @@ const Header = () => {
                   >
                     <Dropdown.Toggle className="bg-transparent p-0 m-0 border-0 ms-3 text-black">
                       <Image
-                        src={photoURL}
+                        src={user?.photoURL == null ? userAvatar : user?.photoURL}
                         style={{ width: "auto", height: "40px" }}
                         roundedCircle
                       />

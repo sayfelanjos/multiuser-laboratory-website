@@ -19,7 +19,7 @@ import { signInUser } from "../../helpers/signInUser";
 const ResetPassword = () => {
   const route = useLocation();
   const previousPage = route.state?.from?.pathname || "/home";
-  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [passwordVisible] = useState(false);
   const [searchParams] = useSearchParams();
   const [accountEmail, setAccountEmail] = useState("");
   const [count, setCount] = useState<number>(10);
@@ -27,11 +27,7 @@ const ResetPassword = () => {
   const actionCode = searchParams.get("oobCode");
   const [isButtonActive, setIsButtonActive] = useState<boolean>(true);
   const navigate = useNavigate();
-  const [isPasswordChangedSucessfully, setIsPasswordChangedSucessfully] =
-    useState<boolean>(false);
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
-  };
+  const [isPasswordChangedSucessfully, setIsPasswordChangedSucessfully] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>("");
   const { Formik } = formik;
   const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -88,7 +84,7 @@ const ResetPassword = () => {
       } else {
         // Save the new password.
         confirmPasswordReset(auth, actionCode as string, value.password)
-          .then(async (resp) => {
+          .then(async () => {
             setIsPasswordChangedSucessfully(true);
             if(isSigningIn){ 
               return ;

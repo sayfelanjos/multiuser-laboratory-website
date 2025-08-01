@@ -15,8 +15,6 @@ import { useAuth } from "../../hooks/useAuth";
 import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
 import { useAppSelector, useAppDispatch } from "../../hooks/reduxHooks";
 import { setIsSidebarOpen } from "../../redux/reducers/toggleSidebarSlice";
-import AvatarIcon from "../../assets/icons/AvatarIcon";
-import { Stack } from "react-bootstrap";
 
 const brandStyle = {
   width: "auto",
@@ -34,7 +32,6 @@ const SchedulerNavbar = () => {
   const dispatch = useAppDispatch();
   const { user } = useAuth();
 
-  const photoURL = user?.photoURL === null ? userAvatar : user?.photoURL;
   const onButtonClick = useCallback(
     async (event: React.MouseEvent<HTMLElement>) => {
       event.preventDefault();
@@ -75,7 +72,7 @@ const SchedulerNavbar = () => {
           <Dropdown drop="down" align="end">
             <Dropdown.Toggle 
             className="bg-transparent p-0 m-0 border-0 me-3">
-              <Image src={photoURL} style={avatarStyle} roundedCircle/>
+              <Image src={user?.photoURL === null ? userAvatar : user?.photoURL} style={avatarStyle} roundedCircle/>
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.ItemText>{user?.email == null ? "No identified" : user?.email}</Dropdown.ItemText>
