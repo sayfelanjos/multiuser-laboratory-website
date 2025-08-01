@@ -8,7 +8,7 @@ import CardsGrid from "../../components/CardsGrid";
 
 const About = () => {
   return (
-    <Container className="my-5">
+    <>
       <Container className="about__ctn">
         <h2 className="text-black text-center my-3">
           O Laboratório Multi Usuários - LMU
@@ -34,9 +34,9 @@ const About = () => {
       </Container>
       <Container>
         <hr className="bg-black border-1 my-5" />
+        <CardsGrid />
       </Container>
-      <CardsGrid />
-    </Container>
+    </>
   );
 };
 
