@@ -141,6 +141,9 @@ Below is a list of tools you’ll need to install or set up locally. Please ensu
 
     ```sh
     git config --global user.name "Your Name"
+    ```
+
+    ```sh
     git config --global user.email "your_email@example.com"
     ```
 
@@ -148,6 +151,9 @@ Below is a list of tools you’ll need to install or set up locally. Please ensu
 
     ```sh
     git config user.name "Your Name"
+    ```
+
+    ```sh
     git config user.email "your_email@example.com"
     ```
 
@@ -237,13 +243,17 @@ Having the required tools ready, follow the steps below to set up the project lo
 
   Navigate to your `Desktop` or another desired location and run one of the following commands in your terminal:
 
-  ```sh
-  > # If you successfully set up an SSH key:
-  > git clone git@github.com:sayfelanjos/multiuser-laboratory-website.
+  - If you've successfully set up an SSH key:
 
-  > # If you haven't set up an SSH key yet:
-  > git clone https://github.com/sayfelanjos/multiuser-laboratory-website.git
-  ```
+    ```sh
+    > git clone git@github.com:sayfelanjos/multiuser-laboratory-website.git
+    ```
+
+  - If you haven't set up an SSH key yet:
+
+    ```sh
+    > git clone https://github.com/sayfelanjos/multiuser-laboratory-website.git
+    ```
 
   > **Note 1**: The clone command will automatically create a **folder** named `multiuser-laboratory-website`. You don’t need to create it manually.
   >
