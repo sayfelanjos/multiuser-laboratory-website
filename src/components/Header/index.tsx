@@ -22,10 +22,55 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Image from "react-bootstrap/Image";
 import Spinner from "react-bootstrap/Spinner";
 
-const navbarBrandStyle = {
-  width: "auto",
-  height: "40px",
+const HeaderNavLink = ({
+  children,
+  url,
+}: {
+  url?: string;
+  children: React.ReactNode;
+}) => {
+  const path = useLocation();
+
+  return (
+    <Nav.Link
+      href={url}
+      active={path.pathname === url}
+      className={`text-truncate`}
+    >
+      <Stack gap={1} direction="horizontal">
+        {children}
+      </Stack>
+    </Nav.Link>
+  );
 };
+
+const HeaderDropdownItem = ({ url, text }: { url: string; text: string }) => {
+  const path = useLocation();
+
+  return (
+    <NavDropdown.Item
+      href={url}
+      className={`${path.pathname === url ? "active bg-dark" : ""} text-truncate`}
+    >
+      {text}
+    </NavDropdown.Item>
+  );
+};
+
+const DropdownData = [
+  {
+    url: "/service/tenacity-test",
+    text: "Ensaio de Tenacidade",
+  },
+  {
+    url: "/service/compression-test",
+    text: "Ensaio de Compressão",
+  },
+  { url: "/service/tensile-test", text: "Ensaio de Tração" },
+  { url: "/service/fatigue-test", text: "Ensaio de Fadiga" },
+  { url: "/service/flexion-test", text: "Ensaio de Flexão" },
+  { url: "/service/charpy-impact-test", text: "Ensaio de Impacto Charpy" },
+];
 
 const Header = () => {
   const { user, isLoading: isAuthLoading } = useAuth();
@@ -79,7 +124,11 @@ const Header = () => {
         >
           <Container fluid={"lg"} className="px-3">
             <Nav.Link href="/home" className="py-0 px-3">
-              <img src={logo} style={navbarBrandStyle} alt="FEM Unicamp Logo" />
+              <img
+                src={logo}
+                style={{ width: "auto", height: "40px" }}
+                alt="FEM Unicamp Logo"
+              />
             </Nav.Link>
             <Navbar.Text className="fw-bold lh-sm fs-6 p-0 d-none d-lg-block">
               [Laboratório Multi Usuário]
@@ -98,18 +147,11 @@ const Header = () => {
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                   <Nav className="justify-content-end flex-grow-1 pe-3">
-                    <Nav.Link
-                      href="/"
-                      active={
-                        path.pathname === "/home" || path.pathname === "/"
-                      }
-                      className="text-truncate"
-                    >
-                      <Stack gap={1} direction="horizontal">
-                        <HomeIcon />
-                        Início
-                      </Stack>
-                    </Nav.Link>
+                    <HeaderNavLink url="/home">
+                      <HomeIcon />
+                      Início
+                    </HeaderNavLink>
+
                     <NavDropdown
                       title={
                         <Stack
@@ -118,68 +160,25 @@ const Header = () => {
                           className={`d-inline-flex nav-link p-0 ${path.pathname.startsWith("/service") ? "header__nav-active-color" : ""}`}
                         >
                           <ServicesIcon />
-
                           <span>Serviços</span>
                         </Stack>
                       }
                       id="basic-nav-dropdown"
                     >
-                      <NavDropdown.Item
-                        href="/service/tenacity-test"
-                        className={`${path.pathname === "/service/tenacity-test" ? "active bg-dark" : ""} text-truncate`}
-                      >
-                        Ensaio de Tenacidade
-                      </NavDropdown.Item>
-                      <NavDropdown.Item
-                        href="/service/compression-test"
-                        className={`${path.pathname === "/service/compression-test" ? "active bg-dark" : ""} text-truncate`}
-                      >
-                        Ensaio de Compressão
-                      </NavDropdown.Item>
-                      <NavDropdown.Item
-                        href="/service/tensile-test"
-                        className={`${path.pathname === "/service/tensile-test" ? "active bg-dark" : ""} text-truncate`}
-                      >
-                        Ensaio de Tração
-                      </NavDropdown.Item>
-                      <NavDropdown.Item
-                        href="/service/fatigue-test"
-                        className={`${path.pathname === "/service/fatigue-test" ? "active bg-dark" : ""} text-truncate`}
-                      >
-                        Ensaio de Fadiga
-                      </NavDropdown.Item>
-                      <NavDropdown.Item
-                        href="/service/flexion-test"
-                        className={`${path.pathname === "/service/flexion-test" ? "active bg-dark" : ""} text-truncate`}
-                      >
-                        Ensaio de Flexão
-                      </NavDropdown.Item>
-                      <NavDropdown.Item
-                        href="/service/charpy-impact-test"
-                        className={`${path.pathname === "/service/charpy-impact-test" ? "active bg-dark" : ""} text-truncate`}
-                      >
-                        Ensaio de Impacto Charpy
-                      </NavDropdown.Item>
+                      {DropdownData.map((item, index) => (
+                        <HeaderDropdownItem key={index} {...item} />
+                      ))}
                     </NavDropdown>
 
-                    <Nav.Link
-                      href="/about"
-                      className={`text-truncate p-2 text-decoration-none nav-link ${path.pathname === "/about" ? "active" : ""}`}
-                    >
-                      <Stack gap={1} direction="horizontal">
-                        <AboutIcon />
-                        Sobre o LMU
-                      </Stack>
-                    </Nav.Link>
-                    <Nav.Link
-                      href="/contact"
-                      className={`text-truncate p-2 text-decoration-none nav-link ${path.pathname === "/contact" ? "active" : ""}`}
-                    >
-                      <Stack gap={1} direction="horizontal">
-                        <ContactIcon />
-                        Contato
-                      </Stack>
-                    </Nav.Link>
+                    <HeaderNavLink url="/about">
+                      <AboutIcon />
+                      Sobre o LMU
+                    </HeaderNavLink>
+
+                    <HeaderNavLink url="/contact">
+                      <ContactIcon />
+                      Contato
+                    </HeaderNavLink>
                   </Nav>
                 </Offcanvas.Body>
               </Navbar.Offcanvas>
@@ -221,7 +220,9 @@ const Header = () => {
                   >
                     <Dropdown.Toggle className="bg-transparent p-0 m-0 border-0 ms-3 text-black">
                       <Image
-                        src={user?.photoURL == null ? userAvatar : user?.photoURL}
+                        src={
+                          user?.photoURL == null ? userAvatar : user?.photoURL
+                        }
                         style={{ width: "auto", height: "40px" }}
                         roundedCircle
                       />
