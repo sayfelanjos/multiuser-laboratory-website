@@ -2,4 +2,22 @@
   &nav-active-color {
     color: black;
   }
+
+  @media (min-width: 992px) {
+    &login-container {
+      width: 71px;
+    }
+  }
+}
+
+// The following styles is a workarrond to replace the order-lg-last
+// class, because the offcanvas menu do now automatically hides when
+// the screen is resized to lg or above.
+
+#offcanvasNavbar-expand-lg #login-container {
+  order: 999;
+}
+
+#offcanvasNavbar-expand-lg.show #login-container {
+  order: 0;
 }

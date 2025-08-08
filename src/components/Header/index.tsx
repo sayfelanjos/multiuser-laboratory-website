@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/fem-logo-monocromatica.png";
 import Stack from "react-bootstrap/Stack";
 import SiginIcon from "../../assets/icons/SignInIcon";
+import SignOutIcon from "../../assets/icons/SignOutIcon";
 import HomeIcon from "../../assets/icons/HomeIcon";
 import ServicesIcon from "../../assets/icons/ServicesIcon";
 import AboutIcon from "../../assets/icons/AboutIcon";
@@ -24,18 +25,19 @@ import Spinner from "react-bootstrap/Spinner";
 
 const HeaderNavLink = ({
   children,
-  url,
+  route,
 }: {
-  url?: string;
+  route: string;
   children: React.ReactNode;
 }) => {
   const path = useLocation();
 
   return (
     <Nav.Link
-      href={url}
-      active={path.pathname === url}
-      className={`text-truncate`}
+      as={Link}
+      to={route}
+      active={path.pathname === route}
+      className="text-truncate"
     >
       <Stack gap={1} direction="horizontal">
         {children}
@@ -44,13 +46,20 @@ const HeaderNavLink = ({
   );
 };
 
-const HeaderDropdownItem = ({ url, text }: { url: string; text: string }) => {
+const HeaderDropdownItem = ({
+  route,
+  text,
+}: {
+  route: string;
+  text: string;
+}) => {
   const path = useLocation();
 
   return (
     <NavDropdown.Item
-      href={url}
-      className={`${path.pathname === url ? "active bg-dark" : ""} text-truncate`}
+      as={Link}
+      to={route}
+      className={`${path.pathname === route ? "active bg-dark" : ""} text-truncate`}
     >
       {text}
     </NavDropdown.Item>
@@ -59,27 +68,33 @@ const HeaderDropdownItem = ({ url, text }: { url: string; text: string }) => {
 
 const DropdownData = [
   {
-    url: "/service/tenacity-test",
+    route: "/service/tenacity-test",
     text: "Ensaio de Tenacidade",
   },
   {
-    url: "/service/compression-test",
+    route: "/service/compression-test",
     text: "Ensaio de Compressão",
   },
-  { url: "/service/tensile-test", text: "Ensaio de Tração" },
-  { url: "/service/fatigue-test", text: "Ensaio de Fadiga" },
-  { url: "/service/flexion-test", text: "Ensaio de Flexão" },
-  { url: "/service/charpy-impact-test", text: "Ensaio de Impacto Charpy" },
+  { route: "/service/tensile-test", text: "Ensaio de Tração" },
+  { route: "/service/fatigue-test", text: "Ensaio de Fadiga" },
+  { route: "/service/flexion-test", text: "Ensaio de Flexão" },
+  { route: "/service/charpy-impact-test", text: "Ensaio de Impacto Charpy" },
 ];
 
 const Header = () => {
   const { user, isLoading: isAuthLoading } = useAuth();
   const path = useLocation();
   const navigate = useNavigate();
-
   const [isSigningOut, setIsSigningOut] = useState(false);
 
+  // Determine the previous path to navigate back after signing out
+  // - If the user is signing out from a specific page, we want to
+  //   redirect them back to that page
+  // - If not, we default to the home page
+  // - This is useful for maintaining user experience after logout
   const previousPath = path.state?.from?.pathname || "/home";
+
+  // Handle user logout
   const handleLogout = useCallback(
     async (event: React.MouseEvent<HTMLElement>) => {
       event.preventDefault();
@@ -92,24 +107,13 @@ const Header = () => {
         await Promise.all([logoutMoment, minSpinnerTime]);
         navigate(previousPath, { replace: true });
       } catch (error) {
-        throw new Error("Error while signing out");
+        throw new Error("Error while signing out.");
       } finally {
         setIsSigningOut(false);
       }
     },
     [navigate, previousPath],
   );
-
-  if (isAuthLoading || isSigningOut) {
-    return (
-      <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ height: "56px" }}
-      >
-        <Spinner animation="border" role="status" />
-      </div>
-    );
-  }
 
   return (
     <Container fluid className="d-block p-0">
@@ -123,7 +127,7 @@ const Header = () => {
           className="navbar d-block"
         >
           <Container fluid={"lg"} className="px-3">
-            <Nav.Link href="/home" className="py-0 px-3">
+            <Nav.Link as={Link} to="/home" className="py-0 px-3">
               <img
                 src={logo}
                 style={{ width: "auto", height: "40px" }}
@@ -147,7 +151,81 @@ const Header = () => {
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                   <Nav className="justify-content-end flex-grow-1 pe-3">
-                    <HeaderNavLink url="/home">
+                    {/* START: Login Button ============================================= */}
+                    <div
+                      id="login-container"
+                      className="header__login-container m-0 p-0 w-lg"
+                    >
+                      {isAuthLoading || isSigningOut ? (
+                        <div
+                          className="ms-3 d-flex justify-content-center align-items-center"
+                          style={{ height: "40px" }}
+                        >
+                          <Spinner animation="border" role="status" />
+                        </div>
+                      ) : user ? (
+                        <Nav.Item>
+                          <Dropdown drop="down" align="end">
+                            <Dropdown.Toggle className="bg-transparent p-0 m-0 border-0 ms-lg-3 text-black">
+                              <Image
+                                src={
+                                  user?.photoURL == null
+                                    ? userAvatar
+                                    : user?.photoURL
+                                }
+                                alt="User"
+                                style={{ width: "auto", height: "40px" }}
+                                roundedCircle
+                              />
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu className="mt-2 mt-lg-1">
+                              <Dropdown.ItemText>
+                                {user?.email == null
+                                  ? "No identified"
+                                  : user?.email}
+                              </Dropdown.ItemText>
+
+                              <Dropdown.Divider />
+
+                              <Dropdown.Item as={Link} to="/app/users/profile">
+                                Perfil
+                              </Dropdown.Item>
+
+                              <Dropdown.Item as={Link} to="#/action-2">
+                                Configurações
+                              </Dropdown.Item>
+
+                              <Dropdown.Divider />
+
+                              <Dropdown.Item onClick={handleLogout}>
+                                <Stack gap={2} direction="horizontal">
+                                  <SignOutIcon />
+                                  Logout
+                                </Stack>
+                              </Dropdown.Item>
+                            </Dropdown.Menu>
+                          </Dropdown>
+                        </Nav.Item>
+                      ) : (
+                        <Nav.Link
+                          as={Link}
+                          to="/signin"
+                          state={{ from: path.pathname }}
+                          className="text-truncate text-decoration-none nav-link p-2"
+                        >
+                          <Stack gap={1} direction="horizontal">
+                            <SiginIcon />
+                            Entrar
+                          </Stack>
+                        </Nav.Link>
+                      )}
+                    </div>
+                    {/* END: Login Button ============================================= */}
+
+                    <hr className="d-lg-none" />
+
+                    <HeaderNavLink route="/home">
                       <HomeIcon />
                       Início
                     </HeaderNavLink>
@@ -170,83 +248,36 @@ const Header = () => {
                       ))}
                     </NavDropdown>
 
-                    <HeaderNavLink url="/about">
+                    <HeaderNavLink route="/about">
                       <AboutIcon />
                       Sobre o LMU
                     </HeaderNavLink>
 
-                    <HeaderNavLink url="/contact">
+                    <HeaderNavLink route="/contact">
                       <ContactIcon />
                       Contato
                     </HeaderNavLink>
+
+                    <Nav.Item>
+                      <Link
+                        to={user ? "/app/scheduler" : "/signin"}
+                        state={
+                          user
+                            ? undefined
+                            : { from: { pathname: "/app/scheduler" } }
+                        }
+                        className="mt-3 mt-lg-0 ms-lg-2 btn btn-dark"
+                      >
+                        <Stack gap={2} direction="horizontal">
+                          Agendamentos
+                          <ScheduleIcon />
+                        </Stack>
+                      </Link>
+                    </Nav.Item>
                   </Nav>
                 </Offcanvas.Body>
               </Navbar.Offcanvas>
             </Navbar.Collapse>
-            <Stack
-              direction="horizontal"
-              className="ms-auto align-items-center me-3"
-            >
-              <Link
-                to={user ? "/app/scheduler" : "/signin"}
-                state={
-                  !user ? { from: { pathname: "/app/scheduler" } } : undefined
-                }
-                className="btn btn-dark d-none d-lg-block"
-              >
-                <Stack gap={2} direction="horizontal">
-                  Agendamentos
-                  <ScheduleIcon />
-                </Stack>
-              </Link>
-              {!user ? (
-                <Nav.Link
-                  as={Link}
-                  to="/signin"
-                  state={{ from: path.pathname }}
-                  className="text-truncate text-decoration-none nav-link p-2 text-decoration-none nav-link"
-                >
-                  <Stack gap={2} direction="horizontal">
-                    <SiginIcon />
-                    Entrar
-                  </Stack>
-                </Nav.Link>
-              ) : (
-                <Nav>
-                  <Dropdown
-                    drop="down"
-                    align="end"
-                    className="d-none d-lg-block"
-                  >
-                    <Dropdown.Toggle className="bg-transparent p-0 m-0 border-0 ms-3 text-black">
-                      <Image
-                        src={
-                          user?.photoURL == null ? userAvatar : user?.photoURL
-                        }
-                        style={{ width: "auto", height: "40px" }}
-                        roundedCircle
-                      />
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      <Dropdown.ItemText>
-                        {user?.email == null ? "No identified" : user?.email}
-                      </Dropdown.ItemText>
-                      <Dropdown.Divider />
-                      <Dropdown.Item href="/app/users/profile">
-                        Perfil
-                      </Dropdown.Item>
-                      <Dropdown.Item href="#/action-2">
-                        Configurações
-                      </Dropdown.Item>
-                      <Dropdown.Divider />
-                      <Dropdown.Item onClick={handleLogout}>
-                        Logout
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </Nav>
-              )}
-            </Stack>
           </Container>
         </Navbar>
       </Container>
