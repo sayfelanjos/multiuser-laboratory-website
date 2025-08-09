@@ -6,6 +6,12 @@
     padding: 1rem;
   }
 
-  &__item {
+  &__ratio {
+    &-8x5 {
+      --bs-aspect-ratio: calc(5 / 8 * 100%);
+      > img {
+        object-fit: cover;
+      }
+    }
   }
 }

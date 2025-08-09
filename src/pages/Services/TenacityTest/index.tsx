@@ -1,7 +1,8 @@
 import React from "react";
 import Container from "react-bootstrap/Container";
 import ServiceHeader from "../../../components/ServiceHeader";
-import image from "../../../assets/images/tenacity-test.jpeg";
+// import image from "../../../assets/images/tenacity-test.jpeg";
+import image from "../../../assets/images/lmu-images/ens.tenacity.1.jpeg";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Link } from "react-router-dom";
