@@ -13,7 +13,7 @@ const CardsGrid = () => {
       {cardsData.map((card) => {
         return (
           <Card key={card.id} className="card-grid__item" body={false}>
-            <Link to={card.link} className="text-decoration-none h-100\A  ">
+            <Link to={card.link} className="text-decoration-none">
               <Ratio className="cards-grid__ratio-8x5">
                 <Card.Img variant="top" src={card.image} />
               </Ratio>
@@ -25,7 +25,7 @@ const CardsGrid = () => {
                   </span>
                 </Card.Title>
                 <Divider className="border-primary" />
-                <Card.Text className="text-truncate text-wrap">
+                <Card.Text className="text-truncate text-wrap text-black">
                   {card.text.slice(0, 100).replace("\n", " - ") + "…"}
                 </Card.Text>
               </Card.Body>
