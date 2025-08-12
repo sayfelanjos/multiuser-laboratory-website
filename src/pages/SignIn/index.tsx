@@ -104,7 +104,7 @@ const SignIn = () => {
       <Row className="p-0 m-0">
         <Col className="p-0 m-0">
           <Container
-            className={`bg-light overflow-hidden ${breakpoint === "xs" || breakpoint === "sm" || breakpoint === "md" ? "min-vw-100 min-vh-100" : "rounded-3 signin-page__form-ctn"}`}
+            className={`bg-light overflow-hidden ${breakpoint === "xs" || breakpoint === "sm" || breakpoint === "md" ? "min-vw-100 min-vh-100" : "rounded-3 signin-page__form-ctn my-3"}`}
           >
             <Formik
               validationSchema={userSchema}
