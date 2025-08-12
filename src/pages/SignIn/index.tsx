@@ -8,8 +8,7 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import GoogleIcon from "../../assets/icons/GoogleIcon";
 import MicrosoftIcon from "../../assets/icons/MicrosoftIcon";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import Divider from "antd/lib/divider";
 import { signInUser } from "../../helpers/signInUser";
 import { signInWithGoogle } from "../../helpers/signInWithGoogle";
@@ -20,8 +19,11 @@ import "./_signin-page.scss";
 import { FirebaseError } from "firebase/app";
 import useBreakpoint from "../../hooks/getCurrentBreakpoint";
 
+
 const SignIn = () => {
+  const path = useLocation();
   const navigate = useNavigate();
+  const previousPage = path.state?.from?.pathname || "/home";
   const breakpoint = useBreakpoint();
   const { Formik } = formik;
   const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -42,11 +44,18 @@ const SignIn = () => {
   // Initial form values
   const initialValues: User = { email: "", password: "" };
 
-  const onClickEnterButton = useCallback(async (value: User) => {
+  // Verify signin process
+  const [isSigningIn, setIsSigningIn] = useState(false);
+
+  const onClickEnterButtonSingInWithPassword = useCallback(async (value: User) => {
     setShowAlert(false);
+    if(isSigningIn){ 
+      return;
+    }
+    setIsSigningIn(true);
     try {
       await signInUser(value.email, value.password);
-      navigate("/app/scheduler");
+      navigate(previousPage, {replace: true});
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
         // Handle Firebase Auth errors
@@ -68,6 +77,8 @@ const SignIn = () => {
             break;
           }
           default: {
+            setAlertMessage("Ocorreu um erro inesperado");
+            setShowAlert(true);
             console.error("Unknown error:", error.message);
             break;
           }
@@ -75,25 +86,48 @@ const SignIn = () => {
       } else {
         console.error("Unknown non-Firebase error:", error);
       }
+    } finally {
+      setIsSigningIn(false);
     }
-  }, []);
+  }, [navigate, previousPage, isSigningIn]);
 
   const onClickButtonSignInWithGoogle = useCallback(
     async (event: React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
+      if(isSigningIn){ 
+        return;
+      }
+      setIsSigningIn(true);
+      try {
       await signInWithGoogle();
-      navigate("/app/scheduler");
+      navigate(previousPage, {replace: true});
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsSigningIn(false)
+      }
     },
-    [],
+    [navigate, previousPage, isSigningIn],
   );
 
   const onClickButtonSignInWithMicrosoft = useCallback(
     async (event: React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
-      await signInWithMicrosoft();
-      navigate("/app/scheduler");
+      if(isSigningIn){ 
+        return;
+      }
+      setIsSigningIn(true);
+      try {
+        await signInWithMicrosoft();
+        navigate(previousPage, {replace: true});
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsSigningIn(false);
+      }
+      
     },
-    [],
+    [navigate, previousPage, isSigningIn],
   );
 
   return (
@@ -109,7 +143,7 @@ const SignIn = () => {
             <Formik
               validationSchema={userSchema}
               initialValues={initialValues}
-              onSubmit={onClickEnterButton}
+              onSubmit={onClickEnterButtonSingInWithPassword}
             >
               {({
                 handleSubmit,
