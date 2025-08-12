@@ -1,7 +1,6 @@
 import React from "react";
-import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
-import Container from "react-bootstrap/Container";
+import Ratio from "react-bootstrap/Ratio";
 import { Link } from "react-router-dom";
 import { cardsData } from "./cardsData";
 import ArrowRightIcon from "../../assets/icons/ArrowRightIcon";
@@ -13,28 +12,25 @@ const CardsGrid = () => {
     <div className="cards-grid__wrapper">
       {cardsData.map((card) => {
         return (
-          <div key={card.id}>
+          <Card key={card.id} className="card-grid__item" body={false}>
             <Link to={card.link} className="text-decoration-none">
-              <Card className="card-grid__item" body={false}>
+              <Ratio className="cards-grid__ratio-8x5">
                 <Card.Img variant="top" src={card.image} />
-                <Card.Body>
-                  <div className="d-flex justify-content-between">
-                    <Card.Title className="link-primary fs-6">
-                      {card.title}
-                    </Card.Title>
-                    <span className="link-primary">
-                      <ArrowRightIcon />
-                    </span>
-                  </div>
-                  <Divider className="border-primary" />
-                  <Card.Text>
-                    Some quick example text to build on the card title and make
-                    up the bulk of the card&apos;s content.
-                  </Card.Text>
-                </Card.Body>
-              </Card>
+              </Ratio>
+              <Card.Body>
+                <Card.Title className="link-primary fs-6 d-flex justify-content-between">
+                  <span>{card.title}</span>
+                  <span className="link-primary">
+                    <ArrowRightIcon />
+                  </span>
+                </Card.Title>
+                <Divider className="border-primary" />
+                <Card.Text className="text-truncate text-wrap text-black">
+                  {card.text.slice(0, 100).replace("\n", " - ") + "…"}
+                </Card.Text>
+              </Card.Body>
             </Link>
-          </div>
+          </Card>
         );
       })}
     </div>

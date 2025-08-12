@@ -1,7 +1,8 @@
 import React from "react";
 import Container from "react-bootstrap/Container";
 import ServiceHeader from "../../../components/ServiceHeader";
-import image from "../../../assets/images/charpy-impact-test.jpeg";
+// import image1 from "../../../assets/images/charpy-impact-test.jpeg";
+import image from "../../../assets/images/lmu-images/charpy.2.jpg";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Link } from "react-router-dom";
