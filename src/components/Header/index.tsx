@@ -43,14 +43,15 @@ const Header = () => {
 
   return (
     <Container fluid className="d-block p-0">
-      <Container fluid className="p-0">
+      {/* TODO: Remove the outmost container: it's redundant. */}
+      <Container fluid className="p-0 shadow">
         <Navbar
           collapseOnSelect
           expand="lg"
           id="navbar"
           bg="light"
           data-bs-theme="light"
-          className="navbar d-block"
+          className="navbar d-block bg-white"
         >
           <Container fluid={"lg"} className="px-3">
             <Nav.Link href="/home" className="py-0 px-3">
