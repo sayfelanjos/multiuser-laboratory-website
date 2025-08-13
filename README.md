@@ -8,6 +8,8 @@ The project is currently under development and initially supports only the LMU L
 
 ## How to Set Up the Project Locally
 
+### Tables of Contents
+
 | <h3>[**Installations and Machine Setup**](#Installations)</h3> |
 | -------------------------------------------------------------- |
 | [Install a code editor](#codeeditor)                           |
@@ -19,13 +21,20 @@ The project is currently under development and initially supports only the LMU L
 | [Get the Firebase Permissions](#permissions)                   |
 | [Install the firebase-tools](#firebase-tools)                  |
 
-| <h3>[Local Repo Setup](#repo)</h3>        |
-| ----------------------------------------- |
-| [Clone the Project](#gitclone)            |
-| [Add Enviroment Variables](#env-var)      |
-| [Install the dependencies](#npm-install)  |
-| [Run the Development Server](#dev-server) |
-| [Run the Firebase Emulators](#firebase)   |
+| <h3>[Environment Setup](#repo)</h3>      |
+| ---------------------------------------- |
+| [Clone the Project](#gitclone)           |
+| [Add Enviroment Variables](#env-var)     |
+| [Install the dependencies](#npm-install) |
+
+| <h3>[Running the Local Development Servers](#servers)</h3> |
+| ---------------------------------------------------------- |
+| [Quick Start Instructions](#start)                         |
+| [Understanding the Two Servers](#two-servers)              |
+| [Understanding Emulator Data](#emulator)                   |
+| [Common Issues & Troubleshooting](#troubleshooting)        |
+
+---
 
 ### Installations <a id="Installations"></a>
 
@@ -336,41 +345,181 @@ Having the required tools ready, follow the steps below to set up the project lo
   npm run build
   ```
 
-- ### Run the Development Server <a id="dev-server"></a>
+---
 
-  The development server reflects your latest code changes immediately upon saving. While it can be a bit slow at times, it’s essential for quickly testing front-end updates.
+## Running the Local Development Servers <a id="servers"></a>
 
-  To start the development server, run the following command from the project root. If everything is set up correctly, the webpage will open automatically at [localhost:3000](http://localhost:3000).
+For serving the application locally, it is important to understand that this project's local development environment relies on two core components running together: the **Firebase Emulators** (for the backend) and the **React Dev Server** (for the frontend).
 
-  ```sh
-  npm start
-  ```
+1. **Firebase Emulators (The Local Backend)**
+   This is a local sandbox that mimics Firebase's live services. It allows you to test functionality — like Authentication and Firestore — safely on your machine. This suite also includes the **Hosting Emulator** (_see note on [Understanding the Two Servers](#two-servers)_), which provides a "**Production Preview**" of your final build.
 
-- ### Run the Firebase Emulators <a id="firebase"></a>
+1. **React Dev Server (The Live Frontend)**
+   This is a live-reloading server that serves your application's source code, allowing you to see UI changes instantly as you write code.
 
-  For a full local simulation of the deployment environment, you can run the Firebase emulators. This gives you a nearly complete preview of how the app will behave in production.
-
-  From the root directory, build the project to ensure your latest changes are included:
-
-  ```sh
-    npm run build
-  ```
-
-  Now, start the emulators by typing:
-
-  ```sh
-    firebase emulators:start
-  ```
-
-  A link to the local Firebase Console will be displayed in your terminal. Click it to open the console in your browser. You’ll be able to explore the inner workings of your app just like in a real deployment.
-
-  > **Tip**: If the page doesn’t open automatically or appears blank, reach out to a teammate for help. Also, check your browser console for errors:
-  >
-  > - Press `Ctrl + Shift + I` on Windows or `Cmd + Option + I` on macOS to open the developer tools
-  > - Then click the **Console** tab
-  > - Look for red error messages — they may help identify the issue.
+> Note: for everything to work correctly, **you must fully start the emulators first.**
 
 ---
+
+It's also important to distinguish this local setup from the live production environment:
+
+- **Firebase Hosting (The Live Server)**
+  This is the real, public server where the final version of the application is deployed for users to see.
+
+_(Note: The details about how code gets deployed to the live server from the `main` branch belong in a separate [`Deployment`](#deployment) section of the README to keep this section focused on local development.)_
+
+### Quick Start Instructions <a id="start"></a>
+
+Follow these steps to get the project running locally:
+
+1. **Terminal 1: Start the Firebase Emulators**
+
+   Open a terminal window in the project's root directory and run:
+
+   ```sh
+   firebase emulators:start
+   ```
+
+   This will start up the local backend services. Keep this terminal running in the background.
+
+   #### **Explore the Emulator UI**
+
+   After starting the emulators, you will find a dashboard called the **Emulator UI** at `http://localhost:4000` — this link and a simplified version of the dashboard will be available in the terminal.
+
+   The **Emulator UI** is your control center for the local backend. There you can:
+
+   - View server logs in the **Logs** tab.
+   - Manage users in the **Authentication** tab — mock users.
+   - View and edit your local database in the **Firestore** tab.
+   - Go to the **Hosting** tab to see the status of the local hosting server and find a direct link to open your **Production Preview** (`localhost:5000`).
+
+1. **Terminal 2: Start the React Dev Server**
+
+   Open a **second** terminal window (also in the project root) and run:
+
+   ```sh
+   npm start
+   ```
+
+   This will start the frontend development server, which will automatically open `http://localhost:3000` in your browser.
+
+   > ⚠️Important note: for local development, you must **start the emulators first**, and then start the React Dev Server. If not, you won't have access to the firebase backend.
+
+1. **Start Developing!**
+
+   Use the `http://localhost:3000` window for all your active development. It will automatically reload as you save your files.
+
+---
+
+### Understanding the Two Servers <a id="two-servers"></a>
+
+There are two different local servers. It is crucial to understand their distinct purposes:
+
+- **`http://localhost:3000` (Your Live Workshop)**
+
+  - **Purpose**: This is the React Dev Server, meant for **active development**.
+  - **How it Works**: It serves your code from memory and uses hot-reloading to show you changes **instantly**.
+  - **How to Start**: Run `npm start` in a dedicated terminal.
+  - **When to Use**: Always use this URL while you are writing code and testing features.
+
+- **`http://localhost:5000` (The Production Preview)**
+
+  - **Purpose**: This is the Firebase Hosting Emulator. Its job is to show you how your **final, production build** will behave.
+  - **How it Works**: It serves the static files from your `/build` directory. It **does not** update automatically when you save code. To update it, you must run the build command again:
+
+    ```sh
+    npm run build
+    ```
+
+  - **When to Use**: Use this for a final check to ensure your production build works as expected with Firebase Hosting rules before deploying.
+
+---
+
+### Understanding Emulator Data <a id="emulator"></a>
+
+- **Mock Accounts**: When you sign up or log in with a provider like Google while using the emulators, a **mock user** is created. This user only exists locally and has no real connection to the actual Google account. It won't have your real profile picture or other personal details.
+
+- **Data Persistence**: By default, all data inside the emulators (mock users, Firestore documents) is **ephemeral**, meaning it is **lost when you stop the emulators**. This provides a clean slate for every session. However, if you want to save your test data between sessions, you can use the `--import` and `--export-on-exit` flags:
+
+  ```sh
+  firebase emulators:start --import=./firebase-data --export-on-exit
+  ```
+
+  > Note This will save data to a ./firebase-data folder and load it on the next start
+
+---
+
+### Common Issues & Troubleshooting <a id="troubleshooting"></a>
+
+- **Error: "App connects to LIVE Firebase instead of local emulators."**
+
+  - **Cause**: You started the React Dev Server (`npm start`) _before_ starting the emulators, or the emulators are not running at all.
+  - **Solution**: Stop both processes. First, run `firebase emulators:start`. Once it's running, open a new terminal and run `npm start`.
+
+- **Error: "Connection refused" or fetch errors in the browser console on first load.**
+
+  - **Cause**: The React app started and tried to connect to the emulators before they were fully initialized.
+  - **Solution**: This is usually a minor timing issue. Simply wait a few seconds and **refresh your browser**.
+
+- **Issue: "My latest changes don't appear on `localhost:5000`."**
+
+  - **Cause**: The Hosting Emulator only serves the `build` folder. It doesn't know about your live code changes.
+  - **Solution**: You must manually rebuild the project by running `npm run build`. After the build is complete, refresh the page at `localhost:5000`.
+
+- **Tip**: Troubleshooting a Blank or Broken Page
+
+  If the application doesn't load correctly or you see a blank screen, the browser's developer console is the best place to find the root cause.
+
+  1. **Open the Developer Tools** in your browser:
+
+     - **Windows/Linux**: `Ctrl + Shift + I`
+     - **macOS**: `Cmd + Option + I`
+
+  2. **Check the Console for Errors:**
+
+     - Click on the **Console** tab.
+     - Look for any messages in red. These errors often provide specific clues about what went wrong.
+
+  3. **Ask for Help:**
+     - If the error messages aren't clear, take a screenshot of the console output and share it with a teammate for assistance. Providing the error makes it much easier to get help quickly.
+
+---
+
+## Deployment 🚀 <a id="deployment"></a>
+
+This section describes how the application is deployed to Firebase Hosting. The project uses a `develop` branch for staging and a `main` branch for the final production release.
+
+### Deployment Environments
+
+There are two primary deployment environments tied to specific branches:
+
+- **Staging (`develop` branch):** This branch serves as a stable preview of the next release. When code is merged into `develop`, it should be automatically deployed to a dedicated staging URL on Firebase Hosting. This allows the team to test the integrated features together before a production release.
+
+- **Production (`main` branch):** This branch represents the live, public version of the site. It is only updated by merging the stable `develop` branch into it.
+
+---
+
+### Contribution & Release Workflow
+
+To get your changes from your local machine to the live production site, follow this two-step process:
+
+1. **Create a Feature Branch:** Always create a new branch for your changes from the `develop` branch.
+
+   ```sh
+   git checkout develop
+   git pull
+   git checkout -b feat/my-new-feature
+   ```
+
+2. **Commit and Push:** Make your changes and push your feature branch to GitHub.
+
+3. **Open a Pull Request to `develop`:** On GitHub, open a Pull Request (PR) targeting the **`develop`** branch. This is for code review and integration testing.
+
+4. **Merge to `develop`:** Once the PR is approved, and automatic CI/CD tests have passed, merge it. This will automatically deploy the changes to the staging environment.
+
+5. **Open a Pull Request to `main`:** When it's time for a production release, open a new PR from the **`develop`** branch to the **`main`** branch.
+
+6. **Merge to `main`:** Merging this PR triggers the final deployment to the live production site.
 
 ## Available Scripts
 
