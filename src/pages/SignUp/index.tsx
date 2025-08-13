@@ -90,9 +90,9 @@ const SignUp = () => {
   return (
     <Container
       fluid
-      className="d-flex justify-content-center align-items-center vh-100 signup-page__ctn"
+      className="d-flex justify-content-center align-items-center min-vh-100 signup-page__ctn"
     >
-      <Container className="signup-page__form-ctn bg-light rounded-3">
+      <Container className="signup-page__form-ctn bg-light rounded-3 my-3">
         <Formik
           validationSchema={userSchema}
           initialValues={initialValues}

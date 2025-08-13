@@ -40,9 +40,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "cypress:open": "npx --prefix e2e-testing cypress open --project e2e-testing",
-    "functions:start": "NODE_ENV=development npm run functions:build && NODE_ENV=development npm run serve --prefix ./functions",
+    "functions:start": "npm run serve --prefix ./functions",
     "functions:build": "npm run build --prefix ./functions",
-    "functions:deploy": "NODE_ENV=production npm run functions:build && firebase deploy --only functions"
+    "functions:deploy": "firebase deploy --only functions"
   },
   "eslintConfig": {
     "extends": [

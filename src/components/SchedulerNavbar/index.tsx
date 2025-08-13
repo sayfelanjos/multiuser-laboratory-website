@@ -31,18 +31,7 @@ const SchedulerNavbar = () => {
   const isSidebarOpen = useAppSelector((state) => state.isSidebarOpen.value);
   const dispatch = useAppDispatch();
   const { user } = useAuth();
-  let displayName;
-  let photoURL;
-  if (user?.displayName === null) {
-    displayName = "No identified";
-  } else {
-    displayName = user?.displayName;
-  }
-  if (user?.photoURL === null) {
-    photoURL = userAvatar;
-  } else {
-    photoURL = user?.photoURL;
-  }
+
   const onButtonClick = useCallback(
     async (event: React.MouseEvent<HTMLElement>) => {
       event.preventDefault();
@@ -80,14 +69,14 @@ const SchedulerNavbar = () => {
           </Navbar.Text>
         </div>
         <Nav>
-          <Navbar.Text className="py-0 my-auto me-3 text d-none d-md-block">
-            {displayName}
-          </Navbar.Text>
           <Dropdown drop="down" align="end">
-            <Dropdown.Toggle className="bg-transparent p-0 m-0 border-0">
-              <Image src={photoURL} style={avatarStyle} roundedCircle />
+            <Dropdown.Toggle 
+            className="bg-transparent p-0 m-0 border-0 me-3">
+              <Image src={user?.photoURL === null ? userAvatar : user?.photoURL} style={avatarStyle} roundedCircle/>
             </Dropdown.Toggle>
             <Dropdown.Menu>
+              <Dropdown.ItemText>{user?.email == null ? "No identified" : user?.email}</Dropdown.ItemText>
+              <Dropdown.Divider/> 
               <Dropdown.Item href="/app/users/profile">Perfil</Dropdown.Item>
               <Dropdown.Item href="#/action-2">Configurações</Dropdown.Item>
               <Dropdown.Divider />
