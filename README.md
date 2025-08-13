@@ -466,6 +466,11 @@ There are two different local servers. It is crucial to understand their distinc
   - **Cause**: The Hosting Emulator only serves the `build` folder. It doesn't know about your live code changes.
   - **Solution**: You must manually rebuild the project by running `npm run build`. After the build is complete, refresh the page at `localhost:5000`.
 
+- **Error: Port 5000 is already in use on macOS.**
+
+  - **Cause**: On recent macOS versions, the **AirPlay Receiver** service often uses port 5000 by default.
+  - **Solution**: The safest way to free up the port is to disable AirPlay Receiver. Go to **System Settings** > **General** > **AirDrop & Handoff** and turn off the **AirPlay Receiver** toggle. This is a one-time fix.
+
 - **Tip**: Troubleshooting a Blank or Broken Page
 
   If the application doesn't load correctly or you see a blank screen, the browser's developer console is the best place to find the root cause.
