@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./EditableInformation.scss";
 import { Button, FormControl } from "react-bootstrap";
-import { getCurrentUser } from "../../helpers/getCurrentUser";
 import validateName from "../../helpers/validateName"
+import { editUserInformation } from "../../helpers/editUserInfo";
 
 type EditableInformationProps = {
   title: string;
@@ -18,18 +18,37 @@ const EditableInformationName: React.FC<EditableInformationProps> = ({
   const [editPressed, setEditPressed] = useState(false);
   const [editedValue, setEditedValue] = useState(info || "");
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validateName(editedValue)) {
       alert("Nome inválido.");
       return;
     }
 
-    console.log("Novo valor salvo:", editedValue);
-    setEditPressed(false);
+    try {
+      const parts = editedValue.trim().split(" ");
+      const firstName = parts[0] || "";
+
+      let secondName = "";
+
+    for (let i = 1; i < parts.length; i++) {
+      secondName += parts[i];
+      if (i < parts.length - 1) {
+        secondName += " ";
+        }
+      }
+
+      await editUserInformation(firstName, secondName, "");
+
+      console.log("Nome atualizado:", editedValue);
+      setEditPressed(false);
+    } catch (error) {
+      console.error("Erro ao atualizar número de telefone:", error);
+      alert("Erro ao salvar as informações. Tente novamente.");
+    }
   };
 
   const handleCancel = () => {
-    setEditedValue(info || "");
+    setEditedValue(editedValue||"");
     setEditPressed(false);
   };
 

@@ -58,7 +58,7 @@ const UserProfile = () => {
 
       <div>
         <EditableInformationName title="Nome" info={name} editable={true} />
-        <EditableInformationPhone title="Telefone" info={"12992490691"} editable={true} />
+        <EditableInformationPhone title="Telefone" info={phone} editable={true} />
         <EditableInformation title="Email" info={email} editable={false} />
       </div>
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./EditableInformation.scss";
 import { Button, FormControl } from "react-bootstrap";
 import validatePhoneNumber from "../../helpers/validatePhoneNumber"
+import { editUserInformation } from "../../helpers/editUserInfo";
 
 type EditableInformationProps = {
   title: string;
@@ -17,17 +18,26 @@ const EditableInformationPhone: React.FC<EditableInformationProps> = ({
   const [editPressed, setEditPressed] = useState(false);
   const [editedValue, setEditedValue] = useState(info || "");
 
-  const handleSave = () => {
-    if (!validatePhoneNumber(editedValue)) {
-      alert("Número de telefone inválido. Insira 10 ou 11 dígitos numéricos.");
-      return;
-    }
-    console.log("Novo valor salvo:", editedValue);
+  const handleSave = async () => {
+  if (!validatePhoneNumber(editedValue)) {
+    alert("Número de telefone inválido. Insira 10 ou 11 dígitos numéricos.");
+    return;
+  }
+
+  try {
+
+    await editUserInformation("", "", editedValue);
+
+    console.log("Número de telefone atualizado:", editedValue);
     setEditPressed(false);
-  };
+  } catch (error) {
+    console.error("Erro ao atualizar número de telefone:", error);
+    alert("Erro ao salvar as informações. Tente novamente.");
+  }
+};
 
   const handleCancel = () => {
-    setEditedValue(info || "");
+    setEditedValue("");
     setEditPressed(false);
   };
 

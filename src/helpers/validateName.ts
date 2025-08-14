@@ -1,9 +1,10 @@
 export default function validateName(name: string): boolean {
-    const trimmed = name.trim();
+  const trimmed = name.trim();
 
-    if (trimmed.length === 0) return false;
+  if (trimmed.length < 2) return false;
 
-    const regex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
+  // Permite letras (com acentos) e espaços simples entre nomes
+  const regex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+(?: [A-Za-zÀ-ÖØ-öø-ÿ]+)*$/;
 
-    return regex.test(trimmed);
-  }
+  return regex.test(trimmed);
+}
