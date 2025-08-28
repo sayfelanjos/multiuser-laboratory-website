@@ -1,16 +1,35 @@
+rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2024, 8, 20);
+
+    // Match any document in the 'users' collection
+    match /users/{userId} {
+      // write = create, update, delete
+      // read = get, list
+      // ===
+      // create: Allows adding a new document to the collection.
+      // update: Allows changing data in an existing document.
+      // delete: Allows removing a document from the collection.
+      // ===
+      // get: Allows reading a single document.
+      // list: Allows reading multiple documents in a collection.
+
+      // =====================================================
+      // Rules for the 'users' collection --------------------
+      // =====================================================
+
+      // Anyone can create a user document (e.g., for a new account).
+      allow create: if true;
+
+      // Only the authenticated user can read their own document.
+      // Only the authenticated user can update their own document.
+      // Only the authenticated user can delete their own document.
+      allow read, update, delete: if request.auth != null 
+        && request.auth.uid == userId;
+
+      // Any authenticated user can get a list of all users.
+      // Your UserForm query needs this rule to check if an email exists.
+      allow list: if request.auth != null;
     }
   }
 }
