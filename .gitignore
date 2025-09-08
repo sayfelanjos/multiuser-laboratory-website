@@ -7,6 +7,7 @@ node_modules/
 
 # testing
 coverage/
+.firebase-data
 
 # production
 build/
@@ -15,5 +16,5 @@ build/
 .DS_Store
 .env
 .env.*
-
+.vscode
 **.log
