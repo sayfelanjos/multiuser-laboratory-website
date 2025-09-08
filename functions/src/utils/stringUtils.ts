@@ -1,5 +1,3 @@
-console.log("--> Loading stringUtils.ts...");
-
 /**
  * Removes all whitespace characters from a string.
  * @param {unknown} input The value to sanitize.

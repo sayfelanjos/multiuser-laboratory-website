@@ -1,5 +1,3 @@
-console.log("--> Loading admin.ts...");
-
 import * as admin from "firebase-admin";
 import { FieldValue } from "firebase-admin/firestore";
 

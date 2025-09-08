@@ -1,9 +1,8 @@
-console.log("--> Loading deleteUser.ts...");
-
 import * as functions from "firebase-functions";
 import { auth } from "../admin";
 import { authorizeRequest } from "../security/authorization";
 import { isFirebaseError } from "../utils/errorUtils";
+import { logger } from "firebase-functions";
 
 interface UserDeleteData {
   uid: string;
@@ -34,13 +33,13 @@ export const deleteUser = functions
 
     // 3. Deletion Logic
     try {
-      console.log(`Admin ${context.auth?.uid} is deleting user ${targetUid}`);
+      logger.info(`Admin ${context.auth?.uid} is deleting user ${targetUid}`);
 
       // Deleting a user from Auth automatically triggers the onDelete function
       // which handles the cleaning up of the Firestore document.
       await auth.deleteUser(targetUid);
 
-      console.log(
+      logger.info(
         `User ${targetUid} successfully deleted from Authentication.`,
       );
 
@@ -49,7 +48,7 @@ export const deleteUser = functions
         message: `Successfully deleted user ${targetUid}.`,
       };
     } catch (error) {
-      console.error("Error deleting user:", error);
+      logger.error("Error deleting user:", error);
       if (isFirebaseError(error) && error.code === "auth/user-not-found") {
         throw new functions.https.HttpsError(
           "not-found",

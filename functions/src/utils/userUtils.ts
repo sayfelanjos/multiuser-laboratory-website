@@ -1,13 +1,12 @@
-console.log("--> Loading userUtils.ts...");
-
 import { sanitizeSpaces } from "./stringUtils";
 
 interface ParsedName {
   firstName: string;
   lastName: string;
-  initials: string;
   allLastNames: string;
   displayName: string;
+  fullName: string;
+  initials: string;
 }
 
 /**
@@ -21,39 +20,44 @@ export const parseUserName = (
   name?: string | null,
   surname?: string | undefined,
 ): ParsedName => {
-  const displayName = sanitizeSpaces(surname ? `${name} ${surname}` : name);
-  if (!displayName) {
+  const sanitizeName = sanitizeSpaces(name);
+  const sanitizeSurname = sanitizeSpaces(surname);
+  const fullName = sanitizeSpaces(
+    sanitizeSurname ? `${sanitizeName} ${sanitizeSurname}` : sanitizeName,
+  );
+  if (!fullName) {
     return {
-      displayName: "",
       firstName: "",
       lastName: "",
       allLastNames: "",
+      displayName: "",
+      fullName: "",
       initials: "",
     };
   }
 
-  const nameParts = displayName.split(" ");
+  const nameParts = fullName.split(" ");
   const firstName = nameParts[0];
 
-  if (nameParts.length <= 1) {
+  if (nameParts.length === 1) {
     return {
-      displayName,
       firstName,
       lastName: "",
       allLastNames: "",
-      initials: "",
+      displayName: firstName,
+      fullName: firstName,
+      initials: firstName.slice(0, 2).toUpperCase(),
     };
   }
 
   const lastName = nameParts.slice(-1)[0];
-  const allLastNames = nameParts.slice(1).join(" ");
-  const initials = firstName[0] + lastName[0];
 
   return {
-    displayName,
     firstName,
-    lastName,
-    allLastNames,
-    initials,
+    lastName: nameParts.slice(-1)[0],
+    allLastNames: nameParts.slice(1).join(" "),
+    displayName: [firstName, lastName].join(" "),
+    fullName: nameParts.join(" "),
+    initials: (firstName[0] + lastName[0]).toUpperCase(),
   };
 };

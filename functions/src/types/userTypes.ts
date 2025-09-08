@@ -1,5 +1,3 @@
-console.log("--> Loading userTypes.ts...");
-
 import { FirestoreFieldValue } from "../admin";
 
 interface userPreferences {
@@ -41,9 +39,11 @@ export interface UserDocument {
   emailVerified: boolean;
   // password: string;
 
-  displayName: string;
   firstName: string;
+  allLastNames: string;
   lastName: string;
+  fullName: string;
+  displayName: string;
   initials: string;
 
   phoneNumber?: string | null;
@@ -80,9 +80,10 @@ export interface NewUserData {
 // Define an interface for the incoming data for type safety
 export interface UserIncomingData {
   uid: string;
+  email?: string;
   firstName?: string;
-  lastName?: string;
-  phoneNumber?: string;
+  allLastNames?: string;
+  phone?: string;
   role?: string;
   cpf?: string;
   cnpj?: string;
@@ -93,7 +94,9 @@ export interface UserIncomingData {
 
 // Define an interface for the updated data for type safety
 export interface UserUpdateData {
-  [key: string]: string | FirestoreFieldValue | Date | undefined;
+  [key: string]: string | FirestoreFieldValue | Date | boolean | undefined;
+  email?: string;
+  emailVerified?: boolean;
   firstName?: string;
   lastName?: string;
   displayName?: string;

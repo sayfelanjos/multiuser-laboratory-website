@@ -1,5 +1,3 @@
-console.log("--> Loading errorUtils.ts...");
-
 /**
  * Checks if an unknown error is an object with a 'code' property,
  * which is common for Firebase errors.

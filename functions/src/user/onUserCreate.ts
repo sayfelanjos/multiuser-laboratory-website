@@ -1,11 +1,10 @@
-console.log("--> Loading onUserCreate.ts...");
-
 import * as functions from "firebase-functions";
 import { UserRecord } from "../admin";
 import {
   assignDefaultCustomClaims,
   createUserDocument,
 } from "./userManagement";
+import { logger } from "firebase-functions";
 
 /**
  * Triggered when a new user signs up or is created by an admin.
@@ -17,7 +16,7 @@ export const onUserCreate = functions
   .auth.user()
   .onCreate(async (user: UserRecord) => {
     try {
-      console.log(`New user created: ${user.uid}. Setting up profile...`);
+      logger.info(`New user created: ${user.uid}. Setting up profile...`);
 
       // These two operations can run in parallel for efficiency
       await Promise.all([
@@ -25,8 +24,8 @@ export const onUserCreate = functions
         createUserDocument(user),
       ]);
 
-      console.log(`Successfully set up profile for user ${user.uid}.`);
+      logger.info(`Successfully set up profile for user ${user.uid}.`);
     } catch (error) {
-      console.error(`Failed to set up profile for user ${user.uid}:`, error);
+      logger.error(`Failed to set up profile for user ${user.uid}:`, error);
     }
   });
