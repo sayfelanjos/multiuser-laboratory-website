@@ -10,7 +10,7 @@ import PhoneIcon from "../../assets/icons/PhoneIcon";
 import LocationIcon from "../../assets/icons/LocationIcon";
 import Stack from "react-bootstrap/Stack";
 import { Link } from "react-router-dom";
-import ReactInputMask from "react-input-mask";
+import { IMaskInput } from "react-imask";
 import Image from "react-bootstrap/Image";
 import check from "../../assets/images/check.png";
 import cross from "../../assets/images/cross.png";
@@ -138,10 +138,9 @@ const Contact: React.FC = () => {
               <Col>
                 <Form.Group controlId="formBasicPhone" className="mb-3">
                   <Form.Label>Celular</Form.Label>
-                  <ReactInputMask
+                  <IMaskInput
                     className="form-control"
-                    mask="(99)99999-9999"
-                    maskChar="_"
+                    mask="(00)00000-0000"
                     placeholder="Telefone"
                     required
                     name="phone"
