@@ -70,13 +70,27 @@ const SchedulerNavbar = () => {
         </div>
         <Nav>
           <Dropdown drop="down" align="end">
-            <Dropdown.Toggle 
-            className="bg-transparent p-0 m-0 border-0 me-3">
-              <Image src={user?.photoURL === null ? userAvatar : user?.photoURL} style={avatarStyle} roundedCircle/>
+            <Dropdown.Toggle className="bg-transparent p-0 m-0 border-0 me-3 d-flex align-items-center gap-2 ">
+              <span className="d-none d-lg-block p-0 my-auto fw-light">
+                {user?.displayName}
+              </span>
+              <Image
+                src={user?.photoURL || userAvatar}
+                style={avatarStyle}
+                roundedCircle
+                alt="User"
+              />
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <Dropdown.ItemText>{user?.email == null ? "No identified" : user?.email}</Dropdown.ItemText>
-              <Dropdown.Divider/> 
+              <Dropdown.ItemText>
+                <span className="d-block d-lg-none mb-3 p-0 text-center fw-bold">
+                  {user?.displayName}
+                </span>
+                <span className="mb-2 text-center fw-light">
+                  {user?.email || "No identified"}
+                </span>
+              </Dropdown.ItemText>
+              <Dropdown.Divider />
               <Dropdown.Item href="/app/users/profile">Perfil</Dropdown.Item>
               <Dropdown.Item href="#/action-2">Configurações</Dropdown.Item>
               <Dropdown.Divider />
