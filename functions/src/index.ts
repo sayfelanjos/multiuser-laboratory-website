@@ -7,6 +7,7 @@ dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 // Export the functions so they can be used in other parts of the application.
 export { deleteUser } from "./user/deleteUser";
 export { createUser } from "./user/createUser";
+export { migrateSelf } from "./user/migrateSelf";
 export { migrateUsers } from "./user/migrateUsers";
 export { onUserCreate } from "./user/onUserCreate";
 export { onUserDelete } from "./user/onUserDelete";

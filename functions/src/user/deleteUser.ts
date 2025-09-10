@@ -24,13 +24,6 @@ export const deleteUser = functions
       );
     }
 
-    // if (context.auth?.uid === targetUid) {
-    //   throw new functions.https.HttpsError(
-    //     "permission-denied",
-    //     "Admins cannot delete their own account through this function.",
-    //   );
-    // }
-
     // 3. Deletion Logic
     try {
       logger.info(`Admin ${context.auth?.uid} is deleting user ${targetUid}`);
