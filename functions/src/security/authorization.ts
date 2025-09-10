@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions";
 import { db } from "../admin";
 import { logger } from "firebase-functions";
+import { CallableContext } from "firebase-functions/v1/https";
 
 // ! TEMPORARY NATIVE ADMIN USERS
 // A hardcoded list for granting immediate admin access.
@@ -51,13 +52,13 @@ interface AuthorizeRequestOptions {
  *
  * Throws an HttpsError if the user is unauthenticated or unauthorized.
  *
- * @param {functions.https.CallableContext} context The function's context.
+ * @param {CallableContext} context The function's context.
  * @param {AuthorizeRequestOptions} options An object specifying the authorization rules.
  */
 export const authorizeRequest = async (
-  context: functions.https.CallableContext,
+  context: CallableContext,
   options: AuthorizeRequestOptions = {},
-): Promise<void> => {
+) => {
   const { role: requiredRole, targetUid, useCustomClaims = true } = options;
 
   // =============================================
@@ -77,25 +78,31 @@ export const authorizeRequest = async (
   const callerUid = context.auth.uid;
   const callerEmail = context.auth.token.email || "";
 
+  // 2. Only Authentication needed:
+  if (!targetUid && !requiredRole) {
+    logger.info(`Permission GRANTED for ${callerUid} (User Authenticated).`);
+    return context.auth;
+  }
+
   // ===============================================
   // --- PERMISSION CHECKS (SUCCESS IF ANY PASS) ---
   // ===============================================
 
-  // 2. Native Admin Check
+  // 3. Native Admin Check
   // Grants immediate access to hardcoded superusers.
   if (nativeAdminList.includes(callerEmail)) {
     logger.info(`Permission GRANTED for ${callerEmail} (Native Admin).`);
-    return;
+    return context.auth;
   }
 
-  // 3. Self-Access Check
+  // 4. Self-Access Check
   // Grants access if the user is modifying their own resource.
   if (targetUid && callerUid === targetUid) {
     logger.info(`Permission GRANTED for ${callerUid} (Self-Access).`);
-    return;
+    return context.auth;
   }
 
-  // 4. Role-Based Check
+  // 5. Role-Based Check
   // Grants access if the user has the required role.
   if (requiredRole) {
     let userHasRole = false;
@@ -116,7 +123,7 @@ export const authorizeRequest = async (
       logger.info(
         `Permission GRANTED for ${callerUid} (Role: ${requiredRole}).`,
       );
-      return;
+      return context.auth;
     }
   }
 
@@ -126,7 +133,7 @@ export const authorizeRequest = async (
 
   // If the function reaches this point, none of the checks passed.
   logger.error(
-    `Permission DENIED for ${callerUid}. Failed checks:\n` +
+    `Permission DENIED for ${callerEmail}. Failed checks:\n` +
       ` - Self-Access (Target: ${targetUid || "N/A"}),\n` +
       ` - Role (Required: ${requiredRole || "N/A"}).`,
   );
