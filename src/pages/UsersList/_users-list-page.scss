@@ -14,3 +14,19 @@
     }
   }
 }
+
+.blinking-shadow {
+  animation: blink-shadow 1.5s infinite alternate; /* Adjust duration and timing as needed */
+}
+
+@keyframes blink-shadow {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 150, 0, 0.3); /* Initial shadow state */
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 150, 0, 0.8); /* Expanded/brighter shadow state */
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(255, 150, 0, 0.3); /* Return to initial state */
+  }
+}

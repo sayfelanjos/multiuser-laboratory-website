@@ -112,25 +112,23 @@ const Home = () => {
         </div>
         <div className="bg-white">
           {sectionsData.map((section, index) => (
-            <>
-              <div
-                key={index}
-                className="d-flex gap-3 align-items-center justify-content-center text-dark m-3 rounded-3 shadow p-3 flex-column flex-lg-row"
-                style={{
-                  minHeight: "180px",
-                }}
+            <div
+              key={index}
+              className="d-flex gap-3 align-items-center justify-content-center text-dark m-3 rounded-3 shadow p-3 flex-column flex-lg-row"
+              style={{
+                minHeight: "180px",
+              }}
+            >
+              <h3 className="text-center" style={{ width: "300px" }}>
+                {section.title}
+              </h3>
+              <p
+                className="border-start border-1 mx-3 mx-lg-0 my-sm-0 border-dark ps-3 w-auto"
+                // style={{ width: "60%" }}
               >
-                <h3 className="text-center" style={{ width: "300px" }}>
-                  {section.title}
-                </h3>
-                <p
-                  className="border-start border-1 mx-3 mx-lg-0 my-sm-0 border-dark ps-3 w-auto"
-                  // style={{ width: "60%" }}
-                >
-                  {section.content}
-                </p>
-              </div>
-            </>
+                {section.content}
+              </p>
+            </div>
           ))}
         </div>
         <div>

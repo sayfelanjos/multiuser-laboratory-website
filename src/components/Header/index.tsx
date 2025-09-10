@@ -127,8 +127,8 @@ const Header = () => {
           data-bs-theme="light"
           className="navbar d-block bg-white"
         >
-          <Container fluid={"lg"} className="px-3">
-            <Nav.Link as={Link} to="/home" className="py-0 px-3">
+          <Container fluid={"lg"} className="px-3 p-lg-0">
+            <Nav.Link as={Link} to="/home" className="p-0 px-3 ps-lg-0">
               <img
                 src={logo}
                 style={{ width: "auto", height: "40px" }}
@@ -151,7 +151,7 @@ const Header = () => {
                   </Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
-                  <Nav className="justify-content-end flex-grow-1 pe-3">
+                  <Nav className="justify-content-end flex-grow-1">
                     {/* START: Login Button ============================================= */}
                     <div
                       id="login-container"
@@ -169,11 +169,7 @@ const Header = () => {
                           <Dropdown drop="down" align="end">
                             <Dropdown.Toggle className="bg-transparent p-0 m-0 border-0 ms-lg-3 text-black">
                               <Image
-                                src={
-                                  user?.photoURL == null
-                                    ? userAvatar
-                                    : user?.photoURL
-                                }
+                                src={user?.photoURL || userAvatar}
                                 alt="User"
                                 style={{ width: "auto", height: "40px" }}
                                 roundedCircle
@@ -182,9 +178,12 @@ const Header = () => {
 
                             <Dropdown.Menu className="mt-2 mt-lg-1">
                               <Dropdown.ItemText>
-                                {user?.email == null
-                                  ? "No identified"
-                                  : user?.email}
+                                <span className="d-block mb-3 p-0 text-center fw-bold">
+                                  {user?.displayName}
+                                </span>
+                                <span className="mb-2 text-center fw-light">
+                                  {user?.email || "No identified"}
+                                </span>
                               </Dropdown.ItemText>
 
                               <Dropdown.Divider />

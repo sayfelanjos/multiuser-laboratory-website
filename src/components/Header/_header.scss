@@ -2,12 +2,6 @@
   &nav-active-color {
     color: black;
   }
-
-  @media (min-width: 992px) {
-    &login-container {
-      width: 71px;
-    }
-  }
 }
 
 // The following styles is a workarrond to replace the order-lg-last

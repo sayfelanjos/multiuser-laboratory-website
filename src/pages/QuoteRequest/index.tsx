@@ -3,7 +3,7 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import ReactInputMask from "react-input-mask";
+import { IMaskInput } from "react-imask";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import TooltipIcon from "../../assets/icons/TooltipIcon";
 import Button from "react-bootstrap/Button";
@@ -211,11 +211,10 @@ const QuoteRequest = () => {
                 >
                   <Form.Group controlId="formBasicPhone" className="mb-3">
                     <Form.Label column={true}>Celular</Form.Label>
-                    <ReactInputMask
+                    <IMaskInput
                       id="formBasicPhone"
                       className="form-control"
-                      mask="(99)99999-9999"
-                      maskChar="_"
+                      mask="(00)00000-0000"
                       placeholder="Celular"
                       required
                       name="phone"
