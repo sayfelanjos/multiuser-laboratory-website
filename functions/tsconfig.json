@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    // --- Explicitly define the environment libraries ---
+    // This tells TypeScript to ONLY load type definitions for modern JavaScript (ES2022)
+    // and to NOT load browser-specific libraries like "DOM".
+    "lib": ["ES2022"],
+
+    "module": "commonjs",
+    "target": "es2021",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true, // Often helpful to ignore issues in third-party libraries
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
+    // This is where the compiled .js files will go.
+    "outDir": "build",
+    // Tells the compiler where your source .ts files are.
+    "rootDir": "src"
+  },
+  // Tells the compiler to look in the "src" folder for all files to compile.
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

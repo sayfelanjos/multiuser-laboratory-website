@@ -3,14 +3,15 @@
   "description": "Cloud Functions for Firebase",
   "scripts": {
     "lint": "eslint .",
-    "serve": "firebase emulators:start --only functions",
-    "shell": "firebase functions:shell",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "build": "babel ./src --out-dir ./build"
+    "watch": "tsc --watch",
+    "build": "tsc"
   },
-  "main": "index.js",
+  "main": "build/index.js",
   "dependencies": {
     "@google-cloud/functions-framework": "^3.3.0",
     "@google-cloud/secret-manager": "^5.3.0",
@@ -21,13 +22,11 @@
     "regenerator-runtime": "^0.14.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.24.1",
-    "@babel/core": "^7.24.4",
-    "@babel/preset-env": "^7.24.4",
     "eslint": "^8.15.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^9.1.0",
-    "firebase-functions-test": "^3.1.0"
+    "firebase-functions-test": "^3.1.0",
+    "typescript": "^5.9.2"
   },
   "private": true
 }

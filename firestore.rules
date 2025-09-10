@@ -1,34 +1,60 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    // write = create, update, delete
-    // read = get, list
-    // ===
-    // create: Allows adding a new document to the collection.
-    // update: Allows changing data in an existing document.
-    // delete: Allows removing a document from the collection.
-    // ===
-    // get: Allows reading a single document.
-    // list: Allows reading multiple documents in a collection.
 
-    // Helper function to get the user's role from the 'users' collection
-    function getUserRole() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    // --- HELPER FUNCTIONS ---
+    // Checks if the requesting user is an admin.
+    function isAdmin() {
+      return request.auth.token.role == 'admin';
     }
 
+    // Checks if the requesting user is the owner of the document.
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // Checks if the user is authenticated.
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Checks if a write operation is attempting to modify the 'role' field.
+    // We check this on the incoming data (`request.resource.data`).
+    function isNotChangingRole() {
+      return (
+        !('role' in request.resource.data) ||
+        request.resource.data.role == request.auth.token.role
+      );
+    }
+    
+    // --- COLLECTION RULES ---
+
+    // Rules for the 'roles' collection
     match /roles/{roleName} {
-      allow read: if request.auth != null;
-      allow write: if getUserRole() == 'admin';
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
     }
 
+    // Rules for the 'users' collection
     match /users/{userId} {
-      // Admin: full control
-      allow read, write: if request.auth != null && (getUserRole() == 'admin');
+      // READ is allowed if the user is the owner OR an admin.
+      allow read: if isSignedIn() && (isOwner(userId) || isAdmin());
 
-      // Regular user: self only
-      allow read, create, delete: if request.auth != null && request.auth.uid == userId;
-      allow update: if request.auth != null && request.auth.uid == userId
-                    && !('role' in request.resource.data); // Prevent role changes by users
+      // CREATE is allowed if the user is creating their OWN document OR is an admin.
+      allow create: if isSignedIn() && (isOwner(userId) || isAdmin());
+      
+      // UPDATE is allowed if:
+      // 1. The user is an admin (can change anything).
+      // OR
+      // 2. The user is the owner AND they are NOT changing their own role.
+      allow update: if isSignedIn() && (isAdmin() || (isOwner(userId) && isNotChangingRole()));
+      
+      // DELETE is allowed if the user is the owner OR an admin.
+      allow delete: if isSignedIn() && (isOwner(userId) || isAdmin());
+
+      // WRITE is allowed if the user is an admin
+      allow write: if isSignedIn() && isAdmin();
     }
   }
 }
