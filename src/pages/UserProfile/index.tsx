@@ -39,34 +39,60 @@ const rolesData: Record<string, string> = {
   admin: "Administrador",
   manager: "Gestor",
   student: "Estudante",
-  user: "Usuário",
+  user: "Usuário Comum",
 };
 
 const UserProfile = () => {
-  const { user, isLoading: loadingUser, role: userRole } = useAuth();
+  const {
+    user,
+    isLoading: loadingUser,
+    role: userRole,
+    refreshUserData,
+  } = useAuth();
   const [loadingAccountDeletion, setLoadingAccountDeletion] =
     useState<boolean>(false);
   const { notification } = App.useApp();
   const [userData, setUserData] = useState<UserType | null>(null);
   const [isModalShowing, setIsModalShowing] = useState<boolean>(false);
+  const [documentError, setDocumentError] = useState<boolean>(false);
   const showModal = () => setIsModalShowing(true);
   const closeModal = () => setIsModalShowing(false);
   const [deletionText, setDeletionText] = useState<string>("");
 
   useEffect(() => {
+    const migrateSelf = httpsCallable(functions, "migrateSelf");
+
     if (user) {
       const userDocRef = doc(db, "users", user.uid);
-      getDoc(userDocRef).then((docSnap) => {
-        if (docSnap.exists()) {
-          const data = docSnap.data() as UserType;
-          console.log("Document data:", data);
-          setUserData(data);
-        }
-      });
+      getDoc(userDocRef)
+        .then((docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data() as UserType;
+            console.log("Document data:", data);
+            setUserData(data);
+          } else {
+            console.info(
+              `Couldn't find the user document for user: ${user.email}. Trying self migration...`,
+            );
+            migrateSelf()
+              .then(() => {
+                new Promise((resolve) => {
+                  setTimeout(() => resolve(refreshUserData()), 500);
+                });
+              })
+              .catch((error) => {
+                setDocumentError(true);
+                console.error("Error: Could not create self document.", error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.error("Error when accessing document:", error);
+        });
     } else {
       console.log("User not loaded yet.");
     }
-  }, [loadingUser, user]);
+  }, [user]);
 
   const handleAccountDeletion = useCallback(async () => {
     setLoadingAccountDeletion(true);
@@ -100,29 +126,7 @@ const UserProfile = () => {
       .finally(() => {
         setLoadingAccountDeletion(false);
       });
-  }, []);
-
-  if (!userData) {
-    return (
-      <Container
-        fluid
-        className="user-profile-page__ctn d-flex justify-content-center align-items-start p-4"
-      >
-        <Stack gap={2}>
-          <Skeleton.Input active size="small" block />
-          <Skeleton.Input active size="small" block />
-          <Skeleton.Input active size="small" block />
-          <Skeleton.Input active size="small" block />
-          <Skeleton.Input active size="small" block />
-          <Skeleton.Input active size="small" block />
-          <Skeleton.Input active size="small" block />
-          <Skeleton.Input active size="small" block />
-          <Skeleton.Input active size="small" block />
-          <Skeleton.Input active size="small" block />
-        </Stack>
-      </Container>
-    );
-  }
+  }, [notification, user]);
 
   // const sections: sectionType[] = [
   //   {
@@ -144,70 +148,102 @@ const UserProfile = () => {
         <Row className="mb-4 text-center">
           <Col>
             <Image
-              src={userData.photoURL || userAvatar}
+              src={user?.photoURL || userAvatar}
               alt="User"
               roundedCircle
               style={{ width: "120px", height: "120px", objectFit: "cover" }}
               className="mb-3"
             />
-            <h4 className="fw-bold">
-              {userData.fullName || userData.displayName}
-            </h4>
-            <p className="text-muted mb-0">{userData.email}</p>
-            <small className="text-muted">
-              {rolesData[userData.role] || "Usuário"}
-            </small>
-          </Col>
-        </Row>
-
-        {/* Basic Info */}
-        <Row className="mb-3">
-          <Col>
-            <h6 className="text-uppercase text-muted mb-2">Dados Básicos</h6>
-            <p>
-              <strong>Nome: </strong>
-              {userData.firstName} {userData.allLastNames}
-            </p>
-            <p>
-              <strong>Pessoa: </strong>
-              {personsData[userData.personType || ""] || "Não especificado"}
-            </p>
-            {userData.cpf && (
-              <p>
-                <strong>CPF: </strong> {userData.cpf}
-              </p>
-            )}
-            {userData.cnpj && (
-              <p>
-                <strong>CNPJ: </strong> {userData.cnpj}
-              </p>
-            )}
-            {userData.studentId && (
-              <p>
-                <strong>RA: </strong> {userData.studentId}
-              </p>
+            {user ? (
+              <>
+                <h4 className="fw-bold">{user.displayName || "loading..."}</h4>
+                <p className="text-muted mb-0">{user.email}</p>
+                <small className="text-muted">
+                  {rolesData[userRole || "user"]}
+                </small>
+              </>
+            ) : (
+              <Stack gap={2}>
+                <Skeleton.Input active size="small" />
+                <Skeleton.Input active size="small" />
+                <Skeleton.Input active size="small" />
+              </Stack>
             )}
           </Col>
         </Row>
 
-        {/* Contact Info */}
-        <Row className="mb-3">
-          <Col>
-            <h6 className="text-uppercase text-muted mb-2">Contato</h6>
-            <Card.Text>
-              <strong> Email: </strong> {userData.email}
-            </Card.Text>
-            <p>
-              <strong>Telefone: </strong> {userData.phone || "Não informado"}
+        {documentError ? (
+          <>
+            <h2 className="text-center">Ooops! Dados Não Encontrados...</h2>
+            <p className="text-center text-muted">
+              Tivemos um erro ao encontrar os dados do usuário.
             </p>
-          </Col>
-        </Row>
+          </>
+        ) : userData ? (
+          <>
+            {/* Basic Info */}
+            <Row className="mb-3">
+              <Col>
+                <h6 className="text-uppercase text-muted mb-2">
+                  Dados Básicos
+                </h6>
+                <p>
+                  <strong>Nome: </strong>
+                  {userData.firstName} {userData.allLastNames}
+                </p>
+                <p>
+                  <strong>Pessoa: </strong>
+                  {personsData[userData.personType || ""] || "Não especificado"}
+                </p>
+                {userData.cpf && (
+                  <p>
+                    <strong>CPF: </strong> {userData.cpf}
+                  </p>
+                )}
+                {userData.cnpj && (
+                  <p>
+                    <strong>CNPJ: </strong> {userData.cnpj}
+                  </p>
+                )}
+                {userData.studentId && (
+                  <p>
+                    <strong>RA: </strong> {userData.studentId}
+                  </p>
+                )}
+              </Col>
+            </Row>
+
+            {/* Contact Info */}
+            <Row className="mb-3">
+              <Col>
+                <h6 className="text-uppercase text-muted mb-2">Contato</h6>
+                <Card.Text>
+                  <strong> Email: </strong> {userData.email}
+                </Card.Text>
+                <p>
+                  <strong>Telefone: </strong>{" "}
+                  {userData.phone || "Não informado"}
+                </p>
+              </Col>
+            </Row>
+          </>
+        ) : (
+          <Stack gap={2}>
+            <Skeleton.Input active size="small" block />
+            <Skeleton.Input active size="small" block />
+            <Skeleton.Input active size="small" block />
+            <br />
+            <Skeleton.Input active size="small" block />
+            <Skeleton.Input active size="small" block />
+            <Skeleton.Input active size="small" block />
+          </Stack>
+        )}
 
         {/* Actions */}
         <Row className="mt-4">
           <Col className="d-flex flex-wrap gap-2 justify-content-center">
             <Link
-              to={loadingUser ? "#" : "/app/users/edit/" + userData.uid}
+              to={loadingUser ? "#" : "/app/users/edit/" + user?.uid}
               className={`btn btn-outline-dark ${loadingUser ? " disabled" : ""}`}
             >
               Editar Perfil
