@@ -255,7 +255,12 @@ const Header = () => {
                       {[...DropdownDataLaboratories]
                       .sort((itemA, itemB) => itemA.labelAcronym.localeCompare(itemB.labelAcronym))
                       .map((item, index) => (
-                        <Dropdown.Item key={index} title={item.fullName}>
+                        <Dropdown.Item 
+                          key={index} 
+                          title={item.fullName}
+                          as={Link}
+                          to={item.route}
+                          >
                           {item.labelAcronym}
                         </Dropdown.Item>
                       ))}
