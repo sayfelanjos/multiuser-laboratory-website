@@ -81,6 +81,15 @@ const DropdownData = [
   { route: "/service/charpy-impact-test", text: "Ensaio de Impacto Charpy" },
 ];
 
+const DropdownDataLaboratories = [
+  {route: "/laboratories/mechanical-testing-laboratory", labelAcronym: "LEM", fullName: "Laboratório de Ensaio Mecânico"},
+  {route: "/laboratories/metallography-laboratory", labelAcronym: "METALOGRAFIA", fullName: "Laboratório de Metalografia"},
+  {route: "/laboratories/multiuser-laboratory", labelAcronym: "MULTIUSUÁRIOS", fullName: "Laboratório Multiusuários"},
+  {route: "/laboratories/scanning-electron-microscopy-laboratory", labelAcronym: "MEV", fullName: "Microscopia Eletrônica de Varredura"},
+  {route: "/laboratories/transmission-electron-microscopy-laboratory", labelAcronym: "TEM", fullName: "Microscopia Eletrônica de Transmissão"},
+  {route: "/laboratories/termoanalisys-laboratory", labelAcronym: "ATERM", fullName: "Laboratório de Análise Térmica e Infravermelho"},
+]
+
 const Header = () => {
   const { user, isLoading: isAuthLoading } = useAuth();
   const path = useLocation();
@@ -235,16 +244,20 @@ const Header = () => {
                         <Stack
                           gap={1}
                           direction="horizontal"
-                          className={`d-inline-flex nav-link p-0 ${path.pathname.startsWith("/service") ? "header__nav-active-color" : ""}`}
+                          className={`d-inline-flex nav-link p-0 ${path.pathname.startsWith("/laboratories") ? "header__nav-active-color" : ""}`}
                         >
                           <ServicesIcon />
-                          <span>Serviços</span>
+                          <span>Laboratorios</span>
                         </Stack>
                       }
                       id="basic-nav-dropdown"
                     >
-                      {DropdownData.map((item, index) => (
-                        <HeaderDropdownItem key={index} {...item} />
+                      {[...DropdownDataLaboratories]
+                      .sort((itemA, itemB) => itemA.labelAcronym.localeCompare(itemB.labelAcronym))
+                      .map((item, index) => (
+                        <Dropdown.Item key={index} title={item.fullName}>
+                          {item.labelAcronym}
+                        </Dropdown.Item>
                       ))}
                     </NavDropdown>
 

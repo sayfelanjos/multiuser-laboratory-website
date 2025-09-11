@@ -32,6 +32,12 @@ import SchedulePage from "./pages/Scheduler";
 import UsersList from "./pages/UsersList";
 import UserRegister from "./pages/UserAdd";
 import UserEdit from "./pages/UserEdit";
+import MechanicalTesting from "./pages/Laboratories/MechanicalTesting";
+import Metallography from "./pages/Laboratories/Metallography";
+import Multiuser from "./pages/Laboratories/Multiuser";
+import ScanningElectronMicroscopy from "./pages/Laboratories/ScanningElectronMicroscopy";
+import TermoAnalysis from "./pages/Laboratories/TermoAnalysis";
+import TransmissionElectronMicroscopy from "./pages/Laboratories/TransmissionElectronMicroscopy";
 import { Provider } from "react-redux";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore as db } from "./firebase";
@@ -40,6 +46,7 @@ import ResetPassword from "./pages/ResetPassword";
 import RequestToResetPassword from "./pages/RequestToResetPassword";
 import UserProfile from "./pages/UserProfile";
 import { App } from "antd";
+import path from "path";
 
 const router = createBrowserRouter([
   {
@@ -134,6 +141,35 @@ const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path: "laboratories",
+        children: [
+          {
+            path: "mechanical-testing-laboratory",
+            element: <MechanicalTesting/>,
+          },
+          {
+            path: "metallography-laboratory",
+            element: <Metallography/>
+          },
+          {
+            path: "multiuser-laboratory",
+            element: <Multiuser/>
+          },
+          {
+            path: "scanning-electron-microscopy-laboratory",
+            element: <ScanningElectronMicroscopy/>
+          },
+          {
+            path: "transmission-electron-microscopy-laboratory",
+            element: <TransmissionElectronMicroscopy/>
+          },
+          {
+            path: "termoanalisys-laboratory",
+            element: <TermoAnalysis/>
+          }
+        ]
+      }
     ],
   },
   {
