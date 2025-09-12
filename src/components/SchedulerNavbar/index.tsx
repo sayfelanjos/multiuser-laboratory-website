@@ -1,13 +1,16 @@
 import React, { useCallback } from "react";
-import Navbar from "react-bootstrap/Navbar";
-import Container from "react-bootstrap/Container";
+import {
+  Navbar,
+  Container,
+  Nav,
+  Button,
+  Image,
+  Dropdown,
+} from "react-bootstrap";
+import { Link } from "react-router-dom";
 import brandIcon from "../../assets/images/fem-logo-monocromatica.png";
-import Nav from "react-bootstrap/Nav";
-import Button from "react-bootstrap/Button";
-import Image from "react-bootstrap/Image";
 import HamburgerIcon from "../../assets/icons/HamburgerIcon";
 import CloseIcon from "../../assets/icons/CloseIcon";
-import Dropdown from "react-bootstrap/Dropdown";
 import "./_scheduler-navbar.scss";
 import { signOutUser } from "../../helpers/signOutUser";
 import { useNavigate } from "react-router-dom";
@@ -91,8 +94,12 @@ const SchedulerNavbar = () => {
                 </span>
               </Dropdown.ItemText>
               <Dropdown.Divider />
-              <Dropdown.Item href="/app/users/profile">Perfil</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">Configurações</Dropdown.Item>
+              <Dropdown.Item as={Link} to="/app/users/profile">
+                Perfil
+              </Dropdown.Item>
+              <Dropdown.Item as={Link} to="#/action-2" disabled>
+                Configurações
+              </Dropdown.Item>
               <Dropdown.Divider />
               <Dropdown.Item onClick={onButtonClick}>Logout</Dropdown.Item>
             </Dropdown.Menu>

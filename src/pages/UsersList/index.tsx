@@ -1,28 +1,22 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { Table, Space, App } from "antd";
 import type { TableColumnsType } from "antd";
-import Container from "react-bootstrap/Container";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import Image from "react-bootstrap/Image";
+import { Container, Modal, Button, Image, Spinner } from "react-bootstrap";
 import Divider from "antd/lib/divider";
 import { Link } from "react-router-dom";
-import { collection, getDocs } from "firebase/firestore";
-import { firestore as db } from "../../firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
+import { functions, firestore as db } from "../../firebase";
 import UserType from "../../interfaces/user";
-import store from "../../redux/store/store";
 import {
   setWarningOfDeletingUserModal,
   closeWarningOfDeletingUserModal,
 } from "../../redux/reducers/warningOfDeletingUserModalSlice";
-import "./_users-list-page.scss";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import DeleteIcon from "../../assets/icons/DeleteIcon";
-import { showNotification } from "../../helpers/showNotification";
-import { functions } from "../../firebase";
-import { httpsCallable } from "firebase/functions";
 import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
-import Spinner from "react-bootstrap/Spinner";
+import { showNotification } from "../../helpers/showNotification";
+import "./_users-list-page.scss";
 
 const personTypes: { [key: string]: string } = {
   unset: "Não especificado",
@@ -31,123 +25,12 @@ const personTypes: { [key: string]: string } = {
   student: "Estudante",
 };
 
-const columns: TableColumnsType<UserType> = [
-  {
-    width: 72,
-    dataIndex: "photoURL",
-    render: (photoURL) => (
-      <Image
-        src={photoURL || userAvatar}
-        alt="User"
-        style={{ width: "auto", height: "40px" }}
-        roundedCircle
-      />
-    ),
-    filteredValue: [],
-  },
-  {
-    title: "Nome",
-    dataIndex: "fullName",
-    sorter: (a, b) => a.displayName.localeCompare(b.displayName),
-    filteredValue: [],
-  },
-  {
-    title: "Email",
-    sorter: (a, b) => a.email.localeCompare(b.email),
-    dataIndex: "email",
-    filteredValue: [],
-  },
-  {
-    title: "Criação",
-    dataIndex: "createdAt",
-    sorter: (a, b) => a.createdAt.toMillis() - b.createdAt.toMillis(),
-    defaultSortOrder: "ascend",
-    width: "15rem",
-    render: (creationTime) =>
-      new Date(creationTime.toMillis()).toLocaleString("pt-BR"),
-    filteredValue: [],
-  },
-  {
-    title: "Ultima Modificação",
-    dataIndex: "lastUpdated",
-    sorter: (a, b) => a.createdAt.toMillis() - b.createdAt.toMillis(),
-    defaultSortOrder: "ascend",
-    width: "15rem",
-    render: (creationTime) =>
-      new Date(creationTime.toMillis()).toLocaleString("pt-BR"),
-    filteredValue: [],
-  },
-  {
-    title: "Tipo",
-    dataIndex: "role",
-    width: 100,
-    filters: [
-      { text: "Administrador", value: "admin" },
-      { text: "Técnico", value: "technician" },
-      { text: "Gestor", value: "manager" },
-      { text: "Usuário comum", value: "user" },
-    ],
-    onFilter: (value, record) => record.role === value,
-    filteredValue: [],
-  },
-  {
-    title: "Pessoa",
-    dataIndex: "personType",
-    render: (p) => personTypes[p],
-    filteredValue: [],
-  },
-  {
-    title: "Usuário Ativo?",
-    dataIndex: "isActive",
-    width: 150,
-    render: (v) => (v ? "Sim" : "Não"),
-    filters: [
-      { text: "Sim", value: true },
-      { text: "Não", value: false },
-    ],
-    onFilter: (value, record) => record.isActive === value,
-    filteredValue: [true],
-    hidden: true,
-  },
-  {
-    title: "Telefone",
-    width: 120,
-    dataIndex: "phoneNumber",
-    filteredValue: [],
-  },
-  {
-    title: "Ações",
-    key: "operation",
-    fixed: "right",
-    filteredValue: [],
-    width: 132,
-    render: (record) => (
-      <Space size="middle">
-        <Link
-          to={`/app/users/edit/${record.uid}`}
-          className="users-list__action-btn"
-        >
-          Editar
-        </Link>
-        <Button
-          type="button"
-          className="btn btn-link users-list__action-btn"
-          onClick={() =>
-            store.dispatch(
-              setWarningOfDeletingUserModal({
-                isOpened: true,
-                key: record.uid,
-                userName: `${record.displayName}`,
-              }),
-            )
-          }
-        >
-          Apagar
-        </Button>
-      </Space>
-    ),
-  },
-];
+const roles: { [key: string]: string } = {
+  user: "Usuário Comum",
+  technician: "Técnico",
+  manager: "Gestor",
+  admin: "Administrador",
+};
 
 const UsersList = () => {
   const [usersData, setUsersData] = useState<Array<UserType>>([]);
@@ -157,21 +40,140 @@ const UsersList = () => {
   );
   const dispatch = useAppDispatch();
   const { notification } = App.useApp();
-  // todo: COMMENT REMOVE THESE VARIABLES AFTER MIGRATION COMPLETED
+  // todo: COMMENT OUT OR REMOVE THESE VARIABLES AFTER MIGRATION COMPLETED
   const [migratedUsers, setMigratedUsers] = useState<boolean>(false);
   const [migratingUsers, setMigratingUsers] = useState<boolean>(false);
+
+  const columns = useMemo<TableColumnsType<UserType>>(
+    () => [
+      {
+        width: 72,
+        dataIndex: "photoURL",
+        render: (photoURL) => (
+          <Image
+            src={photoURL || userAvatar}
+            alt="User"
+            style={{ width: "auto", height: "40px" }}
+            roundedCircle
+          />
+        ),
+      },
+      {
+        title: "Nome",
+        dataIndex: "fullName",
+        sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+      },
+      {
+        title: "Email",
+        sorter: (a, b) => a.email.localeCompare(b.email),
+        dataIndex: "email",
+      },
+      {
+        title: "Criação",
+        dataIndex: "createdAt",
+        sorter: (a, b) => a.createdAt.toMillis() - b.createdAt.toMillis(),
+        defaultSortOrder: "ascend",
+        width: "15rem",
+        render: (creationTime) =>
+          new Date(creationTime.toMillis()).toLocaleString("pt-BR"),
+      },
+      {
+        title: "Ultima Modificação",
+        dataIndex: "lastUpdated",
+        sorter: (a, b) => a.createdAt.toMillis() - b.createdAt.toMillis(),
+        defaultSortOrder: "ascend",
+        width: "15rem",
+        render: (creationTime) =>
+          new Date(creationTime.toMillis()).toLocaleString("pt-BR"),
+      },
+      {
+        title: "Tipo",
+        dataIndex: "role",
+        width: 100,
+        render: (r) => roles[r || "user"],
+        filters: Object.keys(roles).map((key) => ({
+          text: roles[key],
+          value: key,
+        })),
+        onFilter: (value, record) => record.role === value,
+      },
+      {
+        title: "Pessoa",
+        dataIndex: "personType",
+        render: (p) => personTypes[p || "unset"],
+        filters: Object.keys(personTypes).map((key) => ({
+          text: personTypes[key],
+          value: key,
+        })),
+        onFilter: (value, record) => record.personType === value,
+      },
+      {
+        title: "Usuário Ativo?",
+        dataIndex: "isActive",
+        width: 150,
+        render: (v) => (v ? "Sim" : "Não"),
+        filters: [
+          { text: "Sim", value: true },
+          { text: "Não", value: false },
+        ],
+        onFilter: (value, record) => record.isActive === value,
+        hidden: true,
+      },
+      {
+        title: "Telefone",
+        width: 120,
+        dataIndex: "phoneNumber",
+      },
+      {
+        title: "Ações",
+        key: "operation",
+        fixed: "right",
+        width: 132,
+        render: (record) => (
+          <Space size="middle">
+            <Link
+              to={`/app/users/edit/${record.uid}`}
+              className="users-list__action-btn"
+            >
+              Editar
+            </Link>
+            <Button
+              type="button"
+              className="btn btn-link users-list__action-btn"
+              onClick={() =>
+                // Now using the dispatch from the component's hook
+                dispatch(
+                  setWarningOfDeletingUserModal({
+                    isOpened: true,
+                    key: record.uid,
+                    userName: `${record.displayName}`,
+                  }),
+                )
+              }
+            >
+              Apagar
+            </Button>
+          </Space>
+        ),
+      },
+    ],
+    [dispatch],
+  );
 
   // Get users list from firestore database.
   useEffect(() => {
     setIsLoading(true);
     const users: Array<UserType> = [];
-    getDocs(collection(db, "users"))
+    const usersCollectionRef = collection(db, "users");
+    const q = query(usersCollectionRef, where("isActive", "==", true));
+
+    getDocs(q)
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           const user = doc.data();
           users.push(user as UserType);
         });
-        setUsersData(users.filter((user) => user.isActive));
+        setUsersData(users);
       })
       .catch((error) => {
         console.error(error.message);
@@ -200,10 +202,8 @@ const UsersList = () => {
         );
 
         // Remove the deleted user from the local state to update the UI
-        setUsersData(
-          usersData.map((user) =>
-            user.uid === key ? { ...user, isActive: false } : user,
-          ),
+        setUsersData((currentUsers) =>
+          currentUsers.filter((user) => user.uid !== key),
         );
       })
       .catch((error) => {
@@ -220,7 +220,7 @@ const UsersList = () => {
         setIsLoading(false);
         dispatch(closeWarningOfDeletingUserModal());
       });
-  }, [key]);
+  }, [key, dispatch, notification]);
 
   // todo: COMMENT REMOVE THIS FUNCTION AFTER MIGRATION IS COMPLETED.
   const migrateUsers = httpsCallable(functions, "migrateUsers");
@@ -244,7 +244,7 @@ const UsersList = () => {
         setMigratingUsers(false);
         dispatch(closeWarningOfDeletingUserModal());
       });
-  }, []);
+  }, [dispatch, notification]);
 
   return (
     <Container
@@ -292,13 +292,6 @@ const UsersList = () => {
           dataSource={usersData}
           scroll={{ x: "max-content", y: 300 }}
         />
-        {/* {isLoading && (
-          <Stack gap={2}>
-            <Skeleton.Input active size="small" block />
-            <Skeleton.Input active size="small" block />
-            <Skeleton.Input active size="small" block />
-          </Stack>
-        )} */}
       </Container>
       <Modal
         show={isOpened}

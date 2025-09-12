@@ -28,6 +28,7 @@ import { firestore as db } from "../../firebase";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../../firebase";
 import WarningIcon from "../../assets/icons/WarningIcon";
+import { MaskedPattern } from "imask";
 
 const personsData: Record<string, string> = {
   individual: "Pessoa Física",
@@ -42,6 +43,57 @@ const rolesData: Record<string, string> = {
   user: "Usuário Comum",
 };
 
+type infoType = {
+  data: string;
+  label: string;
+  mask?: MaskedPattern<string>;
+};
+type sectionType = {
+  title: string;
+  itemsList: infoType[];
+  sm?: number | boolean | "auto";
+  md?: number | boolean | "auto";
+};
+
+const InfoSection = ({ title, itemsList, sm, md }: sectionType) => {
+  return (
+    <Col {...{ sm, md }} className="mb-3 justify-content-center p-0">
+      <h4 className="text-uppercase text-muted mb-2 fw-light mt-sm-4 mb-4">
+        {title}
+      </h4>
+      <Container>
+        {itemsList
+          .filter(({ data }) => Boolean(data))
+          .map((props, i) => (
+            <InfoRow key={i} {...props} />
+          ))}
+      </Container>
+    </Col>
+  );
+};
+
+const InfoRow = ({ data, label }: infoType) => {
+  return (
+    <Row className="mb-2">
+      <Col xs={3} className="p-0">
+        <span className="fw-lighter"> {label}: </span>
+      </Col>
+      <Col xs={9} className="p-0 ps-2">
+        <span className="fs-6 fw-light d-inline-block mw-100 text-truncate">
+          {label.toLocaleLowerCase() === "cpf"
+            ? data.replace(/^(\d{1,3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4")
+            : label.toLocaleLowerCase() === "cnpj"
+              ? data.replace(
+                  /^(\d{1,2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
+                  "$1.$2.$3/$4-$5",
+                )
+              : data}
+        </span>
+      </Col>
+    </Row>
+  );
+};
+
 const UserProfile = () => {
   const {
     user,
@@ -54,7 +106,9 @@ const UserProfile = () => {
   const { notification } = App.useApp();
   const [userData, setUserData] = useState<UserType | null>(null);
   const [isModalShowing, setIsModalShowing] = useState<boolean>(false);
-  const [documentError, setDocumentError] = useState<boolean>(false);
+  const [loadingDocStatus, setLoadingDocStatus] = useState<
+    "loading" | "migrating" | "error" | "success"
+  >("loading");
   const showModal = () => setIsModalShowing(true);
   const closeModal = () => setIsModalShowing(false);
   const [deletionText, setDeletionText] = useState<string>("");
@@ -63,13 +117,14 @@ const UserProfile = () => {
     const migrateSelf = httpsCallable(functions, "migrateSelf");
 
     if (user) {
+      setLoadingDocStatus("loading");
       const userDocRef = doc(db, "users", user.uid);
       getDoc(userDocRef)
         .then((docSnap) => {
           if (docSnap.exists()) {
             const data = docSnap.data() as UserType;
-            console.log("Document data:", data);
             setUserData(data);
+            setLoadingDocStatus("success");
           } else {
             console.info(
               `Couldn't find the user document for user: ${user.email}. Trying self migration...`,
@@ -77,11 +132,12 @@ const UserProfile = () => {
             migrateSelf()
               .then(() => {
                 new Promise((resolve) => {
+                  setLoadingDocStatus("migrating");
                   setTimeout(() => resolve(refreshUserData()), 500);
                 });
               })
               .catch((error) => {
-                setDocumentError(true);
+                setLoadingDocStatus("error");
                 console.error("Error: Could not create self document.", error);
               });
           }
@@ -89,8 +145,6 @@ const UserProfile = () => {
         .catch((error) => {
           console.error("Error when accessing document:", error);
         });
-    } else {
-      console.log("User not loaded yet.");
     }
   }, [user]);
 
@@ -121,27 +175,40 @@ const UserProfile = () => {
           `Usuário ${user.email} não pode ser deletado! Você precisa sair e entrar novamente na aplicação.`,
           "error",
         );
-        console.error(error.message);
+        console.error("Error when deleting user:", error.message);
       })
       .finally(() => {
         setLoadingAccountDeletion(false);
       });
   }, [notification, user]);
 
-  // const sections: sectionType[] = [
-  //   {
-  //     title: "Dados Básicos",
-  //     itemsList: [{ label: "Nome", data: userData.fullName || "" }],
-  //   },
-  // ];
+  const dataSections: sectionType[] = [
+    {
+      title: "Dados Básicos",
+      itemsList: [
+        { label: "Nome", data: userData?.fullName || "" },
+        {
+          label: "Pessoa",
+          data: personsData[userData?.personType || ""] || "Não especificado",
+        },
+        { label: "CPF", data: userData?.cpf || "" },
+        { label: "CNPJ", data: userData?.cnpj || "" },
+        { label: "RA", data: userData?.studentId || "" },
+      ],
+    },
+    {
+      title: "Contato",
+      itemsList: [
+        { label: "Email", data: userData?.email || "" },
+        { label: "Telefone", data: userData?.phone || "Não informado" },
+      ],
+    },
+  ];
 
   return (
-    <Container
-      fluid
-      className="user-profile-page__ctn shadow rounded-2 p-3 d-flex justify-content-center flex-column"
-    >
+    <Container fluid className="user-profile-page__ctn">
       <Card
-        className="shadow rounded-3 bg-white p-4 w-100"
+        className="mt-3 mb-5 shadow rounded-3 bg-white p-3 w-100"
         style={{ maxWidth: "800px" }}
       >
         {/* Header */}
@@ -151,15 +218,17 @@ const UserProfile = () => {
               src={user?.photoURL || userAvatar}
               alt="User"
               roundedCircle
-              style={{ width: "120px", height: "120px", objectFit: "cover" }}
+              style={{ width: "180px", objectFit: "cover" }}
               className="mb-3"
             />
             {user ? (
               <>
-                <h4 className="fw-bold">{user.displayName || "loading..."}</h4>
+                <h4 className="fw-semibold">
+                  {user.displayName || "loading..."}
+                </h4>
                 <p className="text-muted mb-0">{user.email}</p>
                 <small className="text-muted">
-                  {rolesData[userRole || "user"]}
+                  <i>{rolesData[userRole || "user"]}</i>
                 </small>
               </>
             ) : (
@@ -172,63 +241,20 @@ const UserProfile = () => {
           </Col>
         </Row>
 
-        {documentError ? (
+        {loadingDocStatus === "error" ? (
           <>
             <h2 className="text-center">Ooops! Dados Não Encontrados...</h2>
             <p className="text-center text-muted">
               Tivemos um erro ao encontrar os dados do usuário.
             </p>
           </>
-        ) : userData ? (
-          <>
-            {/* Basic Info */}
-            <Row className="mb-3">
-              <Col>
-                <h6 className="text-uppercase text-muted mb-2">
-                  Dados Básicos
-                </h6>
-                <p>
-                  <strong>Nome: </strong>
-                  {userData.firstName} {userData.allLastNames}
-                </p>
-                <p>
-                  <strong>Pessoa: </strong>
-                  {personsData[userData.personType || ""] || "Não especificado"}
-                </p>
-                {userData.cpf && (
-                  <p>
-                    <strong>CPF: </strong> {userData.cpf}
-                  </p>
-                )}
-                {userData.cnpj && (
-                  <p>
-                    <strong>CNPJ: </strong> {userData.cnpj}
-                  </p>
-                )}
-                {userData.studentId && (
-                  <p>
-                    <strong>RA: </strong> {userData.studentId}
-                  </p>
-                )}
-              </Col>
-            </Row>
-
-            {/* Contact Info */}
-            <Row className="mb-3">
-              <Col>
-                <h6 className="text-uppercase text-muted mb-2">Contato</h6>
-                <Card.Text>
-                  <strong> Email: </strong> {userData.email}
-                </Card.Text>
-                <p>
-                  <strong>Telefone: </strong>{" "}
-                  {userData.phone || "Não informado"}
-                </p>
-              </Col>
-            </Row>
-          </>
-        ) : (
+        ) : loadingDocStatus === "loading" ? (
           <Stack gap={2}>
+            <h2 className="text-center">
+              <Spinner className="me-3" as="span" animation="border" />{" "}
+              Carregado Dados...
+            </h2>
+            <br />
             <Skeleton.Input active size="small" block />
             <Skeleton.Input active size="small" block />
             <Skeleton.Input active size="small" block />
@@ -237,6 +263,25 @@ const UserProfile = () => {
             <Skeleton.Input active size="small" block />
             <Skeleton.Input active size="small" block />
           </Stack>
+        ) : loadingDocStatus === "migrating" ? (
+          <h2 className="text-center">
+            <Spinner className="me-3" as="span" animation="border" /> Criando
+            Documento de usuário...
+          </h2>
+        ) : loadingDocStatus === "success" && userData ? (
+          <Container fluid>
+            <Row className="gap-3 justify-content-center px-3">
+              <InfoSection md={5} sm={5} {...dataSections[0]} />
+              <InfoSection md={6} sm={true} {...dataSections[1]} />
+            </Row>
+          </Container>
+        ) : (
+          <>
+            <h2 className="text-center">Ooops! Algo inesperado ocorreu...</h2>
+            <p className="text-center text-muted">
+              Tivemos um erro ao encontrar os dados do usuário.
+            </p>
+          </>
         )}
 
         {/* Actions */}
@@ -327,27 +372,3 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
-
-// type infoType = { data: string; label: string };
-// type sectionType = { title: string; itemsList: infoType[] };
-
-// const InfoSection = ({ title, itemsList }: sectionType) => {
-//   return (
-//     <Row className="mb-3">
-//       <Col>
-//         <h6 className="text-uppercase text-muted mb-2">{title}</h6>
-//         {itemsList.map((props, i) => (
-//           <InfoRow key={i} {...props} />
-//         ))}
-//       </Col>
-//     </Row>
-//   );
-// };
-
-// const InfoRow = ({ data, label }: infoType) => {
-//   return (
-//     <p>
-//       <span className="text-uppercase text-muted">{label}: </span> {data}
-//     </p>
-//   );
-// };
