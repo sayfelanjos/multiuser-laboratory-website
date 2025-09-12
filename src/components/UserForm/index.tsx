@@ -138,7 +138,6 @@ const UserForm = () => {
       field: keyof UserType,
     ) => {
       setIsInputChanged(true);
-      console.log("Input changed!");
       const value = event.target.value;
       setTargetUser((currentState) => ({
         ...currentState,
@@ -156,7 +155,7 @@ const UserForm = () => {
 
       // Prevent submission if there are validation errors.
       const hasErrors = Object.entries(formErrors).some(([field, error]) => {
-        console.log(field, error);
+        console.error(field, error);
         return error !== null;
       });
       if (hasErrors) {
@@ -347,7 +346,6 @@ const UserForm = () => {
           <Form.Group as={Col} md="5" controlId="validationCustomUsername">
             <Form.Label>Celular</Form.Label>
             <IMaskInput
-              // style={{ width: "9.2rem" }}
               id="formBasicPhone"
               className="form-control"
               mask="(00) 0 0000-0000"
