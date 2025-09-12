@@ -5,6 +5,8 @@ import { authorizeRequest } from "../security/authorization";
 import { parseUserName } from "../utils/userUtils";
 import { removeWhitespace, keepOnlyDigits } from "../utils/stringUtils"; // <-- Import our new utils
 import { logger } from "firebase-functions";
+import { cpf as cpfValidator, cnpj as cnpjValidator } from "cpf-cnpj-validator";
+import * as EmailValidator from "email-validator";
 
 export const updateUser = functions
   .region("southamerica-east1")
@@ -52,12 +54,42 @@ export const updateUser = functions
       updateData.initials = initials;
     }
 
-    if (email) {
+    if (email && EmailValidator.validate(email)) {
       updateData.email = email;
     }
 
-    if (phoneNumber) {
-      updateData.phoneNumber = phoneNumber;
+    if (phoneNumber !== null) {
+      // Options: empty string, "(99) 9 9999-9999" or "(99) 9999-9999"
+      if (phoneNumber === "" || [10, 11].includes(phoneNumber.length)) {
+        updateData.phoneNumber = phoneNumber;
+      } else {
+        throw new functions.https.HttpsError(
+          "invalid-argument",
+          "The phone number provided is not valid. Must be a string with 10 or 11 digits.",
+        );
+      }
+    }
+
+    if (cpf !== null) {
+      if (cpf === "" || cpfValidator.isValid(cpf)) {
+        updateData.cpf = cpf;
+      } else {
+        throw new functions.https.HttpsError(
+          "invalid-argument",
+          "The CPF number provided is not valid.",
+        );
+      }
+    }
+
+    if (cnpj !== null) {
+      if (cnpj === "" || cnpjValidator.isValid(cnpj)) {
+        updateData.cnpj = cnpj;
+      } else {
+        throw new functions.https.HttpsError(
+          "invalid-argument",
+          "The CNPJ number provided is not valid.",
+        );
+      }
     }
 
     // Dynamically add other fields if they exist
