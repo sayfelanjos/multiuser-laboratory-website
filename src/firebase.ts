@@ -4,6 +4,7 @@ import { getAuth, connectAuthEmulator } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
+import { getStorage, connectStorageEmulator } from "firebase/storage";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -32,6 +33,9 @@ const firestore = getFirestore(app);
 // Initialize Firebase Functions and get a reference to the service
 const functions = getFunctions(app, "southamerica-east1");
 
+// Initialize Cloud Storage and get a reference to the service
+const storage = getStorage(app);
+
 // This checks if the app is running on localhost and connects to the local
 // Firebase emulators if it is. It is is useful for development and testing
 // purposes, allowing you to run Firebase services locally without affecting
@@ -55,6 +59,10 @@ if (
   // Point the Functions service to the local emulator
   // Port 5001 is set in firebase.json
   connectFunctionsEmulator(functions, "127.0.0.1", 5001);
+
+  // Point the Functions service to the local emulator
+  // Port 5001 is set in firebase.json
+  connectStorageEmulator(storage, "localhost", 9199);
 }
 
-export { analytics, auth, firestore, functions };
+export { analytics, auth, firestore, functions, storage };
