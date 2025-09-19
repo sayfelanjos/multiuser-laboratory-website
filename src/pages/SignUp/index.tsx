@@ -21,6 +21,7 @@ import { FirebaseError } from "firebase/app";
 import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
 import { signInWithGoogle } from "../../helpers/signInWithGoogle";
 import { signInWithMicrosoft } from "../../helpers/signInWithMicrosoft";
+import { ExclamationTriangle } from "react-bootstrap-icons";
 
 type passwordTestType = { text: string; testingRegEx: RegExp };
 type alertTypes = "warning" | "success" | "danger" | "info" | "light" | "dark";
@@ -176,6 +177,7 @@ const SignUp = () => {
     [],
   );
 
+  // CapsLock Alert Feature:
   const [capsLockOn, setCapsLockOn] = useState<boolean>(false);
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -184,7 +186,6 @@ const SignUp = () => {
       } else {
         setCapsLockOn(false);
       }
-      console.log("hit:", event.key);
     };
 
     document.addEventListener("keydown", handleKeyDown);
@@ -347,7 +348,10 @@ const SignUp = () => {
                     </Row>
 
                     {capsLockOn && (
-                      <i className="text-danger">* CapsLock Ativado!</i>
+                      <p className="text-danger">
+                        <ExclamationTriangle />
+                        <i className="text-danger ms-2">CapsLock Ativado!</i>
+                      </p>
                     )}
 
                     {/* Create Account Button */}
