@@ -22,6 +22,7 @@ import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
 import Dropdown from "react-bootstrap/Dropdown";
 import Image from "react-bootstrap/Image";
 import Spinner from "react-bootstrap/Spinner";
+import { isDisabled } from "@testing-library/user-event/dist/utils";
 
 const HeaderNavLink = ({
   children,
@@ -82,12 +83,12 @@ const DropdownData = [
 ];
 
 const DropdownDataLaboratories = [
-  {route: "/laboratories/mechanical-testing-laboratory", labelAcronym: "LEM", fullName: "Laboratório de Ensaio Mecânico"},
-  {route: "/laboratories/metallography-laboratory", labelAcronym: "METALOGRAFIA", fullName: "Laboratório de Metalografia"},
-  {route: "/laboratories/multiuser-laboratory", labelAcronym: "MULTIUSUÁRIOS", fullName: "Laboratório Multiusuários"},
-  {route: "/laboratories/scanning-electron-microscopy-laboratory", labelAcronym: "MEV", fullName: "Microscopia Eletrônica de Varredura"},
-  {route: "/laboratories/transmission-electron-microscopy-laboratory", labelAcronym: "TEM", fullName: "Microscopia Eletrônica de Transmissão"},
-  {route: "/laboratories/termoanalisys-laboratory", labelAcronym: "ATERM", fullName: "Laboratório de Análise Térmica e Infravermelho"},
+  {route: "/laboratories/mechanical-testing-laboratory", text: "Ensaio Mecânico", isDisabled: false},
+  {route: "/laboratories/metallography-laboratory", text: "Metalografia", isDisabled: true},
+  {route: "/laboratories/multiuser-laboratory", text: "Multiusuários", isDisabled: true},
+  {route: "/laboratories/scanning-electron-microscopy-laboratory", text: "Microscopia Eletrônica de Varredura", isDisabled: false},
+  {route: "/laboratories/transmission-electron-microscopy-laboratory", text: "Microscopia Eletrônica de Transmissão", isDisabled: true},
+  {route: "/laboratories/termoanalisys-laboratory", text: "Análise Térmica e Infravermelho", isDisabled: true},
 ]
 
 const Header = () => {
@@ -253,15 +254,30 @@ const Header = () => {
                       id="basic-nav-dropdown"
                     >
                       {[...DropdownDataLaboratories]
-                      .sort((itemA, itemB) => itemA.labelAcronym.localeCompare(itemB.labelAcronym))
+                      .sort((itemA, itemB) => {
+                          if ((!itemA.isDisabled && !itemB.isDisabled) || (itemA.isDisabled && itemB.isDisabled)){ // Executa comparações apenas se os dois itens estão habilitados ou desabilitados
+                            return itemA.text.localeCompare(itemB.text);
+                          }
+                          
+                          // Ordena para os habilitados aparecem antes dos desabilitados
+                          if (itemA.isDisabled && !itemB.isDisabled) {
+                            return 1;
+                          }
+
+                          if (!itemA.isDisabled && itemB.isDisabled){
+                            return -1; 
+                          } 
+                            
+                          return 0;
+                        })
                       .map((item, index) => (
                         <Dropdown.Item 
                           key={index} 
-                          title={item.fullName}
                           as={Link}
                           to={item.route}
+                          disabled = {item.isDisabled}
                           >
-                          {item.labelAcronym}
+                          {item.text}
                         </Dropdown.Item>
                       ))}
                     </NavDropdown>
