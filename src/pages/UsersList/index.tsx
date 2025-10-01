@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
 import { functions, firestore as db } from "../../firebase";
-import UserType from "../../interfaces/user";
+import UserDocType from "../../interfaces/userDoc";
 import {
   setWarningOfDeletingUserModal,
   closeWarningOfDeletingUserModal,
@@ -33,7 +33,7 @@ const roles: { [key: string]: string } = {
 };
 
 const UsersList = () => {
-  const [usersData, setUsersData] = useState<Array<UserType>>([]);
+  const [usersData, setUsersData] = useState<Array<UserDocType>>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { key, userName, isOpened } = useAppSelector(
     (state) => state.warningOfDeletingUserModal,
@@ -44,14 +44,14 @@ const UsersList = () => {
   const [migratedUsers, setMigratedUsers] = useState<boolean>(false);
   const [migratingUsers, setMigratingUsers] = useState<boolean>(false);
 
-  const columns = useMemo<TableColumnsType<UserType>>(
+  const columns = useMemo<TableColumnsType<UserDocType>>(
     () => [
       {
         width: 72,
-        dataIndex: "photoURL",
-        render: (photoURL) => (
+        dataIndex: "photos",
+        render: (photos) => (
           <Image
-            src={photoURL || userAvatar}
+            src={photos?.smallUrl || userAvatar}
             alt="User"
             style={{ width: "auto", height: "40px" }}
             roundedCircle
@@ -60,8 +60,10 @@ const UsersList = () => {
       },
       {
         title: "Nome",
-        dataIndex: "fullName",
-        sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+        dataIndex: "names",
+        render: (names) => names?.fullName || "",
+        sorter: (a, b) =>
+          a.names.displayName.localeCompare(b.names.displayName),
       },
       {
         title: "Email",
@@ -163,7 +165,7 @@ const UsersList = () => {
   // Get users list from firestore database.
   useEffect(() => {
     setIsLoading(true);
-    const users: Array<UserType> = [];
+    const users: Array<UserDocType> = [];
     const usersCollectionRef = collection(db, "users");
     const q = query(usersCollectionRef, where("isActive", "==", true));
 
@@ -171,7 +173,7 @@ const UsersList = () => {
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           const user = doc.data();
-          users.push(user as UserType);
+          users.push(user as UserDocType);
         });
         setUsersData(users);
       })

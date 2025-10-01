@@ -21,7 +21,7 @@ import {
   Form,
 } from "react-bootstrap";
 import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
-import UserType from "../../interfaces/user";
+import UserDocType from "../../interfaces/userDoc";
 import "./_user-profile-page.scss";
 import { getDoc, doc } from "firebase/firestore";
 import { firestore as db } from "../../firebase";
@@ -48,6 +48,7 @@ type infoType = {
   label: string;
   mask?: MaskedPattern<string>;
 };
+
 type sectionType = {
   title: string;
   itemsList: infoType[];
@@ -104,7 +105,7 @@ const UserProfile = () => {
   const [loadingAccountDeletion, setLoadingAccountDeletion] =
     useState<boolean>(false);
   const { notification } = App.useApp();
-  const [userData, setUserData] = useState<UserType | null>(null);
+  const [userData, setUserData] = useState<UserDocType | null>(null);
   const [isModalShowing, setIsModalShowing] = useState<boolean>(false);
   const [loadingDocStatus, setLoadingDocStatus] = useState<
     "loading" | "migrating" | "error" | "success"
@@ -122,7 +123,7 @@ const UserProfile = () => {
       getDoc(userDocRef)
         .then((docSnap) => {
           if (docSnap.exists()) {
-            const data = docSnap.data() as UserType;
+            const data = docSnap.data() as UserDocType;
             setUserData(data);
             setLoadingDocStatus("success");
           } else {
@@ -186,14 +187,14 @@ const UserProfile = () => {
     {
       title: "Dados Básicos",
       itemsList: [
-        { label: "Nome", data: userData?.fullName || "" },
+        { label: "Nome", data: userData?.names.fullName || "" },
         {
           label: "Pessoa",
           data: personsData[userData?.personType || ""] || "Não especificado",
         },
-        { label: "CPF", data: userData?.cpf || "" },
-        { label: "CNPJ", data: userData?.cnpj || "" },
-        { label: "RA", data: userData?.studentId || "" },
+        { label: "CPF", data: userData?.documents.cpf || "" },
+        { label: "CNPJ", data: userData?.documents.cnpj || "" },
+        { label: "RA", data: userData?.documents.studentId || "" },
       ],
     },
     {
