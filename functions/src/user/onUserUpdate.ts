@@ -1,8 +1,7 @@
 import * as functions from "firebase-functions";
-import { auth, db } from "../admin";
+import { auth } from "../admin";
 import type { UserDocument } from "../types/userTypes";
 import { VALID_ROLES } from "../types/userTypes";
-import { logger } from "firebase-functions";
 import { UpdateRequest } from "firebase-admin/auth";
 
 /**
@@ -29,54 +28,62 @@ export const onUserUpdate = functions
       const claimsUpdatePromise = auth
         .setCustomUserClaims(uid, { ...userClaims, role: newRole })
         .then(() => {
-          logger.info(`Updated custom claim for ${uid} to '${newRole}'.`);
+          console.info(`Updated custom claim for ${uid} to '${newRole}'.`);
         });
       updatePromises.push(claimsUpdatePromise);
     }
 
     // --- Task 2: Sync email to Auth and emailVerified ---
-    const updateData: UpdateRequest = {};
-    if (newData.email && newData.email !== oldData.email) {
-      updateData.email = newData.email;
-      updateData.emailVerified = false;
-      const verifiedEmailPromisse = db
-        .collection("users")
-        .doc(uid)
-        .update({
-          emailVerified: false,
-        })
-        .then(() => {
-          logger.info(`Set emailVerified as false in firestore for ${uid}.`);
-        });
-      updatePromises.push(verifiedEmailPromisse);
-    }
+    const updateAuthData: UpdateRequest = {};
+    // if (newData.email && newData.email !== oldData.email) {
+    //   updateAuthData.email = newData.email;
+    //   updateAuthData.emailVerified = false;
+    //   const verifiedEmailPromisse = db
+    //     .collection("users")
+    //     .doc(uid)
+    //     .update({
+    //       emailVerified: false,
+    //     })
+    //     .then(() => {
+    //       console.info(`Set emailVerified as false in firestore for ${uid}.`);
+    //     });
+    //   updatePromises.push(verifiedEmailPromisse);
+    // }
 
     // --- Task 3: Sync Profile to Auth ---
-    if (newData.fullName && newData.fullName !== oldData.fullName) {
-      updateData.displayName = newData.fullName;
+
+    // 3.1 - Names
+    if (newData.names && newData.names.fullName !== oldData.names.fullName) {
+      updateAuthData.displayName = newData.names.fullName;
     }
-    if (newData.photoURL !== oldData.photoURL) {
-      updateData.photoURL = newData.photoURL;
-    }
-    if (Object.keys(updateData).length > 0) {
-      const profileUpdatePromise = auth.updateUser(uid, updateData).then(() => {
-        logger.info(`Synced Auth profile for ${uid}.`);
-      });
+
+    // 3.2 - Photos
+    // if (newData.photos && newData.photos.smallUrl !== oldData.photos.smallUrl) {
+    //   updateAuthData.photoURL = newData.photos.smallUrl;
+    // }
+
+    // 3.3 - Apply changes
+    if (Object.keys(updateAuthData).length > 0) {
+      const profileUpdatePromise = auth
+        .updateUser(uid, updateAuthData)
+        .then(() => {
+          console.info(`Synced Auth profile for ${uid}.`);
+        });
       updatePromises.push(profileUpdatePromise);
     }
 
     // --- Execute All Tasks ---
     if (updatePromises.length === 0) {
-      logger.info("No relevant changes detected, exiting.");
+      console.info("No relevant changes detected, exiting.");
       return null;
     }
 
     try {
       // Run all pending updates in parallel
       await Promise.all(updatePromises);
-      logger.info(`All updates for user ${uid} completed successfully.`);
+      console.info(`All updates for user ${uid} completed successfully.`);
     } catch (error) {
-      logger.error(`Failed to sync updates for user ${uid}:`, error);
+      console.error(`Failed to sync updates for user ${uid}:`, error);
       // Optional: Add rollback logic here if needed, but logging the error
       // for manual review is often a safer first step.
     }

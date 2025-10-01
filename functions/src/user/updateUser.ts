@@ -21,14 +21,7 @@ export const updateUser = functions
     const studentId = keepOnlyDigits(data.studentId);
     const personType = removeWhitespace(data.personType);
     const email = removeWhitespace(data.email);
-    const {
-      firstName,
-      lastName,
-      fullName,
-      displayName,
-      initials,
-      allLastNames,
-    } = parseUserName(data.firstName, data.allLastNames);
+    const parsedNames = parseUserName(data.firstName, data.allLastNames);
 
     // 2. Authentication & Authorization =====================================
     await authorizeRequest(context, { targetUid, role: "admin" });
@@ -45,13 +38,8 @@ export const updateUser = functions
       lastUpdated: FieldValue.serverTimestamp(),
     };
 
-    if (firstName) {
-      updateData.firstName = firstName;
-      updateData.lastName = lastName;
-      updateData.allLastNames = allLastNames;
-      updateData.fullName = fullName;
-      updateData.displayName = displayName;
-      updateData.initials = initials;
+    if (parsedNames.firstName) {
+      updateData.names = parsedNames;
     }
 
     if (email && EmailValidator.validate(email)) {
@@ -72,7 +60,7 @@ export const updateUser = functions
 
     if (cpf !== null) {
       if (cpf === "" || cpfValidator.isValid(cpf)) {
-        updateData.cpf = cpf;
+        updateData.documents = { ...updateData.documents, cpf };
       } else {
         throw new functions.https.HttpsError(
           "invalid-argument",
@@ -83,7 +71,7 @@ export const updateUser = functions
 
     if (cnpj !== null) {
       if (cnpj === "" || cnpjValidator.isValid(cnpj)) {
-        updateData.cnpj = cnpj;
+        updateData.documents = { ...updateData.documents, cnpj };
       } else {
         throw new functions.https.HttpsError(
           "invalid-argument",
@@ -92,13 +80,21 @@ export const updateUser = functions
       }
     }
 
+    if (studentId !== null) {
+      if (studentId === "" || studentId.length === 6) {
+        updateData.documents = { ...updateData.documents, studentId };
+      } else {
+        throw new functions.https.HttpsError(
+          "invalid-argument",
+          "The studentId number provided is not valid, it must have 6 digits.",
+        );
+      }
+    }
+
     // Dynamically add other fields if they exist
     const otherFields = {
       photoURL,
       role,
-      cpf,
-      cnpj,
-      studentId,
       personType,
     };
 
