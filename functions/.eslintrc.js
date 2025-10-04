@@ -3,15 +3,24 @@ module.exports = {
     es6: true,
     node: true,
   },
+  parser: "@typescript-eslint/parser",
+  plugins: ["@typescript-eslint"],
   parserOptions: {
-    ecmaVersion: 2018,
+    ecmaVersion: "latest",
+    sourceType: "module",
   },
-  extends: ["eslint:recommended", "google", "prettier"],
+  extends: [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "google",
+    "prettier", // Must be last!
+  ],
   rules: {
+    "no-unused-vars": "off", // Correct!
+    "@typescript-eslint/no-unused-vars": ["warn"], // Let the TS rule handle it
     "no-restricted-globals": ["error", "name", "length"],
-    "@typescript-eslint/no-var-requires": 0,
+    "@typescript-eslint/no-var-requires": "off",
     "prefer-arrow-callback": "error",
-    quotes: ["error", "double", { allowTemplateLiterals: true }],
   },
   overrides: [
     {

@@ -14,3 +14,4 @@ export { onUserDelete } from "./user/onUserDelete";
 export { onUserUpdate } from "./user/onUserUpdate";
 export { updateUser } from "./user/updateUser";
 export { sendEmail } from "./notifications/sendEmail";
+export { onFinalizeFileUpload } from "./storage/onFinalize";
