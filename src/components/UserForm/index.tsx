@@ -11,16 +11,17 @@ import Spinner from "react-bootstrap/Spinner";
 import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import { App } from "antd";
 import UserType from "../../interfaces/user"; // Updated interface
+import UserDocType from "../../interfaces/userDoc"; // Updated interface
 import Modal from "react-bootstrap/Modal";
 import WarningIcon from "../../assets/icons/WarningIcon";
 import { showNotification } from "../../helpers/showNotification";
-import { Timestamp } from "firebase/firestore";
 import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
 import Image from "react-bootstrap/Image";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../../firebase";
 import { useAuth } from "../../hooks/useAuth";
 import { cpf, cnpj } from "cpf-cnpj-validator";
+import ProfilePicUploader from "../../components/ProfilePicUploader";
 
 type roleType = {
   displayName: {
@@ -45,10 +46,9 @@ const rolesDataTest: rolesMap = {
 };
 
 const UserForm = () => {
-  const loadedTargetUser = useLoaderData() as UserType;
+  const loadedTargetUser = useLoaderData() as UserDocType;
   const location = useLocation();
   const [rolesData, setRolesData] = useState<rolesMap>({});
-  const [isInputChanged, setIsInputChanged] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<{
     [key: string]: string | null;
   }>({});
@@ -60,20 +60,39 @@ const UserForm = () => {
   } = useAuth();
   const [targetUser, setTargetUser] = useState<UserType>({
     uid: "",
-    displayName: "",
-    fullName: "",
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
     photoURL: null,
-    createdAt: Timestamp.now(),
     role: "",
     personType: "unset",
     cpf: "",
     cnpj: "",
     studentId: "",
   });
+
+  const isInputChanged = useCallback((): boolean => {
+    return loadedTargetUser
+      ? loadedTargetUser.names.firstName !== targetUser.firstName ||
+          loadedTargetUser.names.allLastNames !== targetUser.allLastNames ||
+          loadedTargetUser.email !== targetUser.email ||
+          loadedTargetUser.phone !== targetUser.phone ||
+          loadedTargetUser.photos.smallUrl !== targetUser.photoURL ||
+          loadedTargetUser.role !== targetUser.role ||
+          loadedTargetUser.personType !== targetUser.personType ||
+          loadedTargetUser.documents.cpf !== targetUser.cpf ||
+          loadedTargetUser.documents.cnpj !== targetUser.cnpj ||
+          loadedTargetUser.documents.studentId !== targetUser.studentId
+      : Boolean(targetUser.firstName) ||
+          Boolean(targetUser.allLastNames) ||
+          Boolean(targetUser.email) ||
+          Boolean(targetUser.phone) ||
+          Boolean(targetUser.photoURL) ||
+          Boolean(targetUser.cpf) ||
+          Boolean(targetUser.cnpj) ||
+          Boolean(targetUser.studentId);
+  }, [loadedTargetUser, targetUser]);
 
   useEffect(() => {
     /*
@@ -96,7 +115,29 @@ const UserForm = () => {
 
   useEffect(() => {
     if (loadedTargetUser) {
-      setTargetUser(loadedTargetUser);
+      const {
+        uid,
+        email,
+        role,
+        phone,
+        personType,
+        documents: { cpf, cnpj, studentId },
+        names: { firstName, allLastNames },
+        photos: { smallUrl },
+      } = loadedTargetUser;
+      setTargetUser({
+        uid,
+        firstName,
+        allLastNames,
+        email,
+        phone,
+        photoURL: smallUrl || null,
+        role,
+        personType,
+        cpf,
+        cnpj,
+        studentId,
+      });
     }
   }, [loadedTargetUser]);
 
@@ -122,7 +163,6 @@ const UserForm = () => {
         error = "CNPJ inválido.";
       }
     }
-    console.log(error);
     // Update the errors state for the specific field
     setFormErrors((currErrors) => ({
       ...currErrors,
@@ -137,12 +177,16 @@ const UserForm = () => {
       >,
       field: keyof UserType,
     ) => {
-      setIsInputChanged(true);
       const value = event.target.value;
-      setTargetUser((currentState) => ({
-        ...currentState,
-        [field]: value,
-      }));
+      setTargetUser((currentState) => {
+        if (currentState[field] !== value) {
+          // setIsInputChanged(true);
+        }
+        return {
+          ...currentState,
+          [field]: value,
+        };
+      });
 
       validateField(field, value);
     },
@@ -172,7 +216,7 @@ const UserForm = () => {
         // ===========================================================
         // Update targetUser
         // ===========================================================
-        if (isInputChanged) {
+        if (isInputChanged()) {
           // Update User data in Firestore and Authentication at Backend:
           const updateData = {
             uid: targetUser.uid,
@@ -230,7 +274,6 @@ const UserForm = () => {
             await createUserProfile({
               email: targetUser.email,
               role: targetUser.role,
-              password: "123456",
               phone: targetUser.phone || null,
               firstName: targetUser.firstName,
               lastName: targetUser.lastName,
@@ -262,7 +305,6 @@ const UserForm = () => {
     },
     [
       targetUser,
-      isInputChanged,
       navigate,
       notification,
       updateUserProfile,
@@ -289,14 +331,17 @@ const UserForm = () => {
             md="auto"
             className="d-flex flex-column justify-content-center align-items-center"
           >
-            <Image
+            {/* <Image
               src={targetUser.photoURL || userAvatar}
               alt="User"
               style={{ width: "auto", height: "120px" }}
               roundedCircle
               className="my-2"
-            />
-            <Form.Label className="text-muted">
+            /> */}
+
+            <ProfilePicUploader />
+
+            <Form.Label className="text-muted mt-3">
               {targetUser.photoURL ? "Foto de perfil" : "Sem foto de perfil"}
             </Form.Label>
           </Col>
@@ -334,7 +379,9 @@ const UserForm = () => {
           <Form.Group as={Col} md="7" controlId="validationCustom03">
             <Form.Label>Email</Form.Label>
             <Form.Control
-              // style={{ width: "15rem" }}
+              // disabled={true}
+              readOnly={true}
+              disabled={true}
               type="email"
               placeholder="Email"
               onChange={(event) => handleInputChange(event, "email")}
@@ -489,7 +536,7 @@ const UserForm = () => {
             <Button
               type="button"
               variant="outline-dark"
-              onClick={() => (isInputChanged ? showModal() : navigate(-1))}
+              onClick={() => (isInputChanged() ? showModal() : navigate(-1))}
             >
               Cancelar
             </Button>

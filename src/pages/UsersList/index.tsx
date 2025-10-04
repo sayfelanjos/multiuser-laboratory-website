@@ -110,6 +110,20 @@ const UsersList = () => {
         onFilter: (value, record) => record.personType === value,
       },
       {
+        title: "Documento",
+        dataIndex: "documents",
+        render: (value, user) => {
+          if (user.personType === "individual") {
+            return `cpf: ${value.cpf}`;
+          } else if (user.personType === "company") {
+            return `cnpj: ${value.cnpj}`;
+          } else if (user.personType === "student") {
+            return `studentId: ${value.studentId}`;
+          }
+          return "N/A";
+        },
+      },
+      {
         title: "Usuário Ativo?",
         dataIndex: "isActive",
         width: 150,
@@ -141,14 +155,14 @@ const UsersList = () => {
             </Link>
             <Button
               type="button"
-              className="btn btn-link users-list__action-btn"
+              className="btn btn-link text-danger users-list__action-btn"
               onClick={() =>
                 // Now using the dispatch from the component's hook
                 dispatch(
                   setWarningOfDeletingUserModal({
                     isOpened: true,
                     key: record.uid,
-                    userName: `${record.displayName}`,
+                    userName: `${record.names.displayName}`,
                   }),
                 )
               }
