@@ -4,7 +4,6 @@ import { authorizeRequest } from "../security/authorization";
 import { sanitizeSpaces, removeWhitespace } from "../utils/stringUtils";
 import { isFirebaseError } from "../utils/errorUtils";
 import type { NewUserData } from "../types/userTypes"; // <-- Import type
-import { logger } from "firebase-functions";
 
 export const createUser = functions
   .region("southamerica-east1")
@@ -49,7 +48,7 @@ export const createUser = functions
         uid: userRecord.uid,
       };
     } catch (error) {
-      logger.error("Error creating new user:", error);
+      console.error("Error creating new user:", error);
       if (
         isFirebaseError(error) &&
         error.code === "auth/email-already-exists"

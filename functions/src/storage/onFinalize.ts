@@ -78,7 +78,7 @@ export const onFinalizeFileUpload = functions.storage
     const thumbFile = currentBucket.file(thumbPath);
     const thumbUrl = await getDownloadURL(thumbFile);
 
-    // Update Storage:
+    // Update Firestore:
     try {
       console.log("Saving image URLs to firestore...");
       await admin
