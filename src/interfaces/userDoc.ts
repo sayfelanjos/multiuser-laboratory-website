@@ -1,8 +1,7 @@
-import React from "react";
 import { Timestamp } from "firebase/firestore";
 
 interface UserDocType {
-  uid: React.Key;
+  uid: string;
   names: {
     fullName?: string;
     firstName?: string;
@@ -18,6 +17,7 @@ interface UserDocType {
     studentId?: string;
   };
   photos: {
+    mediumUrl?: string | null;
     smallUrl?: string | null;
     thumbUrl?: string | null;
   };

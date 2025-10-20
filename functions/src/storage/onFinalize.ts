@@ -5,53 +5,55 @@ import * as path from "path";
 import * as os from "os";
 import * as fs from "fs";
 import { getDownloadURL } from "firebase-admin/storage";
+// import { ref, getMetadata } from "firebase/storage";
 
 /**
  * Generate profile pictures variants
  */
-export const onFinalizeFileUpload = functions.storage
-  .object()
+export const onFinalizeFileUpload = functions
+  .region("southamerica-east1")
+  .storage.object()
   .onFinalize(async (object) => {
     // Removed context, it's not used
-    const filePath = object.name;
+    const mediumFilePath = object.name; // Medium is the initial uploaded file Size
     const fileBucket = object.bucket; // Get the bucket name
 
-    if (!filePath) {
+    if (!mediumFilePath) {
       console.log("No file path given! Finalizing...");
       return;
     }
 
-    if (!filePath.startsWith("userProfilePics/")) {
+    if (!mediumFilePath.startsWith("userProfilePics/")) {
       console.log("Not a user profile picture. Finalizing...");
       return null;
     }
 
-    // This checks the actual filename, not the whole path.
-    const fileName = path.basename(filePath);
+    const fileName = path.basename(mediumFilePath);
+    const pathParts = mediumFilePath.split("/");
+    const fileExtension = path.extname(mediumFilePath);
+    const uid = pathParts[1];
+
     if (fileName.startsWith("thumb_") || fileName.startsWith("small_")) {
       console.log("File is already a variant. Finalizing...");
       return null;
     }
 
-    const parts = filePath.split("/");
-    const uid = parts[1];
     if (!uid) {
       console.log("No user ID was given. Finalizing...");
       return null;
     }
 
+    // Download initial file for creating small and thumb variants
     const tempLocalFile = path.join(os.tmpdir(), fileName);
-
-    // Use the bucket from the event, not a globally imported one
     const currentBucket = admin.storage().bucket(fileBucket);
-    await currentBucket.file(filePath).download({ destination: tempLocalFile });
-
-    const smallPath = `userProfilePics/${uid}/small_${fileName}`;
-    const thumbPath = `userProfilePics/${uid}/thumb_${fileName}`;
-    const tempSmall = path.join(os.tmpdir(), "small_" + fileName);
-    const tempThumb = path.join(os.tmpdir(), "thumb_" + fileName);
+    const fileRef = currentBucket.file(mediumFilePath);
+    const fileMetadata = await fileRef.getMetadata();
+    console.log(fileMetadata);
+    await fileRef.download({ destination: tempLocalFile });
 
     // Create "small" version
+    const smallPath = `userProfilePics/${uid}/small_profile.${fileExtension}`;
+    const tempSmall = path.join(os.tmpdir(), `small_profile.${fileExtension}`);
     await sharp(tempLocalFile)
       .resize({ width: 180, height: 180, fit: "inside" })
       .toFile(tempSmall);
@@ -62,6 +64,8 @@ export const onFinalizeFileUpload = functions.storage
     console.log("Successfully created small picture variant!");
 
     // Create "thumb" version
+    const thumbPath = `userProfilePics/${uid}/thumb_profile`;
+    const tempThumb = path.join(os.tmpdir(), "thumb_profile");
     await sharp(tempLocalFile)
       .resize({ width: 48, height: 48, fit: "cover" })
       .toFile(tempThumb);
@@ -71,12 +75,22 @@ export const onFinalizeFileUpload = functions.storage
     });
     console.log("Successfully created thumb picture variant!");
 
-    // Use getDownloadURL for a stable URL, which works in emulators and production.
-    // getDownloadURL provides a long-lived, publicly accessible URL.
+    // getDownloadURL provides a long-lived, publicly accessible URL, which works in emulators and production.
+    const mediumFile = currentBucket.file(mediumFilePath);
+    const mediumUrl = await getDownloadURL(mediumFile);
     const smallFile = currentBucket.file(smallPath);
     const smallUrl = await getDownloadURL(smallFile);
     const thumbFile = currentBucket.file(thumbPath);
     const thumbUrl = await getDownloadURL(thumbFile);
+
+    // Update Auth (do it here instead of in the onUpdate function)
+    try {
+      console.log("Updating Auth picture to the small variant...");
+      await admin.auth().updateUser(uid, { photoURL: mediumUrl });
+      console.log("Successfully updated Auth picture!");
+    } catch (e) {
+      console.warn("Could not update auth user photoURL", e);
+    }
 
     // Update Firestore:
     try {
@@ -86,8 +100,9 @@ export const onFinalizeFileUpload = functions.storage
         .doc(`users/${uid}`)
         .set(
           {
-            userPhoto: {
-              original: filePath,
+            photos: {
+              medium: mediumFilePath,
+              mediumUrl,
               small: smallPath,
               smallUrl,
               thumb: thumbPath,
@@ -99,15 +114,6 @@ export const onFinalizeFileUpload = functions.storage
       console.log("Successfully Saved to firestore!");
     } catch (err) {
       console.log("Error when saving image URLs to firestore:", err);
-    }
-
-    // Update Auth is made here instead of the onUpdate function.
-    try {
-      console.log("Updating Auth picture to the small variant...");
-      await admin.auth().updateUser(uid, { photoURL: smallUrl });
-      console.log("Successfully updated Auth picture!");
-    } catch (e) {
-      console.warn("Could not update auth user photoURL", e);
     }
 
     // Clean temp files

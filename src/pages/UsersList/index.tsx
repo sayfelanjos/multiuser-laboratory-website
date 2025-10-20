@@ -17,6 +17,7 @@ import DeleteIcon from "../../assets/icons/DeleteIcon";
 import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
 import { showNotification } from "../../helpers/showNotification";
 import "./_users-list-page.scss";
+import { TrashFill, PencilSquare } from "react-bootstrap-icons";
 
 const personTypes: { [key: string]: string } = {
   unset: "Não especificado",
@@ -139,19 +140,20 @@ const UsersList = () => {
         title: "Telefone",
         width: 120,
         dataIndex: "phoneNumber",
+        render: (v) => v || "-",
       },
       {
         title: "Ações",
         key: "operation",
         fixed: "right",
-        width: 132,
+        width: 70,
         render: (record) => (
           <Space size="middle">
             <Link
               to={`/app/users/edit/${record.uid}`}
               className="users-list__action-btn"
             >
-              Editar
+              <PencilSquare />
             </Link>
             <Button
               type="button"
@@ -167,7 +169,7 @@ const UsersList = () => {
                 )
               }
             >
-              Apagar
+              <TrashFill />
             </Button>
           </Space>
         ),
@@ -238,7 +240,7 @@ const UsersList = () => {
       });
   }, [key, dispatch, notification]);
 
-  // todo: COMMENT REMOVE THIS FUNCTION AFTER MIGRATION IS COMPLETED.
+  // todo: COMMENT or REMOVE THIS FUNCTION AFTER MIGRATION IS COMPLETED.
   const migrateUsers = httpsCallable(functions, "migrateUsers");
   const handleMigrateUsers = useCallback(() => {
     setMigratingUsers(true);

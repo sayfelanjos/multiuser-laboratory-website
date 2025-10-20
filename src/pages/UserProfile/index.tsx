@@ -1,13 +1,8 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { showNotification } from "../../helpers/showNotification";
-import { App } from "antd";
-import { useAuth } from "../../hooks/useAuth";
-import {
-  Link,
-  // useNavigate,
-  // useLoaderData,
-} from "react-router-dom";
-import { Skeleton } from "antd";
+import { App, Skeleton } from "antd";
+import { getDoc, doc } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
+import { MaskedPattern } from "imask";
 import {
   Spinner,
   Stack,
@@ -20,15 +15,18 @@ import {
   Modal,
   Form,
 } from "react-bootstrap";
+import {
+  Link,
+  // useNavigate,
+  // useLoaderData,
+} from "react-router-dom";
 import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
+import WarningIcon from "../../assets/icons/WarningIcon";
+import { firestore as db, functions } from "../../firebase";
+import { showNotification } from "../../helpers/showNotification";
+import { useAuth } from "../../hooks/useAuth";
 import UserDocType from "../../interfaces/userDoc";
 import "./_user-profile-page.scss";
-import { getDoc, doc } from "firebase/firestore";
-import { firestore as db } from "../../firebase";
-import { httpsCallable } from "firebase/functions";
-import { functions } from "../../firebase";
-import WarningIcon from "../../assets/icons/WarningIcon";
-import { MaskedPattern } from "imask";
 
 const personsData: Record<string, string> = {
   individual: "Pessoa Física",
@@ -105,15 +103,15 @@ const UserProfile = () => {
   const [loadingAccountDeletion, setLoadingAccountDeletion] =
     useState<boolean>(false);
   const { notification } = App.useApp();
-  const [userData, setUserData] = useState<UserDocType | null>(null);
   const [isModalShowing, setIsModalShowing] = useState<boolean>(false);
-  const [loadingDocStatus, setLoadingDocStatus] = useState<
-    "loading" | "migrating" | "error" | "success"
-  >("loading");
   const showModal = () => setIsModalShowing(true);
   const closeModal = () => setIsModalShowing(false);
   const [deletionText, setDeletionText] = useState<string>("");
 
+  const [userData, setUserData] = useState<UserDocType | null>(null);
+  const [loadingDocStatus, setLoadingDocStatus] = useState<
+    "loading" | "migrating" | "error" | "success"
+  >("loading");
   useEffect(() => {
     const migrateSelf = httpsCallable(functions, "migrateSelf");
 
@@ -157,7 +155,7 @@ const UserProfile = () => {
 
     // Delete the user from Auth
     if (!user) {
-      showNotification(notification, `Dados de usuário ausentes!.`, "error");
+      showNotification(notification, "Dados de usuário ausentes!", "error");
       return;
     }
     console.log("Deleting user with UID:", user.uid);

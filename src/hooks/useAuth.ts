@@ -50,8 +50,7 @@ export const useAuth = (): AuthState => {
         // Get the full ID token result. The `forceRefresh` parameter is the magic key.
         const idTokenResult = await getIdTokenResult(user, forceRefresh);
 
-        // Correctly extract the 'role' from the custom claims using a logical OR.
-        // If claims.role exists, use it; otherwise, fall back to null.
+        // Extract the 'role' from the custom claims.
         const userRole = (idTokenResult.claims.role as string) || null;
 
         // Update our state with the user object and their role.
@@ -66,11 +65,10 @@ export const useAuth = (): AuthState => {
         setAuthInfo({ user, role: null, isLoading: false });
       }
     },
-    [], // Empty dependency array: This function itself never changes.
+    [], // This function itself never changes.
   );
 
-  // This useEffect runs only once when the component mounts.
-  // Its job is to set up the official Firebase authentication listener.
+  // Set up the official Firebase authentication listener:
   useEffect(() => {
     // onAuthStateChanged returns an `unsubscribe` function.
     // Firebase will call our callback whenever the user logs in or out.
@@ -79,14 +77,13 @@ export const useAuth = (): AuthState => {
       updateUserStateFromToken(authUser);
     });
 
-    // The cleanup function for useEffect.
-    // React will call this when the component unmounts to prevent memory leaks.
+    // Cleanup: React will call this when the component unmounts to prevent memory leaks.
     return () => unsubscribe();
-  }, [updateUserStateFromToken]); // See explanation in section 2 below.
+  }, [updateUserStateFromToken]); // Runs only once
 
   /**
-   * A function exposed to components that forces a complete refresh of the user's
-   * authentication data (profile info like displayName) AND their ID token (for custom claims).
+   * A function to force a refresh of the user's authentication data (profile
+   * info like displayName) AND their ID token (for custom claims).
    */
   const refreshUserData = useCallback(async () => {
     const currentUser = auth.currentUser;
@@ -102,9 +99,7 @@ export const useAuth = (): AuthState => {
       await updateUserStateFromToken(currentUser, true);
       console.log("Auth state and token successfully refreshed.");
     }
-  }, [updateUserStateFromToken]);
+  }, [updateUserStateFromToken]); // Runs only once
 
-  // We return the state object and the refresh function separately
-  // so they can be easily destructured by components.
   return { ...authInfo, refreshUserData };
 };

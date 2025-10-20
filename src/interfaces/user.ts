@@ -1,4 +1,3 @@
-import React from "react";
 import { Timestamp } from "firebase/firestore";
 
 // interface User {
@@ -10,7 +9,7 @@ import { Timestamp } from "firebase/firestore";
 // }
 
 interface UserType {
-  uid?: React.Key;
+  uid?: string;
   fullName?: string;
   firstName?: string;
   lastName?: string;
