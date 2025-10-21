@@ -1,6 +1,7 @@
 import { onAuthStateChanged, User, getIdTokenResult } from "firebase/auth";
 import { useEffect, useState, useCallback } from "react";
 import { auth } from "../firebase";
+import { type UserRoleTypes } from "../types/userInfo";
 
 /**
  * @interface AuthState
@@ -9,7 +10,7 @@ import { auth } from "../firebase";
 interface AuthState {
   isLoading: boolean;
   user: User | null;
-  role: string | null;
+  role: UserRoleTypes | null;
   refreshUserData: () => Promise<void>;
 }
 
@@ -51,7 +52,7 @@ export const useAuth = (): AuthState => {
         const idTokenResult = await getIdTokenResult(user, forceRefresh);
 
         // Extract the 'role' from the custom claims.
-        const userRole = (idTokenResult.claims.role as string) || null;
+        const userRole = (idTokenResult.claims.role as UserRoleTypes) || null;
 
         // Update our state with the user object and their role.
         setAuthInfo({
