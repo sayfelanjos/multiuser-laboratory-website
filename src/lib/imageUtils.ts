@@ -1,4 +1,3 @@
-// src/lib/imageUtils.ts
 import pica from "pica";
 import { Area } from "react-easy-crop";
 
@@ -52,27 +51,10 @@ export async function resizeImageFile(
 export async function makeThumbnail(
   file: File,
   thumbSize = 256,
-  quality = 0.7,
+  quality = 1,
 ): Promise<File> {
   return await resizeImageFile(file, thumbSize, thumbSize, quality);
 }
-
-// import imageCompression from "browser-image-compression";
-/**
- * Compress an image before upload.
- */
-// export async function compressImage(
-//   file: File,
-//   maxSizeMB = 1,
-//   maxWidthOrHeight = 512,
-// ): Promise<File> {
-//   const options = {
-//     maxSizeMB,
-//     maxWidthOrHeight,
-//     useWebWorker: true,
-//   };
-//   return await imageCompression(file, options);
-// }
 
 export const createImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
@@ -83,7 +65,7 @@ export const createImage = (url: string): Promise<HTMLImageElement> =>
     image.src = url;
   });
 
-export function getRadianAngle(degreeValue: number) {
+export function degreeToRadian(degreeValue: number) {
   return (degreeValue * Math.PI) / 180;
 }
 
@@ -91,7 +73,7 @@ export function getRadianAngle(degreeValue: number) {
  * Returns the new bounding area of a rotated rectangle.
  */
 export function rotateSize(width: number, height: number, rotation: number) {
-  const rotRad = getRadianAngle(rotation);
+  const rotRad = degreeToRadian(rotation);
 
   return {
     width:
@@ -118,7 +100,7 @@ export default async function getCroppedImg(
     throw new Error("No image context");
   }
 
-  const rotRad = getRadianAngle(rotation);
+  const rotRad = degreeToRadian(rotation);
 
   // calculate bounding box of the rotated image
   const { width: bBoxWidth, height: bBoxHeight } = rotateSize(

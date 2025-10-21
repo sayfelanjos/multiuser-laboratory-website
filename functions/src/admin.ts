@@ -13,7 +13,12 @@ export { db, auth };
 
 // Export specific values and types from the initialized admin object
 type UserRecord = admin.auth.UserRecord;
-type fbDoc = admin.firestore.DocumentSnapshot<admin.firestore.DocumentData>;
 type FirestoreFieldValue = admin.firestore.FieldValue;
+// type fbDoc = admin.firestore.DocumentSnapshot<admin.firestore.DocumentData>;
 
-export { FieldValue, FirestoreFieldValue, UserRecord, fbDoc };
+export {
+  FieldValue,
+  FirestoreFieldValue,
+  UserRecord,
+  // fbDoc
+};

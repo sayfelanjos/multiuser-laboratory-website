@@ -15,8 +15,6 @@ import UserDocType from "../../interfaces/userDoc"; // Updated interface
 import Modal from "react-bootstrap/Modal";
 import WarningIcon from "../../assets/icons/WarningIcon";
 import { showNotification } from "../../helpers/showNotification";
-import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
-import Image from "react-bootstrap/Image";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../../firebase";
 import { useAuth } from "../../hooks/useAuth";
@@ -38,7 +36,8 @@ const personsData: rolesMap = {
   student: { displayName: { pt: "Estudante", en: "Student" } },
 };
 
-const rolesDataTest: rolesMap = {
+// const rolesDataTest: rolesMap = {
+const rolesData: rolesMap = {
   admin: { displayName: { pt: "Administrador", en: "Administrator" } },
   manager: { displayName: { pt: "Gestor", en: "Manager" } },
   student: { displayName: { pt: "Estudante", en: "Student" } },
@@ -48,16 +47,11 @@ const rolesDataTest: rolesMap = {
 const UserForm = () => {
   const loadedTargetUser = useLoaderData() as UserDocType;
   const location = useLocation();
-  const [rolesData, setRolesData] = useState<rolesMap>({});
+  // const [rolesData, setRolesData] = useState<rolesMap>({});
   const [formErrors, setFormErrors] = useState<{
     [key: string]: string | null;
   }>({});
-  const {
-    user: callerUser,
-    // isLoading: loadingCallerUser,
-    refreshUserData,
-    role: callerRole,
-  } = useAuth();
+  const { user: callerUser, refreshUserData, role: callerRole } = useAuth();
   const [targetUser, setTargetUser] = useState<UserType>({
     uid: "",
     firstName: "",
@@ -78,40 +72,38 @@ const UserForm = () => {
           loadedTargetUser.names.allLastNames !== targetUser.allLastNames ||
           loadedTargetUser.email !== targetUser.email ||
           loadedTargetUser.phone !== targetUser.phone ||
-          loadedTargetUser.photos.smallUrl !== targetUser.photoURL ||
           loadedTargetUser.role !== targetUser.role ||
           loadedTargetUser.personType !== targetUser.personType ||
-          loadedTargetUser.documents.cpf !== targetUser.cpf ||
-          loadedTargetUser.documents.cnpj !== targetUser.cnpj ||
+          loadedTargetUser.documents.cpf !==
+            targetUser.cpf?.replace(/\D/g, "") || // targetUser.cpf has the display format instead of raw number
+          loadedTargetUser.documents.cnpj !==
+            targetUser.cnpj?.replace(/\D/g, "") || // targetUser.cnpj has the display format instead of raw number
           loadedTargetUser.documents.studentId !== targetUser.studentId
       : Boolean(targetUser.firstName) ||
           Boolean(targetUser.allLastNames) ||
           Boolean(targetUser.email) ||
           Boolean(targetUser.phone) ||
-          Boolean(targetUser.photoURL) ||
           Boolean(targetUser.cpf) ||
           Boolean(targetUser.cnpj) ||
           Boolean(targetUser.studentId);
   }, [loadedTargetUser, targetUser]);
 
-  useEffect(() => {
-    /*
-    const roles: rolesMap = {};
-    getDocs(collection(db, "roles"))
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          roles[doc.id] = doc.data() as roleType;
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching roles: ", error);
-      })
-      .finally(() => {
-        setRolesData(roles);
-      });
-    */
-    setRolesData(rolesDataTest);
-  }, []);
+  // useEffect(() => {
+  //   const roles: rolesMap = {};
+  //   getDocs(collection(db, "roles"))
+  //     .then((querySnapshot) => {
+  //       querySnapshot.forEach((doc) => {
+  //         roles[doc.id] = doc.data() as roleType;
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching roles: ", error);
+  //     })
+  //     .finally(() => {
+  //       setRolesData(roles);
+  //     });
+  //   setRolesData(rolesDataTest);
+  // }, []);
 
   useEffect(() => {
     if (loadedTargetUser) {
@@ -123,7 +115,7 @@ const UserForm = () => {
         personType,
         documents: { cpf, cnpj, studentId },
         names: { firstName, allLastNames },
-        photos: { smallUrl },
+        photos: { mediumUrl },
       } = loadedTargetUser;
       setTargetUser({
         uid,
@@ -131,7 +123,7 @@ const UserForm = () => {
         allLastNames,
         email,
         phone,
-        photoURL: smallUrl || null,
+        photoURL: mediumUrl || null,
         role,
         personType,
         cpf,
@@ -179,9 +171,6 @@ const UserForm = () => {
     ) => {
       const value = event.target.value;
       setTargetUser((currentState) => {
-        if (currentState[field] !== value) {
-          // setIsInputChanged(true);
-        }
         return {
           ...currentState,
           [field]: value,
@@ -339,11 +328,10 @@ const UserForm = () => {
               className="my-2"
             /> */}
 
-            <ProfilePicUploader />
-
-            <Form.Label className="text-muted mt-3">
-              {targetUser.photoURL ? "Foto de perfil" : "Sem foto de perfil"}
-            </Form.Label>
+            <ProfilePicUploader
+              photoURL={targetUser.photoURL || null}
+              userUid={targetUser.uid || null}
+            />
           </Col>
         </Row>
         <Form.Text className="mb-3">Dados Básicos:</Form.Text>

@@ -31,7 +31,8 @@ type userNames = {
   initials: string;
 };
 type userPhotos = {
-  original?: string | null;
+  medium?: string | null;
+  mediumUrl?: string | null;
   small?: string | null;
   smallUrl?: string | null;
   thumb?: string | null;

@@ -5,7 +5,6 @@ import {
   createUserDocument,
   assignDefaultCustomClaims,
 } from "./userManagement";
-import { logger } from "firebase-functions";
 
 export const migrateUsers = functions
   .region("southamerica-east1")
@@ -19,7 +18,7 @@ export const migrateUsers = functions
     let pageToken; // To paginate through the list of users
 
     try {
-      logger.info("Starting user migration...");
+      console.info("Starting user migration...");
 
       // 2. Loop through all users in batches
       do {
@@ -47,16 +46,16 @@ export const migrateUsers = functions
 
         // Wait for the entire batch to finish processing
         await Promise.all(userProcessingPromises);
-        logger.info(
+        console.info(
           `Processed batch of ${listUsersResult.users.length} users.`,
         );
       } while (pageToken);
 
       const message = `Migration complete. Migrated: ${migratedCount}, Skipped: ${skippedCount}.`;
-      logger.info(message);
+      console.info(message);
       return { success: true, message };
     } catch (error) {
-      logger.error("Error during user migration:", error);
+      console.error("Error during user migration:", error);
       throw new functions.https.HttpsError(
         "internal",
         "User migration failed.",

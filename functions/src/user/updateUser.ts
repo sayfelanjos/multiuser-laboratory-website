@@ -4,7 +4,6 @@ import { UserIncomingData, UserUpdateData } from "../types/userTypes";
 import { authorizeRequest } from "../security/authorization";
 import { parseUserName } from "../utils/userUtils";
 import { removeWhitespace, keepOnlyDigits } from "../utils/stringUtils"; // <-- Import our new utils
-import { logger } from "firebase-functions";
 import { cpf as cpfValidator, cnpj as cnpjValidator } from "cpf-cnpj-validator";
 import * as EmailValidator from "email-validator";
 
@@ -117,7 +116,7 @@ export const updateUser = functions
       await db.collection("users").doc(targetUid).update(updateData);
       return { success: true, message: "User document successfully updated!" };
     } catch (error) {
-      logger.error("Error updating user:", error);
+      console.error("Error updating user:", error);
       throw new functions.https.HttpsError(
         "internal",
         "Failed to update user document.",

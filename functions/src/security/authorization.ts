@@ -1,26 +1,15 @@
 import * as functions from "firebase-functions";
-import { logger } from "firebase-functions";
 import { CallableContext } from "firebase-functions/v1/https";
 
 // ! TEMPORARY NATIVE ADMIN USERS
 // A hardcoded list for granting immediate admin access.
 // Best for development or a small, fixed number of superusers.
 export const nativeAdminList = [
-  // Test
-  "otter.chicken.216@example.com",
-  // Disney
-  "lemfem@unicamp.br",
-  "disney@unicamp.br",
-  "disney.tho@gmail.com",
   // Saymon
   "saymon.anjos@minasinfotech.com.br",
   "saymonfelipe@hotmail.com",
   "sayfelanjos@gmail.com",
-  // Ronald
-  "r196815@dac.unicamp.br",
-  "ronaldgabrielfs@gmail.com",
   // Rafael
-  "r176121@dac.unicamp.br",
   "rafaelogallas@gmail.com",
 ];
 
@@ -72,7 +61,7 @@ export const authorizeRequest = async (
   // 1. Authentication Check (Mandatory)
   // This is the first and most critical gate.
   if (!context.auth) {
-    logger.error("Authorization failed: User is not authenticated.");
+    console.error("Authorization failed: User is not authenticated.");
     throw new functions.https.HttpsError(
       "unauthenticated",
       "You must be logged in to perform this action.",
@@ -84,7 +73,7 @@ export const authorizeRequest = async (
 
   // 2. Only Authentication needed:
   if (!targetUid && !requiredRole && !targetEmail) {
-    logger.info(`Permission GRANTED for ${callerUid} (User Authenticated).`);
+    console.info(`Permission GRANTED for ${callerUid} (User Authenticated).`);
     return context.auth;
   }
 
@@ -95,21 +84,21 @@ export const authorizeRequest = async (
   // 3. Native Admin Check
   // Grants immediate access to hardcoded superusers.
   if (nativeAdminList.includes(callerEmail)) {
-    logger.info(`Permission GRANTED for ${callerEmail} (Native Admin).`);
+    console.info(`Permission GRANTED for ${callerEmail} (Native Admin).`);
     return context.auth;
   }
 
   // 4. Self-Access Check
   // Grants access if the user is modifying their own resource.
   if (targetUid && callerUid === targetUid) {
-    logger.info(`Permission GRANTED for ${callerUid} (Self-Access -> uid).`);
+    console.info(`Permission GRANTED for ${callerUid} (Self-Access -> uid).`);
     return context.auth;
   }
 
   // 5. Self-Access Check
   // Grants access if the user is modifying their own resource.
   if (targetEmail && callerEmail === targetEmail) {
-    logger.info(`Permission GRANTED for ${callerUid} (Self-Access -> email).`);
+    console.info(`Permission GRANTED for ${callerUid} (Self-Access -> email).`);
     return context.auth;
   }
 
@@ -120,7 +109,7 @@ export const authorizeRequest = async (
     const claimsRole = context.auth.token.role;
 
     if (claimsRole === requiredRole) {
-      logger.info(
+      console.info(
         `Permission GRANTED for ${callerUid} (Role: ${requiredRole}).`,
       );
       return context.auth;
@@ -132,7 +121,7 @@ export const authorizeRequest = async (
   // ===================
 
   // If the function reaches this point, none of the checks passed.
-  logger.error(
+  console.error(
     `Permission DENIED for ${callerEmail}. Failed checks:\n` +
       (targetUid ? ` - Self-Access (Target: ${targetUid}),\n` : "") +
       (targetEmail ? ` - Self-Access (Target: ${targetEmail}),\n` : "") +

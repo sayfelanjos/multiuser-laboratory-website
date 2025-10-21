@@ -7,38 +7,39 @@ import {
 } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 import "./global.scss";
+import RootLayout from "./components/RootLayout";
+import SchedulerAppLayout from "./components/SchedulerLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
 import AboutPage from "./pages/About";
 import ContactPage from "./pages/Contact";
 import HomePage from "./pages/Home";
 import TensileTest from "./pages/Services/TensileTest";
-import RootLayout from "./components/RootLayout";
-import QuoteRequest from "./pages/QuoteRequest";
-import { DevSupport } from "@react-buddy/ide-toolbox";
-import { ComponentPreviews, useInitial } from "./dev";
 import NotFound from "./pages/NotFound";
 import CompressionTest from "./pages/Services/CompressionTest";
 import FlexionTest from "./pages/Services/FlexionTest";
 import FadigueTest from "./pages/Services/FadigueTest";
 import CharpyImpactTest from "./pages/Services/CharpyImpactTest";
 import TenacityTest from "./pages/Services/TenacityTest";
+import QuoteRequest from "./pages/QuoteRequest";
 import ScanningElectronMicroscopyCalendar from "./pages/ScanningElectronMicroscopyCalendar";
 import DurometerCalendar from "./pages/DurometerCalendar";
 import ImpactPendulumCalendar from "./pages/ImpactPendulumCalendar";
 import MechanicTestCalendar from "./pages/MechanicTestCalendar";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import SchedulerAppLayout from "./components/SchedulerLayout";
 import SchedulePage from "./pages/Scheduler";
 import UsersList from "./pages/UsersList";
 import UserRegister from "./pages/UserAdd";
 import UserEdit from "./pages/UserEdit";
+import ResetPassword from "./pages/ResetPassword";
+import RequestToResetPassword from "./pages/RequestToResetPassword";
+import UserProfile from "./pages/UserProfile";
+import { DevSupport } from "@react-buddy/ide-toolbox";
+import { ComponentPreviews, useInitial } from "./dev";
 import { Provider } from "react-redux";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore as db } from "./firebase";
 import store from "./redux/store/store";
-import ResetPassword from "./pages/ResetPassword";
-import RequestToResetPassword from "./pages/RequestToResetPassword";
-import UserProfile from "./pages/UserProfile";
 import { App } from "antd";
 
 const router = createBrowserRouter([
@@ -53,7 +54,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
-    errorElement: <NotFound />,
+    // errorElement: <NotFound />,
     children: [
       {
         path: "home",
@@ -134,49 +135,92 @@ const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path: "*",
+        element: <NotFound />,
+      },
     ],
   },
   {
     path: "app",
-    element: <SchedulerAppLayout />,
+    // AUTHENTICATION GATE
+    element: <ProtectedRoute />,
     children: [
+      // If auth succeeds, render the layout component
       {
-        path: "",
-        element: <Navigate to="/app/scheduler" />,
-      },
-      {
-        path: "scheduler",
-        element: <SchedulePage />,
-      },
-      {
-        path: "users",
+        element: <SchedulerAppLayout />,
         children: [
           {
-            path: "list",
-            element: <UsersList />,
+            path: "",
+            element: <Navigate to="/app/scheduler" />,
           },
           {
-            path: "add",
-            element: <UserRegister />,
+            path: "scheduler",
+            element: <SchedulePage />,
           },
           {
-            path: "profile",
-            element: <UserProfile />,
+            path: "users",
+            children: [
+              // ===============================================================
+              // Authenticated only (already protected by top level /app route):
+              // ===============================================================
+              {
+                path: "profile",
+                element: <UserProfile />,
+              },
+              // ===============================================================
+              // Admin-only path group (List, Add):
+              // ===============================================================
+              {
+                element: <ProtectedRoute allowedRoles={["admin"]} />,
+                children: [
+                  {
+                    path: "list",
+                    element: <UsersList />,
+                  },
+                  {
+                    path: "add",
+                    element: <UserRegister />,
+                  },
+                ],
+              },
+              // ===============================================================
+              // Admin OR Self-Edit path:
+              // ===============================================================
+              {
+                // If not admin, allows if URL ID matches current user ID
+                path: "edit/:userId",
+                element: (
+                  <ProtectedRoute allowedRoles={["admin"]} allowSelf={true} />
+                ),
+                children: [
+                  {
+                    // Renders the UserEdit component
+                    path: "",
+                    element: <UserEdit />,
+                    loader: async ({ params }) => {
+                      const docRef = doc(db, "users", `${params.userId}`);
+                      const docSnap = await getDoc(docRef);
+                      return {
+                        key: docSnap.id,
+                        userId: docSnap.id,
+                        ...docSnap.data(),
+                      };
+                    },
+                  },
+                ],
+              },
+            ],
           },
           {
-            path: "edit/:userId",
-            element: <UserEdit />,
-            loader: async ({ params }) => {
-              const docRef = doc(db, "users", `${params.userId}`);
-              const docSnap = await getDoc(docRef);
-              return { key: docSnap.id, userId: docSnap.id, ...docSnap.data() };
-            },
+            path: "quote-request",
+            element: <QuoteRequest />,
+          },
+          {
+            path: "*",
+            element: <NotFound />,
           },
         ],
-      },
-      {
-        path: "quote-request",
-        element: <QuoteRequest />,
       },
     ],
   },
