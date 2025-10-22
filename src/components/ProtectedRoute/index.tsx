@@ -43,14 +43,14 @@ const ProtectedRoute = ({
 
   // No Role or Self Access condition is set: authorize by authentication only:
   if ((!allowedRoles || allowedRoles.length === 0) && !allowSelf) {
-    console.log(`User authenticated authorized!`);
+    // console.log(`User authenticated authorized!`);
     isAuthorized = true;
   }
 
   // Check if the user's role is in the list of allowed roles
   if (!isAuthorized && allowedRoles && allowedRoles.length > 0 && userRole) {
     if (allowedRoles.includes(userRole)) {
-      console.log(`User authorized, role: ${userRole}`);
+      // console.log(`User authorized, role: ${userRole}`);
       isAuthorized = true;
     }
   }
@@ -58,7 +58,7 @@ const ProtectedRoute = ({
   // Self-Edit Override: Allows a non-admin user to edit their own profile/resource
   if (!isAuthorized && allowSelf && urlUserId && currentUserId) {
     if (urlUserId === currentUserId) {
-      console.log(`User authorized: Self Access.`);
+      // console.log(`User authorized: Self Access.`);
       isAuthorized = true;
     }
   }
