@@ -3,7 +3,7 @@ import Container  from "react-bootstrap/Container";
 import InfoPage from "../../../components/InfoPageLayout";
 
 const lemData = [
-  {
+  { 
     title: "Controle de Qualidade",
     content:
       "Os testes mecânicos ajudam a garantir que materiais e componentes atendam às especificações e padrões exigidos. Isso é crucial para manter a qualidade e a consistência nos processos de fabricação.",

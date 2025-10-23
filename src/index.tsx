@@ -34,7 +34,6 @@ import UserRegister from "./pages/UserAdd";
 import UserEdit from "./pages/UserEdit";
 import MechanicalTesting from "./pages/Laboratories/MechanicalTesting";
 import Metallography from "./pages/Laboratories/Metallography";
-import Multiuser from "./pages/Laboratories/Multiuser";
 import ScanningElectronMicroscopy from "./pages/Laboratories/ScanningElectronMicroscopy";
 import TermoAnalysis from "./pages/Laboratories/TermoAnalysis";
 import TransmissionElectronMicroscopy from "./pages/Laboratories/TransmissionElectronMicroscopy";
@@ -151,10 +150,6 @@ const router = createBrowserRouter([
           {
             path: "metallography-laboratory",
             element: <Metallography/>
-          },
-          {
-            path: "multiuser-laboratory",
-            element: <Multiuser/>
           },
           {
             path: "scanning-electron-microscopy-laboratory",

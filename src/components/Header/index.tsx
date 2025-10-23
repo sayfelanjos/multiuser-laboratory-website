@@ -23,6 +23,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Image from "react-bootstrap/Image";
 import Spinner from "react-bootstrap/Spinner";
 import { isDisabled } from "@testing-library/user-event/dist/utils";
+import { DropdownItem } from "react-bootstrap";
 
 const HeaderNavLink = ({
   children,
@@ -83,10 +84,9 @@ const DropdownData = [
 ];
 
 const DropdownDataLaboratories = [
-  {route: "/laboratories/mechanical-testing-laboratory", text: "Ensaio Mecânico", isDisabled: false},
+  {route: "/laboratories/mechanical-testing-laboratory", text: "Ensaio Mecânico", isDisabled: true},
   {route: "/laboratories/metallography-laboratory", text: "Metalografia", isDisabled: true},
-  {route: "/laboratories/multiuser-laboratory", text: "Multiusuários", isDisabled: true},
-  {route: "/laboratories/scanning-electron-microscopy-laboratory", text: "Microscopia Eletrônica de Varredura", isDisabled: false},
+  {route: "/laboratories/scanning-electron-microscopy-laboratory", text: "Microscopia Eletrônica de Varredura", isDisabled: true},
   {route: "/laboratories/transmission-electron-microscopy-laboratory", text: "Microscopia Eletrônica de Transmissão", isDisabled: true},
   {route: "/laboratories/termoanalisys-laboratory", text: "Análise Térmica e Infravermelho", isDisabled: true},
 ]
@@ -253,13 +253,13 @@ const Header = () => {
                       }
                       id="basic-nav-dropdown"
                     >
-                      {[...DropdownDataLaboratories]
+                      {/* {[...DropdownDataLaboratories]
                       .sort((itemA, itemB) => {
-                          if ((!itemA.isDisabled && !itemB.isDisabled) || (itemA.isDisabled && itemB.isDisabled)){ // Executa comparações apenas se os dois itens estão habilitados ou desabilitados
+                          if ((!itemA.isDisabled && !itemB.isDisabled) || (itemA.isDisabled && itemB.isDisabled)){ // Performs comparisons only whether both items are enabled or disabled
                             return itemA.text.localeCompare(itemB.text);
                           }
                           
-                          // Ordena para os habilitados aparecem antes dos desabilitados
+                          // Orders so that enabled items appear before disabled items
                           if (itemA.isDisabled && !itemB.isDisabled) {
                             return 1;
                           }
@@ -279,7 +279,13 @@ const Header = () => {
                           >
                           {item.text}
                         </Dropdown.Item>
-                      ))}
+                      ))} */
+                     <Dropdown.Item
+                     disabled = {true}
+                     >
+                      <i>Em breve...</i>
+                     </Dropdown.Item>
+                      }
                     </NavDropdown>
 
                     <HeaderNavLink route="/about">
