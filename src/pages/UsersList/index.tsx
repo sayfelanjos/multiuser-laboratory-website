@@ -298,9 +298,9 @@ const UsersList = () => {
               <span> Migrar Usuários </span>
             )}
           </Button>
-          <Link to="/app/users/add" className="btn btn-dark">
+          {/* <Link to="/app/users/add" className="btn btn-dark" >
             Adicionar Novo Usuário
-          </Link>
+          </Link> */}
         </div>
         <Divider />
         <Table

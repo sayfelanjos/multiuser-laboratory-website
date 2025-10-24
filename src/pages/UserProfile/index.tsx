@@ -1,8 +1,8 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import { App, Skeleton } from "antd";
+import { verifyBeforeUpdateEmail } from "firebase/auth";
 import { getDoc, doc } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
-import { MaskedPattern } from "imask";
 import {
   Spinner,
   Stack,
@@ -14,6 +14,7 @@ import {
   Image,
   Modal,
   Form,
+  InputGroup,
 } from "react-bootstrap";
 import {
   Link,
@@ -27,6 +28,14 @@ import { showNotification } from "../../helpers/showNotification";
 import { useAuth } from "../../hooks/useAuth";
 import UserDocType from "../../interfaces/userDoc";
 import "./_user-profile-page.scss";
+import {
+  PencilSquare,
+  Envelope,
+  Telephone,
+  Check,
+  X,
+} from "react-bootstrap-icons";
+import type { Icon as IconType } from "react-bootstrap-icons";
 
 const personsData: Record<string, string> = {
   individual: "Pessoa Física",
@@ -44,14 +53,29 @@ const rolesData: Record<string, string> = {
 type infoType = {
   data: string;
   label: string;
-  mask?: MaskedPattern<string>;
+  disabled?: boolean;
+  Icon?: IconType;
+  mask?: [RegExp, string];
+  submitCallback?: (value: string) => void;
 };
 
 type sectionType = {
   title: string;
-  itemsList: infoType[];
+  itemsList: Array<infoType>;
   sm?: number | boolean | "auto";
   md?: number | boolean | "auto";
+};
+
+// Custom hook to handle initial state setup from props
+const useInitialValue = function <T>(data: T) {
+  const [value, setValue] = useState<T>(data);
+
+  // Reset internal state if the external data prop changes (e.g., after a save)
+  useEffect(() => {
+    setValue(data);
+  }, [data]);
+
+  return [value, setValue] as const;
 };
 
 const InfoSection = ({ title, itemsList, sm, md }: sectionType) => {
@@ -63,15 +87,19 @@ const InfoSection = ({ title, itemsList, sm, md }: sectionType) => {
       <Container>
         {itemsList
           .filter(({ data }) => Boolean(data))
-          .map((props, i) => (
-            <InfoRow key={i} {...props} />
-          ))}
+          .map((info, i) =>
+            info.submitCallback ? (
+              <InfoRowEdit key={i} {...info} />
+            ) : (
+              <InfoRow key={i} {...info} />
+            ),
+          )}
       </Container>
     </Col>
   );
 };
 
-const InfoRow = ({ data, label }: infoType) => {
+const InfoRow = ({ data, label, mask }: infoType) => {
   return (
     <Row className="mb-2">
       <Col xs={3} className="p-0">
@@ -79,39 +107,267 @@ const InfoRow = ({ data, label }: infoType) => {
       </Col>
       <Col xs={9} className="p-0 ps-2">
         <span className="fs-6 fw-light d-inline-block mw-100 text-truncate">
-          {label.toLocaleLowerCase() === "cpf"
-            ? data.replace(/^(\d{1,3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4")
-            : label.toLocaleLowerCase() === "cnpj"
-              ? data.replace(
-                  /^(\d{1,2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
-                  "$1.$2.$3/$4-$5",
-                )
-              : data}
+          {mask ? data.replace(...mask) : data}
         </span>
       </Col>
     </Row>
   );
 };
 
+const InfoRowEdit = ({
+  data,
+  label,
+  submitCallback,
+  Icon,
+  disabled = false,
+}: infoType) => {
+  const [inputValue, setInputValue] = useInitialValue<string>(data);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Function to start editing (triggers the state change)
+  const startEditing = useCallback(() => {
+    // 1. Set the state to true. This marks the input as non-disabled.
+    // The DOM update (and thus the input becoming focusable) happens AFTER this function returns.
+    setIsEditing(true);
+  }, []);
+
+  // *** THE FIX IS HERE ***
+  // useEffect runs AFTER the component has rendered and the DOM has been updated.
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      // 2. Now that isEditing is true, the input is rendered as enabled,
+      // and we can safely call focus().
+      inputRef.current.focus();
+      // Optionally, select all text for easy replacement
+      inputRef.current.select();
+    }
+  }, [isEditing]); // Only run this effect when 'isEditing' changes
+
+  const handleSave = useCallback(() => {
+    submitCallback?.(inputValue);
+    setIsEditing(false);
+  }, [inputValue, submitCallback]);
+
+  const handleCancel = useCallback(() => {
+    setIsEditing(false);
+    setInputValue(data); // Reset to original data prop value
+  }, [data, setInputValue]);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (isEditing) {
+        if (
+          e.key === "Enter" &&
+          inputValue.toLowerCase() !== data.toLowerCase()
+        ) {
+          handleSave();
+        } else if (e.key === "Escape") {
+          handleCancel();
+        }
+      }
+    },
+    [isEditing, handleSave, handleCancel],
+  );
+
+  const center = "d-flex justify-content-center align-items-center";
+
+  return (
+    <Row className="mb-2">
+      <Col>
+        <InputGroup>
+          <InputGroup.Text>{Icon ? <Icon /> : label}</InputGroup.Text>
+          <Form.Control
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={"Não informado"}
+            disabled={disabled && !isEditing}
+            ref={inputRef}
+          />
+          {!isEditing && !disabled && (
+            <Button
+              onClick={startEditing}
+              variant="outline-secondary"
+              className={center}
+            >
+              <PencilSquare />
+            </Button>
+          )}
+          {isEditing && (
+            <>
+              <Button
+                onClick={handleSave}
+                variant="outline-success"
+                className={center}
+                disabled={inputValue.toLowerCase() === data.toLowerCase()}
+              >
+                <Check />
+              </Button>
+
+              <Button
+                onClick={handleCancel}
+                variant="outline-danger"
+                className={center}
+              >
+                <X />
+              </Button>
+            </>
+          )}
+        </InputGroup>
+      </Col>
+    </Row>
+  );
+};
+
+// frontend/src/components/PhoneUpdater.tsx
+// import {
+//   getAuth,
+//   updatePhoneNumber,
+//   RecaptchaVerifier,
+//   PhoneAuthProvider,
+//   ConfirmationResult,
+// } from "firebase/auth";
+
+// const auth = getAuth();
+
+/* / You need a component to handle the flow
+const PhoneUpdater = () => {
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [code, setCode] = useState("");
+  const [confirmationResult, setConfirmationResult] =
+    useState<ConfirmationResult | null>(null);
+
+  // 1. Set up the reCAPTCHA verifier once on component mount
+  useEffect(() => {
+    // 'recaptcha-container' must match a DOM element ID.
+    // We set 'size: "invisible"' to keep the UI clean.
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        "recaptcha-container",
+        {
+          size: "invisible",
+        },
+      );
+    }
+    // Cleanup function (optional but good practice)
+    return () => {
+        if (window.recaptchaVerifier) {
+            window.recaptchaVerifier.clear();
+        }
+    };
+  }, [auth]);
+
+  // 2. Send the verification code to the new number
+  const handleSendCode = async () => {
+    if (!auth.currentUser) return;
+    
+    const appVerifier = window.recaptchaVerifier;
+    const phoneProvider = new PhoneAuthProvider(auth);
+
+    try {
+      const result = await phoneProvider.verifyPhoneNumber(
+        phoneNumber, // Must be in E.164 format, e.g., '+16505551234'
+        appVerifier,
+      );
+      setConfirmationResult(result);
+      alert("Verification code sent! Please check your SMS.");
+    } catch (error) {
+      console.error("SMS not sent. Did reCAPTCHA fail?", error);
+    }
+  };
+
+  // 3. Verify the code and update the phone number
+  const handleVerifyCode = async () => {
+    if (!confirmationResult || !auth.currentUser) return;
+    try {
+      // Create a secure credential from the code
+      const credential = PhoneAuthProvider.credential(
+        confirmationResult.verificationId,
+        code,
+      );
+      
+      // Use the credential to update the signed-in user's phone number
+      await updatePhoneNumber(auth.currentUser, credential);
+      alert("Phone number updated successfully!");
+      setConfirmationResult(null); // Reset the state
+      setCode("");
+    } catch (error) {
+      console.error("Error updating phone number or bad code", error);
+      alert("Verification failed. Check your code or try again.");
+    }
+  };
+
+  return (
+    <div>
+      {
+        // This invisible element is required for the reCAPTCHA widget to attach
+      }
+      <div id="recaptcha-container"></div>
+
+      {!confirmationResult ? (
+        <>
+          <input
+            type="tel"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            placeholder="New phone number (+15551234567)"
+          />
+          <button onClick={handleSendCode}>Send Verification Code</button>
+        </>
+      ) : (
+        <>
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            placeholder="6-digit code from SMS"
+          />
+          <button onClick={handleVerifyCode}>Verify and Update</button>
+        </>
+      )}
+    </div>
+  );
+};
+/* */
+
+// =============================================================================
+// MAIN COMPONENT --------------------------------------------------------------
+// =============================================================================
+
 const UserProfile = () => {
+  // User Data Variabl es
   const {
     user,
     isLoading: loadingUser,
     role: userRole,
     refreshUserData,
   } = useAuth();
-  const [loadingAccountDeletion, setLoadingAccountDeletion] =
-    useState<boolean>(false);
-  const { notification } = App.useApp();
-  const [isModalShowing, setIsModalShowing] = useState<boolean>(false);
-  const showModal = () => setIsModalShowing(true);
-  const closeModal = () => setIsModalShowing(false);
-  const [deletionText, setDeletionText] = useState<string>("");
-
   const [userData, setUserData] = useState<UserDocType | null>(null);
   const [loadingDocStatus, setLoadingDocStatus] = useState<
     "loading" | "migrating" | "error" | "success"
   >("loading");
+  const [loadingAccountDeletion, setLoadingAccountDeletion] =
+    useState<boolean>(false);
+  const { notification } = App.useApp();
+
+  // Confirmation Modal Variables
+  const [confirmationText, setConfirmationText] = useState<string>("");
+  const [isConfirmationModalShowing, setIsConfirmationModalShowing] =
+    useState<boolean>(false);
+  const showConfirmationModal = () => setIsConfirmationModalShowing(true);
+  const closeConfirmationModal = () => setIsConfirmationModalShowing(false);
+
+  // Deletion Modal variables
+  const [isDeletionModalShowing, setIsDeletionModalShowing] =
+    useState<boolean>(false);
+  const showDeletionModal = () => setIsDeletionModalShowing(true);
+  const closeDeletionModal = () => setIsDeletionModalShowing(false);
+  const [deletionText, setDeletionText] = useState<string>("");
+  const deletionField = useRef<HTMLInputElement>(null);
+
+  // Load user
   useEffect(() => {
     const migrateSelf = httpsCallable(functions, "migrateSelf");
 
@@ -181,6 +437,35 @@ const UserProfile = () => {
       });
   }, [notification, user]);
 
+  const handleEmailChange = async (newEmail: string) => {
+    const currentUser = user;
+    if (!currentUser) {
+      return;
+    }
+
+    // Define where Firebase should redirect back to after the user clicks the link
+    const actionCodeSettings = {
+      url: "https://your-app-domain.com/profile",
+      handleCodeInApp: true,
+    };
+
+    try {
+      // This sends the verification email to the NEW address.
+      await verifyBeforeUpdateEmail(currentUser, newEmail, actionCodeSettings);
+
+      // IMPORTANT: The user's email has NOT changed yet in Firebase Auth.
+      setConfirmationText(
+        `Email de verificação enviado para ${newEmail}.
+        Por favor, verifique sua caixa de correio para completar a alteração.`,
+      );
+      showConfirmationModal();
+    } catch (error) {
+      // Common error: 'auth/email-already-in-use'
+      console.error("Error sending verification email:", error);
+      showNotification(notification, `Erro ao editar email`, "error");
+    }
+  };
+
   const dataSections: sectionType[] = [
     {
       title: "Dados Básicos",
@@ -190,16 +475,34 @@ const UserProfile = () => {
           label: "Pessoa",
           data: personsData[userData?.personType || ""] || "Não especificado",
         },
-        { label: "CPF", data: userData?.documents.cpf || "" },
-        { label: "CNPJ", data: userData?.documents.cnpj || "" },
+        {
+          label: "CPF",
+          data: userData?.documents.cpf || "",
+          mask: [/^(\d{1,3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4"],
+        },
+        {
+          label: "CNPJ",
+          data: userData?.documents.cnpj || "",
+          mask: [/^(\d{1,2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5"],
+        },
         { label: "RA", data: userData?.documents.studentId || "" },
       ],
     },
     {
       title: "Contato",
       itemsList: [
-        { label: "Email", data: userData?.email || "" },
-        { label: "Telefone", data: userData?.phone || "Não informado" },
+        {
+          label: "Email",
+          Icon: Envelope,
+          data: userData?.email || "",
+          submitCallback: handleEmailChange,
+        },
+        {
+          label: "Telefone",
+          Icon: Telephone,
+          data: userData?.phone || "",
+          submitCallback: () => null,
+        },
       ],
     },
   ];
@@ -271,10 +574,27 @@ const UserProfile = () => {
           <Container fluid>
             <Row className="gap-3 justify-content-center px-3">
               <InfoSection md={5} sm={5} {...dataSections[0]} />
-              <InfoSection md={6} sm={true} {...dataSections[1]} />
+
+              {/* <InfoSection md={6} sm={true} {...dataSections[1]} /> */}
+
+              <Col md={6} sm={true} className="mb-3 justify-content-center p-0">
+                <h4 className="text-uppercase text-muted mb-2 fw-light mt-sm-4 mb-4">
+                  {dataSections[1].title}
+                </h4>
+                <Container>
+                  <Row className="mb-2">
+                    <InfoRowEdit {...dataSections[1].itemsList[0]} />
+                    <InfoRowEdit
+                      {...dataSections[1].itemsList[1]}
+                      disabled={true}
+                    />
+                  </Row>
+                </Container>
+              </Col>
             </Row>
           </Container>
         ) : (
+          // Error
           <>
             <h2 className="text-center">Ooops! Algo inesperado ocorreu...</h2>
             <p className="text-center text-muted">
@@ -286,6 +606,7 @@ const UserProfile = () => {
         {/* Actions */}
         <Row className="mt-4">
           <Col className="d-flex flex-wrap gap-2 justify-content-center">
+            {/* Edit profile */}
             <Link
               to={loadingUser ? "#" : "/app/users/edit/" + user?.uid}
               className={`btn btn-outline-dark ${loadingUser ? " disabled" : ""}`}
@@ -293,17 +614,19 @@ const UserProfile = () => {
               Editar Perfil
             </Link>
 
+            {/* Manage Users */}
             {userRole === "admin" && (
               <Link to="/app/users/list" className="btn btn-outline-dark">
                 Gerenciar Usuários
               </Link>
             )}
 
+            {/* Delete own account */}
             <Button
               variant="outline-danger"
               onClick={() => {
                 setDeletionText("");
-                showModal();
+                showDeletionModal();
               }}
               disabled={loadingAccountDeletion}
             >
@@ -322,9 +645,33 @@ const UserProfile = () => {
 
       {/* Modal ============================================== */}
 
+      {/* IMPUT CHANGE MODAL */}
       <Modal
-        show={isModalShowing}
-        onHide={closeModal}
+        show={isConfirmationModalShowing}
+        onHide={closeConfirmationModal}
+        animation={true}
+        centered
+      >
+        <Modal.Header>
+          <span className="d-flex justify-content-center align-items-end gap-3">
+            <WarningIcon />
+            <h3 className="m-0">Atenção</h3>
+          </span>
+        </Modal.Header>
+        <Modal.Body>
+          <p>{confirmationText}</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={closeConfirmationModal}>
+            Ok
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* ACCOUNT DELETION MODAL */}
+      <Modal
+        show={isDeletionModalShowing}
+        onHide={closeDeletionModal}
         animation={true}
         centered
       >
@@ -350,18 +697,23 @@ const UserProfile = () => {
               value={deletionText}
               placeholder="digite aqui..."
               onChange={(e) => setDeletionText(e.target.value)}
+              ref={deletionField}
             />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button
-            variant="danger"
-            onClick={handleAccountDeletion}
-            disabled={deletionText !== "deletar"}
+            variant={deletionText === "deletar" ? "danger" : "outline-danger"}
+            onClick={
+              deletionText === "deletar"
+                ? handleAccountDeletion
+                : () => deletionField.current?.focus()
+            }
+            // disabled={deletionText !== "deletar"}
           >
             Sim
           </Button>
-          <Button variant="outline-dark" onClick={closeModal}>
+          <Button variant="outline-dark" onClick={closeDeletionModal}>
             Não
           </Button>
         </Modal.Footer>
