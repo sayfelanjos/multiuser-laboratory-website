@@ -394,6 +394,7 @@ const UserForm = () => {
                 handleInputChange(syntheticEvent, "phone");
               }}
               value={targetUser.phone || ""}
+              disabled
             />
           </Form.Group>
         </Row>

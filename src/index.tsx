@@ -41,6 +41,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { firestore as db } from "./firebase";
 import store from "./redux/store/store";
 import { App } from "antd";
+import AccessDenied from "./pages/AccessDenied";
 
 const router = createBrowserRouter([
   {
@@ -180,7 +181,8 @@ const router = createBrowserRouter([
                   },
                   {
                     path: "add",
-                    element: <UserRegister />,
+                    // element: <UserRegister />,
+                    element: <AccessDenied />,
                   },
                 ],
               },
