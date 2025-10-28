@@ -28,6 +28,7 @@ import MechanicTestCalendar from "./pages/MechanicTestCalendar";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import SchedulePage from "./pages/Scheduler";
+import VerifyEmail from "./pages/VerifyEmail";
 import UsersList from "./pages/UsersList";
 import UserRegister from "./pages/UserAdd";
 import UserEdit from "./pages/UserEdit";
@@ -168,6 +169,10 @@ const router = createBrowserRouter([
               {
                 path: "profile",
                 element: <UserProfile />,
+              },
+              {
+                path: "verify-email",
+                element: <VerifyEmail />,
               },
               // ===============================================================
               // Admin-only path group (List, Add):

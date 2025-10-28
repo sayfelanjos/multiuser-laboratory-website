@@ -127,7 +127,7 @@ export interface UserUpdateData {
   email?: string;
   emailVerified?: boolean;
   names?: userNames;
-  phoneNumber?: string;
+  phone?: string;
   documents?: userDocuments;
   role?: userRoles;
   personType?: personTypes;

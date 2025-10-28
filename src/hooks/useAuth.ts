@@ -46,7 +46,6 @@ export const useAuth = (): AuthState => {
         return;
       }
 
-      //
       try {
         // Get the full ID token result. The `forceRefresh` parameter is the magic key.
         const idTokenResult = await getIdTokenResult(user, forceRefresh);

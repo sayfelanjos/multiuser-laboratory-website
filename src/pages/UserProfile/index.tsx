@@ -1,6 +1,17 @@
-import React, { useCallback, useState, useEffect, useRef } from "react";
+import React, {
+  useCallback,
+  useState,
+  useEffect,
+  useRef,
+  HTMLInputTypeAttribute,
+} from "react";
 import { App, Skeleton } from "antd";
-import { verifyBeforeUpdateEmail } from "firebase/auth";
+import {
+  verifyBeforeUpdateEmail,
+  updatePhoneNumber,
+  RecaptchaVerifier,
+  PhoneAuthProvider,
+} from "firebase/auth";
 import { getDoc, doc } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
 import {
@@ -11,31 +22,27 @@ import {
   Row,
   Col,
   Card,
-  Image,
   Modal,
   Form,
   InputGroup,
 } from "react-bootstrap";
-import {
-  Link,
-  // useNavigate,
-  // useLoaderData,
-} from "react-router-dom";
-import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
+import { Link } from "react-router-dom";
 import WarningIcon from "../../assets/icons/WarningIcon";
-import { firestore as db, functions } from "../../firebase";
+import { firestore as db, functions, auth } from "../../firebase";
 import { showNotification } from "../../helpers/showNotification";
 import { useAuth } from "../../hooks/useAuth";
+import ProfilePicUploader from "../../components/ProfilePicUploader";
 import UserDocType from "../../interfaces/userDoc";
-import "./_user-profile-page.scss";
 import {
   PencilSquare,
   Envelope,
   Telephone,
   Check,
   X,
+  type Icon as IconType,
 } from "react-bootstrap-icons";
-import type { Icon as IconType } from "react-bootstrap-icons";
+import { FirebaseError } from "firebase/app";
+import "./_user-profile-page.scss";
 
 const personsData: Record<string, string> = {
   individual: "Pessoa Física",
@@ -56,14 +63,8 @@ type infoType = {
   disabled?: boolean;
   Icon?: IconType;
   mask?: [RegExp, string];
+  type?: HTMLInputTypeAttribute;
   submitCallback?: (value: string) => void;
-};
-
-type sectionType = {
-  title: string;
-  itemsList: Array<infoType>;
-  sm?: number | boolean | "auto";
-  md?: number | boolean | "auto";
 };
 
 // Custom hook to handle initial state setup from props
@@ -76,27 +77,6 @@ const useInitialValue = function <T>(data: T) {
   }, [data]);
 
   return [value, setValue] as const;
-};
-
-const InfoSection = ({ title, itemsList, sm, md }: sectionType) => {
-  return (
-    <Col {...{ sm, md }} className="mb-3 justify-content-center p-0">
-      <h4 className="text-uppercase text-muted mb-2 fw-light mt-sm-4 mb-4">
-        {title}
-      </h4>
-      <Container>
-        {itemsList
-          .filter(({ data }) => Boolean(data))
-          .map((info, i) =>
-            info.submitCallback ? (
-              <InfoRowEdit key={i} {...info} />
-            ) : (
-              <InfoRow key={i} {...info} />
-            ),
-          )}
-      </Container>
-    </Col>
-  );
 };
 
 const InfoRow = ({ data, label, mask }: infoType) => {
@@ -120,11 +100,12 @@ const InfoRowEdit = ({
   submitCallback,
   Icon,
   disabled = false,
+  type = "text",
 }: infoType) => {
   const [inputValue, setInputValue] = useInitialValue<string>(data);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
-
+  data = data.toLowerCase();
   // Function to start editing (triggers the state change)
   const startEditing = useCallback(() => {
     // 1. Set the state to true. This marks the input as non-disabled.
@@ -157,10 +138,7 @@ const InfoRowEdit = ({
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (isEditing) {
-        if (
-          e.key === "Enter" &&
-          inputValue.toLowerCase() !== data.toLowerCase()
-        ) {
+        if (e.key === "Enter" && inputValue !== data) {
           handleSave();
         } else if (e.key === "Escape") {
           handleCancel();
@@ -179,11 +157,12 @@ const InfoRowEdit = ({
           <InputGroup.Text>{Icon ? <Icon /> : label}</InputGroup.Text>
           <Form.Control
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={(e) => setInputValue(e.target.value.toLowerCase())}
             onKeyDown={handleKeyDown}
             placeholder={"Não informado"}
-            disabled={disabled && !isEditing}
+            disabled={disabled || !isEditing}
             ref={inputRef}
+            type={type}
           />
           {!isEditing && !disabled && (
             <Button
@@ -198,9 +177,11 @@ const InfoRowEdit = ({
             <>
               <Button
                 onClick={handleSave}
-                variant="outline-success"
+                variant={
+                  inputValue === data ? "outline-secondary" : "outline-success"
+                }
                 className={center}
-                disabled={inputValue.toLowerCase() === data.toLowerCase()}
+                disabled={inputValue === data}
               >
                 <Check />
               </Button>
@@ -220,127 +201,15 @@ const InfoRowEdit = ({
   );
 };
 
-// frontend/src/components/PhoneUpdater.tsx
-// import {
-//   getAuth,
-//   updatePhoneNumber,
-//   RecaptchaVerifier,
-//   PhoneAuthProvider,
-//   ConfirmationResult,
-// } from "firebase/auth";
-
-// const auth = getAuth();
-
-/* / You need a component to handle the flow
-const PhoneUpdater = () => {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [code, setCode] = useState("");
-  const [confirmationResult, setConfirmationResult] =
-    useState<ConfirmationResult | null>(null);
-
-  // 1. Set up the reCAPTCHA verifier once on component mount
-  useEffect(() => {
-    // 'recaptcha-container' must match a DOM element ID.
-    // We set 'size: "invisible"' to keep the UI clean.
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        auth,
-        "recaptcha-container",
-        {
-          size: "invisible",
-        },
-      );
-    }
-    // Cleanup function (optional but good practice)
-    return () => {
-        if (window.recaptchaVerifier) {
-            window.recaptchaVerifier.clear();
-        }
-    };
-  }, [auth]);
-
-  // 2. Send the verification code to the new number
-  const handleSendCode = async () => {
-    if (!auth.currentUser) return;
-    
-    const appVerifier = window.recaptchaVerifier;
-    const phoneProvider = new PhoneAuthProvider(auth);
-
-    try {
-      const result = await phoneProvider.verifyPhoneNumber(
-        phoneNumber, // Must be in E.164 format, e.g., '+16505551234'
-        appVerifier,
-      );
-      setConfirmationResult(result);
-      alert("Verification code sent! Please check your SMS.");
-    } catch (error) {
-      console.error("SMS not sent. Did reCAPTCHA fail?", error);
-    }
-  };
-
-  // 3. Verify the code and update the phone number
-  const handleVerifyCode = async () => {
-    if (!confirmationResult || !auth.currentUser) return;
-    try {
-      // Create a secure credential from the code
-      const credential = PhoneAuthProvider.credential(
-        confirmationResult.verificationId,
-        code,
-      );
-      
-      // Use the credential to update the signed-in user's phone number
-      await updatePhoneNumber(auth.currentUser, credential);
-      alert("Phone number updated successfully!");
-      setConfirmationResult(null); // Reset the state
-      setCode("");
-    } catch (error) {
-      console.error("Error updating phone number or bad code", error);
-      alert("Verification failed. Check your code or try again.");
-    }
-  };
-
-  return (
-    <div>
-      {
-        // This invisible element is required for the reCAPTCHA widget to attach
-      }
-      <div id="recaptcha-container"></div>
-
-      {!confirmationResult ? (
-        <>
-          <input
-            type="tel"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            placeholder="New phone number (+15551234567)"
-          />
-          <button onClick={handleSendCode}>Send Verification Code</button>
-        </>
-      ) : (
-        <>
-          <input
-            type="text"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            placeholder="6-digit code from SMS"
-          />
-          <button onClick={handleVerifyCode}>Verify and Update</button>
-        </>
-      )}
-    </div>
-  );
-};
-/* */
-
 // =============================================================================
 // MAIN COMPONENT --------------------------------------------------------------
 // =============================================================================
 
 const UserProfile = () => {
-  // User Data Variabl es
+  // User Data Variables
   const {
     user,
-    isLoading: loadingUser,
+    isLoading: isLoadingUser,
     role: userRole,
     refreshUserData,
   } = useAuth();
@@ -366,6 +235,11 @@ const UserProfile = () => {
   const closeDeletionModal = () => setIsDeletionModalShowing(false);
   const [deletionText, setDeletionText] = useState<string>("");
   const deletionField = useRef<HTMLInputElement>(null);
+
+  // State for Phone Verification (moved from PhoneUpdater)
+  const [phoneCode, setPhoneCode] = useState("");
+  const [verificationId, setVerificationId] = useState<string | null>(null);
+  const codeField = useRef<HTMLInputElement>(null);
 
   // Load user
   useEffect(() => {
@@ -403,6 +277,26 @@ const UserProfile = () => {
     }
   }, [user]);
 
+  // useEffect for reCAPTCHA Verifier
+  // This lives in the main component, so its lifecycle is stable.
+  useEffect(() => {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        "recaptcha-container", // We will add this div in the JSX
+        { size: "invisible" },
+      );
+    }
+
+    // Cleanup when UserProfile component unmounts
+    return () => {
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+        window.recaptchaVerifier = undefined;
+      }
+    };
+  }, []); // Runs once when UserProfile mounts
+
   const handleAccountDeletion = useCallback(async () => {
     setLoadingAccountDeletion(true);
 
@@ -437,73 +331,161 @@ const UserProfile = () => {
       });
   }, [notification, user]);
 
-  const handleEmailChange = async (newEmail: string) => {
-    const currentUser = user;
-    if (!currentUser) {
+  const handleEmailChange = useCallback(
+    async (newEmail: string) => {
+      if (!user) {
+        return;
+      }
+
+      // Define where Firebase should redirect back to after the user clicks the link
+      const actionCodeSettings = {
+        url: `${process.env.REACT_APP_FIREBASE_APP_DOMAIN}/app/users/verify-email`,
+        handleCodeInApp: true,
+      };
+
+      console.log(process.env.REACT_APP_FIREBASE_APP_DOMAIN);
+
+      try {
+        // This sends the verification email to the NEW address.
+        await verifyBeforeUpdateEmail(user, newEmail, actionCodeSettings);
+
+        // IMPORTANT: The user's email has NOT changed yet in Firebase Auth.
+        setConfirmationText(
+          `Email de verificação enviado para ${newEmail}.
+          Por favor, verifique sua caixa de correio para completar a alteração.`,
+        );
+        showConfirmationModal();
+      } catch (error) {
+        // Common error: 'auth/email-already-in-use'
+        if (error instanceof FirebaseError) {
+          if (error.message.includes("auth/email-already-in-use")) {
+            showNotification(
+              notification,
+              `Email em uso! Utilize outro.`,
+              "error",
+            );
+          }
+        } else {
+          console.error("Error sending verification email:", error);
+          showNotification(notification, `Erro ao editar email`, "error");
+        }
+      }
+    },
+    [user, notification],
+  );
+
+  // Phone 'Send Code' Handler
+  const handleSendCode = useCallback(
+    async (newPhone: string) => {
+      const appVerifier = window.recaptchaVerifier;
+      if (!appVerifier) {
+        console.error("reCAPTCHA Verifier is not initialized.");
+        alert("Erro de verificação, por favor recarregue a página.");
+        return;
+      }
+
+      if (!auth.currentUser) {
+        console.error("No user is signed in.");
+        return;
+      }
+
+      const phoneProvider = new PhoneAuthProvider(auth);
+
+      try {
+        // Ensure phone is in E.164 format (e.g., +5511999999999)
+        // This is a common source of errors if not formatted correctly.
+        // You may need a library or regex to format 'newPhone' properly.
+        // For now, let's assume it's correctly formatted.
+        const verifId: string = await phoneProvider.verifyPhoneNumber(
+          newPhone,
+          appVerifier,
+        );
+
+        // Save the string ID to state, which will open the modal
+        setVerificationId(verifId);
+        showNotification(
+          notification,
+          "Código de verificação enviado por SMS!",
+          "success",
+        );
+      } catch (error) {
+        console.error("SMS not sent.", error);
+        showNotification(
+          notification,
+          "Erro ao enviar SMS. Verifique o número ou tente mais tarde.",
+          "error",
+        );
+      }
+    },
+    [auth, notification],
+  );
+
+  // Phone 'Verify Code' Handler
+  const handleVerifyCode = useCallback(async () => {
+    if (!verificationId || !auth.currentUser) {
+      alert("Verification ID is missing or user is not logged in.");
       return;
     }
 
-    // Define where Firebase should redirect back to after the user clicks the link
-    const actionCodeSettings = {
-      url: "https://your-app-domain.com/profile",
-      handleCodeInApp: true,
-    };
-
     try {
-      // This sends the verification email to the NEW address.
-      await verifyBeforeUpdateEmail(currentUser, newEmail, actionCodeSettings);
-
-      // IMPORTANT: The user's email has NOT changed yet in Firebase Auth.
-      setConfirmationText(
-        `Email de verificação enviado para ${newEmail}.
-        Por favor, verifique sua caixa de correio para completar a alteração.`,
+      const credential = PhoneAuthProvider.credential(
+        verificationId,
+        phoneCode,
       );
-      showConfirmationModal();
-    } catch (error) {
-      // Common error: 'auth/email-already-in-use'
-      console.error("Error sending verification email:", error);
-      showNotification(notification, `Erro ao editar email`, "error");
-    }
-  };
 
-  const dataSections: sectionType[] = [
+      await updatePhoneNumber(auth.currentUser, credential);
+
+      showNotification(
+        notification,
+        "Telefone atualizado com sucesso!",
+        "success",
+      );
+      setVerificationId(null); // Close the modal
+      setPhoneCode(""); // Reset code
+      refreshUserData(); // Refresh user data to show new phone
+    } catch (error) {
+      console.error("Error updating phone number", error);
+      showNotification(
+        notification,
+        "Verificação falhou. Código inválido?",
+        "error",
+      );
+    }
+  }, [verificationId, auth, phoneCode, notification, refreshUserData]); // Added dependencies
+
+  const basicDataList: infoType[] = [
+    { label: "Nome", data: userData?.names.fullName || "" },
     {
-      title: "Dados Básicos",
-      itemsList: [
-        { label: "Nome", data: userData?.names.fullName || "" },
-        {
-          label: "Pessoa",
-          data: personsData[userData?.personType || ""] || "Não especificado",
-        },
-        {
-          label: "CPF",
-          data: userData?.documents.cpf || "",
-          mask: [/^(\d{1,3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4"],
-        },
-        {
-          label: "CNPJ",
-          data: userData?.documents.cnpj || "",
-          mask: [/^(\d{1,2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5"],
-        },
-        { label: "RA", data: userData?.documents.studentId || "" },
-      ],
+      label: "Pessoa",
+      data: personsData[userData?.personType || ""] || "Não especificado",
     },
     {
-      title: "Contato",
-      itemsList: [
-        {
-          label: "Email",
-          Icon: Envelope,
-          data: userData?.email || "",
-          submitCallback: handleEmailChange,
-        },
-        {
-          label: "Telefone",
-          Icon: Telephone,
-          data: userData?.phone || "",
-          submitCallback: () => null,
-        },
-      ],
+      label: "CPF",
+      data: userData?.documents.cpf || "",
+      mask: [/^(\d{1,3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4"],
+    },
+    {
+      label: "CNPJ",
+      data: userData?.documents.cnpj || "",
+      mask: [/^(\d{1,2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5"],
+    },
+    { label: "RA", data: userData?.documents.studentId || "" },
+  ];
+
+  const contactDataList: infoType[] = [
+    {
+      label: "Email",
+      Icon: Envelope,
+      data: userData?.email || "",
+      submitCallback: handleEmailChange,
+      type: "email",
+    },
+    {
+      label: "Telefone",
+      Icon: Telephone,
+      data: userData?.phone || "",
+      submitCallback: handleSendCode,
+      type: "tel",
     },
   ];
 
@@ -516,30 +498,31 @@ const UserProfile = () => {
         {/* Header */}
         <Row className="mb-4 text-center">
           <Col>
-            <Image
-              src={user?.photoURL || userAvatar}
-              alt="User"
-              roundedCircle
-              style={{ width: "180px", objectFit: "cover" }}
-              className="mb-3"
+            <ProfilePicUploader
+              photoURL={user?.photoURL || ""}
+              userUid={user?.uid || ""}
             />
-            {user ? (
-              <>
-                <h4 className="fw-semibold">
-                  {user.displayName || "loading..."}
-                </h4>
-                <p className="text-muted mb-0">{user.email}</p>
-                <small className="text-muted">
-                  <i>{rolesData[userRole || "user"]}</i>
-                </small>
-              </>
-            ) : (
-              <Stack gap={2}>
-                <Skeleton.Input active size="small" />
-                <Skeleton.Input active size="small" />
-                <Skeleton.Input active size="small" />
-              </Stack>
-            )}
+            <div className="mt-3">
+              {user ? (
+                <>
+                  <h4 className="fw-semibold">
+                    {user.displayName || "loading..."}
+                  </h4>
+                  <p className="text-muted mb-0">
+                    <Envelope /> {user.email}
+                  </p>
+                  <small className="text-muted">
+                    <i>{rolesData[userRole || "user"]}</i>
+                  </small>
+                </>
+              ) : (
+                <Stack gap={2}>
+                  <Skeleton.Input active size="small" />
+                  <Skeleton.Input active size="small" />
+                  <Skeleton.Input active size="small" />
+                </Stack>
+              )}
+            </div>
           </Col>
         </Row>
 
@@ -573,22 +556,38 @@ const UserProfile = () => {
         ) : loadingDocStatus === "success" && userData ? (
           <Container fluid>
             <Row className="gap-3 justify-content-center px-3">
-              <InfoSection md={5} sm={5} {...dataSections[0]} />
+              {/* <InfoSection md={5} sm={5} {...dataSections[0]} /> */}
+
+              <Col md={5} sm={5} className="mb-3 justify-content-center p-0">
+                <h4 className="text-uppercase d-flex align-items-center text-muted mb-2 fw-light mt-sm-4 mb-4">
+                  Dados Básicos
+                  <Link
+                    to={isLoadingUser ? "#" : "/app/users/edit/" + user?.uid}
+                    className={`ms-3 p-2 d-flex align-items-center btn btn-secondary ${isLoadingUser ? " disabled" : ""}`}
+                  >
+                    <PencilSquare />
+                  </Link>
+                </h4>
+                <Container>
+                  {basicDataList
+                    .filter(({ data }) => Boolean(data))
+                    .map((info, i) => (
+                      <InfoRow key={i} {...info} />
+                    ))}
+                </Container>
+              </Col>
 
               {/* <InfoSection md={6} sm={true} {...dataSections[1]} /> */}
 
               <Col md={6} sm={true} className="mb-3 justify-content-center p-0">
                 <h4 className="text-uppercase text-muted mb-2 fw-light mt-sm-4 mb-4">
-                  {dataSections[1].title}
+                  Contato
                 </h4>
                 <Container>
-                  <Row className="mb-2">
-                    <InfoRowEdit {...dataSections[1].itemsList[0]} />
-                    <InfoRowEdit
-                      {...dataSections[1].itemsList[1]}
-                      disabled={true}
-                    />
-                  </Row>
+                  {/* Email Row */}
+                  <InfoRowEdit {...contactDataList[0]} />
+                  {/* Phone Row */}
+                  <InfoRowEdit {...contactDataList[1]} />
                 </Container>
               </Col>
             </Row>
@@ -608,8 +607,8 @@ const UserProfile = () => {
           <Col className="d-flex flex-wrap gap-2 justify-content-center">
             {/* Edit profile */}
             <Link
-              to={loadingUser ? "#" : "/app/users/edit/" + user?.uid}
-              className={`btn btn-outline-dark ${loadingUser ? " disabled" : ""}`}
+              to={isLoadingUser ? "#" : "/app/users/edit/" + user?.uid}
+              className={`btn btn-outline-dark ${isLoadingUser ? " disabled" : ""}`}
             >
               Editar Perfil
             </Link>
@@ -643,6 +642,9 @@ const UserProfile = () => {
         </Row>
       </Card>
 
+      {/* ✅ THIS IS THE FIX: Add the invisible div for reCAPTCHA */}
+      <div id="recaptcha-container"></div>
+
       {/* Modal ============================================== */}
 
       {/* IMPUT CHANGE MODAL */}
@@ -664,6 +666,52 @@ const UserProfile = () => {
         <Modal.Footer>
           <Button variant="secondary" onClick={closeConfirmationModal}>
             Ok
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* PHONE VERIFICATION MODAL */}
+      <Modal
+        show={Boolean(verificationId)}
+        onHide={() => setVerificationId(null)} // Allow user to cancel
+        animation={true}
+        centered
+        onEntered={() => codeField.current?.focus()} // Auto-focus input
+      >
+        <Modal.Header closeButton>
+          <span className="d-flex justify-content-center align-items-end gap-3">
+            <h3 className="m-0">Verificar Número de Telefone</h3>
+          </span>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            Digite o código de 6 dígitos que enviamos por SMS para completar a
+            alteração.
+          </p>
+          <Form.Group className="mb-3" controlId="phoneCodeInput">
+            <Form.Label>Código de Verificação:</Form.Label>
+            <Form.Control
+              autoComplete="off"
+              type="text"
+              placeholder="______"
+              value={phoneCode}
+              onChange={(e) => setPhoneCode(e.target.value)}
+              maxLength={6}
+              ref={codeField}
+              onKeyDown={(e) => e.key === "Enter" && handleVerifyCode()}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setVerificationId(null)}>
+            Cancelar
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleVerifyCode}
+            disabled={phoneCode.length !== 6}
+          >
+            Verificar e Salvar
           </Button>
         </Modal.Footer>
       </Modal>
