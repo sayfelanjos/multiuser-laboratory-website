@@ -5,6 +5,7 @@ import { httpsCallable } from "firebase/functions";
 import { functions, auth } from "../../firebase";
 import { CheckCircle, XCircle, Person } from "react-bootstrap-icons";
 import { showNotification } from "../../helpers/showNotification";
+import { useAuth } from "../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 import { App } from "antd";
 import { FirebaseError } from "firebase/app";
@@ -14,6 +15,7 @@ import "./_verify-email.scss";
 type Status = "loading" | "success" | "error";
 
 const VerifyEmail: React.FC = () => {
+  const { refreshUserData } = useAuth();
   const [status, setStatus] = useState<Status>("loading");
   const [countDown, setCountDown] = useState(7);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -74,7 +76,14 @@ const VerifyEmail: React.FC = () => {
       // --- Firestore is now updated! ---
 
       // ----------------------------------------------------------------
-      // STEP 3: ALL SUCCESS!
+      // STEP 3: REFRESH!
+      // ----------------------------------------------------------------
+      await refreshUserData();
+
+      // --- Firestore is now updated! ---
+
+      // ----------------------------------------------------------------
+      // STEP 4: ALL SUCCESS!
       // ----------------------------------------------------------------
       setStatus("success");
       showNotification(
@@ -84,14 +93,14 @@ const VerifyEmail: React.FC = () => {
       );
 
       // ----------------------------------------------------------------
-      // STEP 4: Navigate back to the profile page after a delay
+      // STEP 5: Navigate back to the profile page after a delay
       // ----------------------------------------------------------------
       const counterId = setInterval(() => {
         setCountDown((c) => {
           c = c - 1;
           if (c <= 0) {
             clearInterval(counterId);
-            navigate("/app/users/profile");
+            navigate("/app/users/profile", { replace: true });
           }
           return c;
         });
@@ -101,7 +110,7 @@ const VerifyEmail: React.FC = () => {
       let msg = "Ocorreu um erro desconhecido. Por favor, tente novamente.";
 
       // ----------------------------------------------------------------
-      // STEP 5: Improved Error Handling (This is now correct)
+      // STEP 6: Error Handling
       // ----------------------------------------------------------------
       if (error instanceof FirebaseError) {
         if (error.code === "auth/expired-action-code") {
@@ -149,8 +158,8 @@ const VerifyEmail: React.FC = () => {
             <CheckCircle className="text-success me-3" /> Email Atualizado!
           </h1>
           <p className="text-muted">
-            Seu perfil foi sincronizado. Redirecionando você de volta em{" "}
-            {countDown}s ...
+            Seu perfil foi sincronizado. <br />
+            Redirecionando você de volta em <b>{countDown}s</b> ...
           </p>
           <Link
             to="/app/users/profile"

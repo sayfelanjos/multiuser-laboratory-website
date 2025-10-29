@@ -1,15 +1,15 @@
-import { RecaptchaVerifier } from "firebase/auth";
+/// <reference types="react-scripts" /> // Keep this if you have it
 
-// Extend the global Window interface
+// Declaration for SCSS files
+declare module "*.scss" {
+  const content: { [className: string]: string };
+  export default content;
+}
+
+// Declaration for window object (if you have it)
+import { RecaptchaVerifier } from "firebase/auth";
 declare global {
   interface Window {
-    // Declare recaptchaVerifier as a property that can hold a RecaptchaVerifier object
-    // It is optional (using '?') because it might not be set initially
-    // or it could be null/undefined at certain times.
     recaptchaVerifier?: RecaptchaVerifier;
   }
 }
-
-// Note: You might also need to declare it for the standard 'var' scope if you're
-// relying on it being globally defined without explicitly attaching it to 'window'.
-// However, explicitly declaring it on 'window' is usually sufficient and clearer.
