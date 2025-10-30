@@ -5,6 +5,7 @@ import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 import image from "../../assets/images/image-800x400.jpg";
 import CardsGrid from "../../components/CardsGrid";
+import { laboratoryCardEnum } from "../../components/CardsGrid/cardsData";
 
 const About = () => {
   return (
@@ -34,7 +35,7 @@ const About = () => {
       </Container>
       <Container>
         <hr className="bg-black border-1 my-5" />
-        <CardsGrid />
+        <CardsGrid laboratory={laboratoryCardEnum.LMU}/>
       </Container>
     </>
   );

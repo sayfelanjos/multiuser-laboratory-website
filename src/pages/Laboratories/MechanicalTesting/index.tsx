@@ -1,6 +1,7 @@
 import React from "react";
 import Container  from "react-bootstrap/Container";
 import InfoPage from "../../../components/InfoPageLayout";
+import { laboratoryCardEnum } from "../../../components/CardsGrid/cardsData";
 
 const lemData = [
   { 
@@ -61,18 +62,22 @@ const lemData = [
   },
 ];
 
+
 const lemText = {
     name: "Laboratório de Ensaios mecânicos",
-    description: "Descrição do Laboratório",
+    description: `O Laboratório de Ensaios Mecânicos realiza análises e testes que avaliam o comportamento e as 
+                  propriedades de materiais e componentes sob diferentes condições de carga. Atuando em ensino,
+                  pesquisa e extensão, o LEM oferece suporte técnico e científico para o desenvolvimento de novos materiais, controle de qualidade, inovação tecnológica 
+                  e investigação de falhas,garantindo segurança, confiabilidade e desempenho em aplicações industriais e acadêmicas.`,
     whyLaboratory: `Os testes mecânicos são uma prática essencial utilizada para
               determinar as propriedades físicas e o comportamento de materiais
               e componentes sob várias condições.`
-}
+};
 
 const MechanicalTesting = () => {
     return(
         <Container fluid className="p-5">
-            <InfoPage  laboratoryText={lemText} sectionsData={lemData}/>
+            <InfoPage  laboratoryText={lemText} sectionsData={lemData} laboratoryName={laboratoryCardEnum.LEM}/>
         </Container>
     );
 };

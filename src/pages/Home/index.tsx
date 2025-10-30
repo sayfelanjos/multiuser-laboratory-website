@@ -4,142 +4,58 @@ import Container from "react-bootstrap/Container";
 import Image from "react-bootstrap/Image";
 import CardsGrid from "../../components/CardsGrid";
 import Divider from "antd/lib/divider";
+import { laboratoryCardEnum } from "../../components/CardsGrid/cardsData";
+import InfoPage from "../../components/InfoPageLayout";
 
-const sectionsData = [
+const lmuData = [
   {
-    title: "Controle de Qualidade",
+    title: "Missão",
     content:
-      "Os testes mecânicos ajudam a garantir que materiais e componentes atendam às especificações e padrões exigidos. Isso é crucial para manter a qualidade e a consistência nos processos de fabricação.",
+      "O LMU Laboratório Multiusuário, de Caracterização de Materiais visa o estudo e caracterização de materiais e processos de fabricação, nas áreas de Engenharia de Manufatura e Materiais. Composto por equipamentos, técnicas e procedimentos de diversos laboratórios, possuindo como missão promover pesquisas interdisciplinares de ponta, colabora com projetos inovadores, apoiar o Plano de Desenvolvimento Institucional da Unicamp, potencializando o ensino, a pesquisa, a extensão e as relações entre a comunidade universitária e a iniciativa privada.",
     img: require("../../assets/images/lmu-images/quality-control-1024x393.jpg"),
     alt: "",
   },
   {
-    title: "Segurança",
+    title: "Visão",
     content:
-      "Ao entender as propriedades mecânicas dos materiais, os engenheiros podem projetar produtos que sejam seguros para uso. Os testes ajudam a prevenir falhas que poderiam levar a lesões ou acidentes.",
+      "Nosso objetivo é nos destacar no ensino e na pesquisa em tecnologia e ciências de materiais, manufatura, mecânicas, ao mesmo tempo em que nos esforçamos para ser um laboratório conhecido por fornecer serviços que priorizam as pessoas e impulsionam transformações sociais, inclusivas e tecnológicas.",
     img: require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-375x281.jpg"),
     alt: "",
   },
   {
-    title: "Avaliação de Desempenho",
+    title: "Valores",
     content:
-      "Os testes mecânicos fornecem dados sobre como os materiais se comportarão sob diferentes cargas, tensões e condições ambientais. Essas informações são essenciais para projetar componentes que funcionarão corretamente em suas aplicações pretendidas.",
+      "Conduta ética e respeito às normas institucionais. Busca da excelência através da melhoria contínua e competência técnica. Compromisso com relacionamentos, comunicação e cooperação respeitosos e responsáveis. Consciência socioambiental, empatia, proatividade. Manter a institucionalidade, a credibilidade, a flexibilidade e o foco na racionalidade e na simplicidade.",
     img: require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-375x281.jpg"),
     alt: "",
   },
   {
-    title: "Seleção de Materiais",
+     title: "Princípios",
     content:
-      "Os testes ajudam na seleção do material adequado para uma aplicação específica. Diferentes materiais possuem propriedades mecânicas distintas, e escolher o material apropriado garante a durabilidade e o desempenho do produto final.",
-    img: require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-375x281.jpg"),
-    alt: "",
-  },
-  {
-    title: "Pesquisa e Desenvolvimento",
-    content:
-      "Os testes mecânicos são utilizados em P&D para desenvolver novos materiais e melhorar os existentes. Eles ajudam os pesquisadores a entender o comportamento dos materiais e tomar decisões informadas no design e processamento de materiais.",
-    img: require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-375x281.jpg"),
-    alt: "",
-  },
-  {
-    title: "Conformidade",
-    content:
-      "Muitas indústrias possuem normas regulatórias que materiais e produtos devem atender. Os testes mecânicos garantem que os produtos cumpram com essas regulamentações, o que pode ser essencial para a aceitação legal e no mercado.",
-    img: require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-375x281.jpg"),
-    alt: "",
-  },
-  {
-    title: "Análise de Falhas",
-    content:
-      "Quando um componente falha, os testes mecânicos podem ajudar a determinar a causa da falha. Essas informações são valiosas para prevenir falhas futuras e melhorar o design do produto.",
-    img: require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-375x281.jpg"),
-    alt: "",
-  },
-  {
-    title: "Manutenção Preditiva",
-    content:
-      "Para componentes que já estão em uso, os testes mecânicos podem prever falhas potenciais e permitir que a manutenção seja realizada antes que uma falha real ocorra, reduzindo assim o tempo de inatividade e os custos. De forma geral, os testes mecânicos são uma parte fundamental dos processos de engenharia e fabricação, pois garantem a confiabilidade, a segurança e o desempenho dos materiais e produtos.",
+      "Princípios de governança: Democrática, Eficiência, Igualdade, Impessoalidade, Legalidade, Moralidade, Transparência. Responsabilidade Socioambiental: Proteção Ambiental, Respeito à Vida em Todas as Formas, Sustentabilidade. Foco Estratégico: Planejamento, Prevenção, Internacionalização, Interdisciplinaridade, Otimização de Recursos. Envolvimento comunitário: Incentivo à participação, criatividade, inovação, comprometimento, ensino de qualidade. Melhoria Contínua: Autoavaliação, Certificação de Qualidade, Renovação de Pessoal.",
     img: require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-375x281.jpg"),
     alt: "",
   },
 ];
 
+const lmuText = {
+    name: "LMU",
+    description: `O LMU (Laboratório Multiusuário de Caracterização de Materiais) da Unicamp é uma laboratório focado no estudo de materiais e processos de fabricação. 
+                  Sua principal missão é promover pesquisas interdisciplinares, apoiar projetos inovadores e fortalecer a conexão entre a universidade (no ensino e pesquisa) e a iniciativa privada.`,
+    whyLaboratory: `O LMU serve como um centro de referência focado exatamente nesse estudo e caracterização, atuando nas áreas vitais de Engenharia de Manufatura e Materiais. 
+                    O propósito do laboratório, no entanto, vai além de simplesmente gerar dados; ele existe para usar essas informações como um motor de desenvolvimento.
+                    O laboratório serve para promover pesquisas interdisciplinares de ponta, permitindo que projetos inovadores ganhem vida com base em uma compreensão profunda das propriedades dos materiais.`
+};
+
 const Home = () => {
   return (
     <>
       <Hero />
-      <Container
-        fluid={"lg"}
-        className="p-0 d-flex flex-column my-3 bg-white rounded-3 shadow"
-      >
-        <div className="d-flex justify-content-center rounded-3 align-items-center px-3 pt-3 bg-white my-3 flex-column flex-lg-row flex- gap-sm-3">
-          <h1 className="m-auto text-center">LMU</h1>
-          <p
-            className="fs-6 border-start border-4 border-light ps-3 mb-0"
-            style={{ width: "80%" }}
-          >
-            O LMU, Laboratório Multiusuário de Caracterização de Materiais, visa
-            o estudo e caracterização de materiais e processos de fabricação,
-            nas áreas de Engenharia de Manufatura e Materiais. Composto por
-            equipamentos, técnicas e procedimentos de diversos laboratórios,
-            possuindo como missão promover pesquisas interdisciplinares de
-            ponta, colabora com projetos inovadores, apoiando o Plano de
-            Desenvolvimento Institucional da Unicamp, potencializando o ensino,
-            a pesquisa, a extensão e as relações entre a comunidade
-            universitária e a iniciativa privada.
-          </p>
-        </div>
-        <div className="d-flex bg-dark text-white p-0 flex-column flex-md-row">
-          <Image
-            className="mx-lg-0"
-            style={{ maxHeight: "375px" }}
-            srcSet={`${require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-375x281.jpg")} 375w,
-      ${require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-375x281.jpg")} 768w,
-      ${require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-375x281.jpg")} 992w,
-      ${require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-375x281.jpg")} 1200w,
-      ${require("../../assets/images/lmu-images/ens.cmprss-osso-fratur.3-500x375.jpg")} 1440w`}
-          />
-          <div className="d-flex flex-column justify-content-center align-items-center align-items-lg-start p-3">
-            <h1 className="mb-3 text-center text-lg-start">
-              Para que Ensaios Mecânicos?
-            </h1>
-            <p className="fs-6 text-center text-lg-start">
-              Os testes mecânicos são uma prática essencial utilizada para
-              determinar as propriedades físicas e o comportamento de materiais
-              e componentes sob várias condições.
-            </p>
-          </div>
-        </div>
-        <div className="bg-white">
-          {sectionsData.map((section, index) => (
-            <div
-              key={index}
-              className="d-flex gap-3 align-items-center justify-content-center text-dark m-3 rounded-3 shadow p-3 flex-column flex-lg-row"
-              style={{
-                minHeight: "180px",
-              }}
-            >
-              <h3 className="text-center" style={{ width: "300px" }}>
-                {section.title}
-              </h3>
-              <p
-                className="border-start border-1 mx-3 mx-lg-0 my-sm-0 border-dark ps-3 w-auto"
-                // style={{ width: "60%" }}
-              >
-                {section.content}
-              </p>
-            </div>
-          ))}
-        </div>
-        <div>
-          <div className="d-flex justify-content-center">
-            <h1 className="bg-dark w-100 text-center py-3 m-0 text-white">
-              Tipos de Ensaios Mecânicos
-            </h1>
-          </div>
-          <CardsGrid />
-        </div>
-      </Container>
+       return(
+        <Container fluid className="p-5">
+            <InfoPage  laboratoryText={lmuText} sectionsData={lmuData} laboratoryName={laboratoryCardEnum.LMU}/>
+        </Container>
+    );
     </>
   );
 };

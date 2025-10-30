@@ -84,7 +84,7 @@ const DropdownData = [
 ];
 
 const DropdownDataLaboratories = [
-  {route: "/laboratories/mechanical-testing-laboratory", text: "Ensaio Mecânico", isDisabled: true},
+  {route: "/laboratories/mechanical-testing-laboratory", text: "Ensaio Mecânico", isDisabled: false},
   {route: "/laboratories/metallography-laboratory", text: "Metalografia", isDisabled: true},
   {route: "/laboratories/scanning-electron-microscopy-laboratory", text: "Microscopia Eletrônica de Varredura", isDisabled: true},
   {route: "/laboratories/transmission-electron-microscopy-laboratory", text: "Microscopia Eletrônica de Transmissão", isDisabled: true},
@@ -253,7 +253,7 @@ const Header = () => {
                       }
                       id="basic-nav-dropdown"
                     >
-                      {/* {[...DropdownDataLaboratories]
+                      {[...DropdownDataLaboratories]
                       .sort((itemA, itemB) => {
                           if ((!itemA.isDisabled && !itemB.isDisabled) || (itemA.isDisabled && itemB.isDisabled)){ // Performs comparisons only whether both items are enabled or disabled
                             return itemA.text.localeCompare(itemB.text);
@@ -279,13 +279,7 @@ const Header = () => {
                           >
                           {item.text}
                         </Dropdown.Item>
-                      ))} */
-                     <Dropdown.Item
-                     disabled = {true}
-                     >
-                      <i>Em breve...</i>
-                     </Dropdown.Item>
-                      }
+                      ))}
                     </NavDropdown>
 
                     <HeaderNavLink route="/about">

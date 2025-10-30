@@ -7,6 +7,7 @@ import Col from "react-bootstrap/Col";
 import { Link } from "react-router-dom";
 import Image from "react-bootstrap/Image";
 import CardsGrid from "../../../components/CardsGrid";
+import { laboratoryCardEnum } from "../../../components/CardsGrid/cardsData";
 
 const FadigueTest = () => {
   return (
@@ -63,7 +64,7 @@ const FadigueTest = () => {
             </Col>
           </Row>
           <hr className="bg-black border-1 my-5" />
-          <CardsGrid />
+          <CardsGrid laboratory={laboratoryCardEnum.LEM}/>
         </Container>
       </Container>
     </>

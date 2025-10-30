@@ -8,6 +8,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 import { Link } from "react-router-dom";
+import { laboratoryCardEnum } from "../../../components/CardsGrid/cardsData";
 
 const TensileTest = () => {
   return (
@@ -46,7 +47,7 @@ const TensileTest = () => {
             </Col>
           </Row>
           <hr className="bg-black border-1 my-5" />
-          <CardsGrid />
+          <CardsGrid laboratory={laboratoryCardEnum.LEM}/>
         </Container>
       </Container>
     </>

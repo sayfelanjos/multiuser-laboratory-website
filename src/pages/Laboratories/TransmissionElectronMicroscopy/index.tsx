@@ -1,6 +1,7 @@
 import React from "react";
 import Container  from "react-bootstrap/Container";
 import InfoPage from "../../../components/InfoPageLayout";
+import { laboratoryCardEnum } from "../../../components/CardsGrid/cardsData";
 
 const lemData = [
   {
@@ -20,7 +21,7 @@ const lemText = {
 const TransmissionElectronMicroscopy = () => {
     return(
         <Container fluid className="p-5">
-            <InfoPage  laboratoryText={lemText} sectionsData={lemData}/>
+            <InfoPage  laboratoryText={lemText} sectionsData={lemData} laboratoryName={laboratoryCardEnum.TransmissionMicroscopy}/>
         </Container>
     )
 };

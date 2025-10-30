@@ -2,6 +2,7 @@ import React from "react";
 import Hero from "../../components/Hero";
 import Container from "react-bootstrap/Container";
 import Image from "react-bootstrap/Image";
+import {laboratoryCardEnum} from "../../components/CardsGrid/cardsData";
 import CardsGrid from "../../components/CardsGrid";
 import Divider from "antd/lib/divider";
 
@@ -21,9 +22,10 @@ type Section = {
 type InfoPageProps = {
   laboratoryText: LaboratoryText
   sectionsData: Section[]
+  laboratoryName: laboratoryCardEnum
 };
 
-const InfoPage = ({laboratoryText, sectionsData }: InfoPageProps) => {
+const InfoPage = ({laboratoryText, sectionsData, laboratoryName }: InfoPageProps) => {
   return (
     <>
       <Container
@@ -82,14 +84,14 @@ const InfoPage = ({laboratoryText, sectionsData }: InfoPageProps) => {
         <div>
           <div className="d-flex justify-content-center">
             <h1 className="bg-dark w-100 text-center py-3 m-0 text-white">
-              Tipos de Ensaios Mecânicos
+              {laboratoryName === laboratoryCardEnum.LMU ? "Laboratorios" : "Tipos de Ensaios Mecânicos"}
             </h1>
           </div>
-          <CardsGrid />
+          <CardsGrid laboratory={laboratoryName} />
         </div>
       </Container>
     </>
-  );
+  );  
 };
 
 export default InfoPage;

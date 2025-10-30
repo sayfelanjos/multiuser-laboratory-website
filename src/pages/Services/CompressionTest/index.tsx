@@ -8,6 +8,7 @@ import Col from "react-bootstrap/Col";
 import CardsGrid from "../../../components/CardsGrid";
 import { Link } from "react-router-dom";
 import Image from "react-bootstrap/Image";
+import { laboratoryCardEnum } from "../../../components/CardsGrid/cardsData";
 
 const CompressionTest = () => {
   return (
@@ -49,7 +50,7 @@ const CompressionTest = () => {
               </Col>
             </Row>
             <hr className="bg-black border-1 my-5" />
-            <CardsGrid />
+            <CardsGrid laboratory={laboratoryCardEnum.LEM}/>
           </Container>
         </Container>
       </Container>

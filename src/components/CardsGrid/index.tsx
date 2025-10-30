@@ -2,15 +2,16 @@ import React from "react";
 import Card from "react-bootstrap/Card";
 import Ratio from "react-bootstrap/Ratio";
 import { Link } from "react-router-dom";
-import { cardsData } from "./cardsData";
+import { CardsLaboratory, cardsData,  } from "./cardsData";
 import ArrowRightIcon from "../../assets/icons/ArrowRightIcon";
 import Divider from "antd/lib/divider";
 import "./_cards-grid.scss";
 
-const CardsGrid = () => {
+const CardsGrid = ({laboratory}: CardsLaboratory) => {
+  const cards = cardsData(laboratory);
   return (
     <div className="cards-grid__wrapper">
-      {cardsData.map((card) => {
+      {cards.map((card) => {
         return (
           <Card key={card.id} className="card-grid__item" body={false}>
             <Link to={card.link} className="text-decoration-none">
