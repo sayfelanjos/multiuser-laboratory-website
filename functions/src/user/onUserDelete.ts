@@ -1,7 +1,6 @@
 import * as functions from "firebase-functions";
 import { db, FieldValue, FirestoreFieldValue, UserRecord } from "../admin";
 import type { UserDocument } from "../types/userTypes";
-import { logger } from "firebase-functions";
 
 /**
  * Triggered when a user's Auth account is deleted.
@@ -16,7 +15,7 @@ export const onUserDelete = functions
     const userRef = db.collection("users").doc(uid);
     const archivedUserRef = db.collection("archivedUsers").doc(uid);
 
-    logger.info(`Deletion process started for user: ${uid}`);
+    console.info(`Deletion process started for user: ${uid}`);
 
     try {
       // Use a transaction to ensure both operations succeed or fail together.
@@ -24,7 +23,7 @@ export const onUserDelete = functions
         const userDoc = await transaction.get(userRef);
 
         if (!userDoc.exists) {
-          logger.info(
+          console.info(
             `User document for ${uid} not found. Nothing to archive.`,
           );
           return;
@@ -49,8 +48,8 @@ export const onUserDelete = functions
         // transaction.delete(userRef);
       });
 
-      logger.info(`User ${uid} successfully archived and marked as inactive.`);
+      console.info(`User ${uid} successfully archived and marked as inactive.`);
     } catch (error) {
-      logger.error(`Error in onUserDelete transaction for ${uid}:`, error);
+      console.error(`Error in onUserDelete transaction for ${uid}:`, error);
     }
   });

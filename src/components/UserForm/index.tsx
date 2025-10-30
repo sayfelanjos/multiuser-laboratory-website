@@ -11,16 +11,15 @@ import Spinner from "react-bootstrap/Spinner";
 import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import { App } from "antd";
 import UserType from "../../interfaces/user"; // Updated interface
+import UserDocType from "../../interfaces/userDoc"; // Updated interface
 import Modal from "react-bootstrap/Modal";
 import WarningIcon from "../../assets/icons/WarningIcon";
 import { showNotification } from "../../helpers/showNotification";
-import { Timestamp } from "firebase/firestore";
-import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
-import Image from "react-bootstrap/Image";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../../firebase";
 import { useAuth } from "../../hooks/useAuth";
 import { cpf, cnpj } from "cpf-cnpj-validator";
+import ProfilePicUploader from "../../components/ProfilePicUploader";
 
 type roleType = {
   displayName: {
@@ -37,7 +36,8 @@ const personsData: rolesMap = {
   student: { displayName: { pt: "Estudante", en: "Student" } },
 };
 
-const rolesDataTest: rolesMap = {
+// const rolesDataTest: rolesMap = {
+const rolesData: rolesMap = {
   admin: { displayName: { pt: "Administrador", en: "Administrator" } },
   manager: { displayName: { pt: "Gestor", en: "Manager" } },
   student: { displayName: { pt: "Estudante", en: "Student" } },
@@ -45,29 +45,20 @@ const rolesDataTest: rolesMap = {
 };
 
 const UserForm = () => {
-  const loadedTargetUser = useLoaderData() as UserType;
+  const loadedTargetUser = useLoaderData() as UserDocType;
   const location = useLocation();
-  const [rolesData, setRolesData] = useState<rolesMap>({});
-  const [isInputChanged, setIsInputChanged] = useState<boolean>(false);
+  // const [rolesData, setRolesData] = useState<rolesMap>({});
   const [formErrors, setFormErrors] = useState<{
     [key: string]: string | null;
   }>({});
-  const {
-    user: callerUser,
-    // isLoading: loadingCallerUser,
-    refreshUserData,
-    role: callerRole,
-  } = useAuth();
+  const { user: callerUser, refreshUserData, role: callerRole } = useAuth();
   const [targetUser, setTargetUser] = useState<UserType>({
     uid: "",
-    displayName: "",
-    fullName: "",
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
     photoURL: null,
-    createdAt: Timestamp.now(),
     role: "",
     personType: "unset",
     cpf: "",
@@ -75,28 +66,70 @@ const UserForm = () => {
     studentId: "",
   });
 
-  useEffect(() => {
-    /*
-    const roles: rolesMap = {};
-    getDocs(collection(db, "roles"))
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          roles[doc.id] = doc.data() as roleType;
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching roles: ", error);
-      })
-      .finally(() => {
-        setRolesData(roles);
-      });
-    */
-    setRolesData(rolesDataTest);
-  }, []);
+  const isInputChanged = useCallback((): boolean => {
+    return loadedTargetUser
+      ? loadedTargetUser.names.firstName !== targetUser.firstName ||
+          loadedTargetUser.names.allLastNames !== targetUser.allLastNames ||
+          loadedTargetUser.email !== targetUser.email ||
+          loadedTargetUser.phone !== targetUser.phone ||
+          loadedTargetUser.role !== targetUser.role ||
+          loadedTargetUser.personType !== targetUser.personType ||
+          loadedTargetUser.documents.cpf !==
+            targetUser.cpf?.replace(/\D/g, "") || // targetUser.cpf has the display format instead of raw number
+          loadedTargetUser.documents.cnpj !==
+            targetUser.cnpj?.replace(/\D/g, "") || // targetUser.cnpj has the display format instead of raw number
+          loadedTargetUser.documents.studentId !== targetUser.studentId
+      : Boolean(targetUser.firstName) ||
+          Boolean(targetUser.allLastNames) ||
+          Boolean(targetUser.email) ||
+          Boolean(targetUser.phone) ||
+          Boolean(targetUser.cpf) ||
+          Boolean(targetUser.cnpj) ||
+          Boolean(targetUser.studentId);
+  }, [loadedTargetUser, targetUser]);
+
+  // useEffect(() => {
+  //   const roles: rolesMap = {};
+  //   getDocs(collection(db, "roles"))
+  //     .then((querySnapshot) => {
+  //       querySnapshot.forEach((doc) => {
+  //         roles[doc.id] = doc.data() as roleType;
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching roles: ", error);
+  //     })
+  //     .finally(() => {
+  //       setRolesData(roles);
+  //     });
+  //   setRolesData(rolesDataTest);
+  // }, []);
 
   useEffect(() => {
     if (loadedTargetUser) {
-      setTargetUser(loadedTargetUser);
+      const {
+        uid,
+        email,
+        role,
+        phone,
+        personType,
+        documents: { cpf, cnpj, studentId },
+        names: { firstName, allLastNames },
+        photos: { mediumUrl },
+      } = loadedTargetUser;
+      setTargetUser({
+        uid,
+        firstName,
+        allLastNames,
+        email,
+        phone,
+        photoURL: mediumUrl || null,
+        role,
+        personType,
+        cpf,
+        cnpj,
+        studentId,
+      });
     }
   }, [loadedTargetUser]);
 
@@ -122,7 +155,6 @@ const UserForm = () => {
         error = "CNPJ inválido.";
       }
     }
-    console.log(error);
     // Update the errors state for the specific field
     setFormErrors((currErrors) => ({
       ...currErrors,
@@ -137,13 +169,13 @@ const UserForm = () => {
       >,
       field: keyof UserType,
     ) => {
-      setIsInputChanged(true);
-      console.log("Input changed!");
       const value = event.target.value;
-      setTargetUser((currentState) => ({
-        ...currentState,
-        [field]: value,
-      }));
+      setTargetUser((currentState) => {
+        return {
+          ...currentState,
+          [field]: value,
+        };
+      });
 
       validateField(field, value);
     },
@@ -156,7 +188,7 @@ const UserForm = () => {
 
       // Prevent submission if there are validation errors.
       const hasErrors = Object.entries(formErrors).some(([field, error]) => {
-        console.log(field, error);
+        console.error(field, error);
         return error !== null;
       });
       if (hasErrors) {
@@ -173,7 +205,7 @@ const UserForm = () => {
         // ===========================================================
         // Update targetUser
         // ===========================================================
-        if (isInputChanged) {
+        if (isInputChanged()) {
           // Update User data in Firestore and Authentication at Backend:
           const updateData = {
             uid: targetUser.uid,
@@ -231,7 +263,6 @@ const UserForm = () => {
             await createUserProfile({
               email: targetUser.email,
               role: targetUser.role,
-              password: "123456",
               phone: targetUser.phone || null,
               firstName: targetUser.firstName,
               lastName: targetUser.lastName,
@@ -263,7 +294,6 @@ const UserForm = () => {
     },
     [
       targetUser,
-      isInputChanged,
       navigate,
       notification,
       updateUserProfile,
@@ -290,16 +320,18 @@ const UserForm = () => {
             md="auto"
             className="d-flex flex-column justify-content-center align-items-center"
           >
-            <Image
+            {/* <Image
               src={targetUser.photoURL || userAvatar}
               alt="User"
               style={{ width: "auto", height: "120px" }}
               roundedCircle
               className="my-2"
+            /> */}
+
+            <ProfilePicUploader
+              photoURL={targetUser.photoURL || null}
+              userUid={targetUser.uid || null}
             />
-            <Form.Label className="text-muted">
-              {targetUser.photoURL ? "Foto de perfil" : "Sem foto de perfil"}
-            </Form.Label>
           </Col>
         </Row>
         <Form.Text className="mb-3">Dados Básicos:</Form.Text>
@@ -335,7 +367,9 @@ const UserForm = () => {
           <Form.Group as={Col} md="7" controlId="validationCustom03">
             <Form.Label>Email</Form.Label>
             <Form.Control
-              // style={{ width: "15rem" }}
+              // disabled={true}
+              readOnly={true}
+              disabled={true}
               type="email"
               placeholder="Email"
               onChange={(event) => handleInputChange(event, "email")}
@@ -347,7 +381,6 @@ const UserForm = () => {
           <Form.Group as={Col} md="5" controlId="validationCustomUsername">
             <Form.Label>Celular</Form.Label>
             <IMaskInput
-              // style={{ width: "9.2rem" }}
               id="formBasicPhone"
               className="form-control"
               mask="(00) 0 0000-0000"
@@ -361,6 +394,7 @@ const UserForm = () => {
                 handleInputChange(syntheticEvent, "phone");
               }}
               value={targetUser.phone || ""}
+              disabled
             />
           </Form.Group>
         </Row>
@@ -491,7 +525,7 @@ const UserForm = () => {
             <Button
               type="button"
               variant="outline-dark"
-              onClick={() => (isInputChanged ? showModal() : navigate(-1))}
+              onClick={() => (isInputChanged() ? showModal() : navigate(-1))}
             >
               Cancelar
             </Button>

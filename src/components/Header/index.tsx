@@ -202,7 +202,7 @@ const Header = () => {
                                 Perfil
                               </Dropdown.Item>
 
-                              <Dropdown.Item as={Link} to="#/action-2">
+                              <Dropdown.Item as={Link} to="#/action-2" disabled>
                                 Configurações
                               </Dropdown.Item>
 

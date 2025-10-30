@@ -5,7 +5,6 @@ import {
   assignDefaultCustomClaims,
   createUserDocument,
 } from "./userManagement";
-import { logger } from "firebase-functions";
 
 /**
  * Triggered when a new user signs up or is created by an admin.
@@ -19,7 +18,9 @@ export const migrateSelf = functions
     const callerUid = validAuth.uid;
     const user = await auth.getUser(callerUid);
 
-    logger.info(`User ${validAuth.token.email} is migrating his self account.`);
+    console.info(
+      `User ${validAuth.token.email} is migrating his self account.`,
+    );
 
     try {
       // These two operations can run in parallel for efficiency
@@ -28,8 +29,8 @@ export const migrateSelf = functions
         createUserDocument(user),
       ]);
 
-      logger.info(`Successfully set up profile for user ${user.uid}.`);
+      console.info(`Successfully set up profile for user ${user.uid}.`);
     } catch (error) {
-      logger.error(`Failed to set up profile for user ${user.uid}:`, error);
+      console.error(`Failed to set up profile for user ${user.uid}:`, error);
     }
   });

@@ -5,8 +5,9 @@ interface userPreferences {
   language: "pt" | "en";
 }
 
-// type userRoles = "user" | "technician" | "manager" | "admin";
-// type personTypes = "unset" | "individual" | "company" | "student";
+// ========================================================================
+// Auxiliary types: -------------------------------------------------------
+// ========================================================================
 
 // Define the roles and person types as a const tuple for type safety.
 // Placing it here makes it the single source of truth for what a role can be.
@@ -21,6 +22,31 @@ export const VALID_PERSON_TYPES = [
 // This uses the const above to create a union type automatically.
 type userRoles = (typeof VALID_ROLES)[number];
 type personTypes = (typeof VALID_PERSON_TYPES)[number];
+type userNames = {
+  firstName: string;
+  allLastNames: string;
+  lastName: string;
+  fullName: string;
+  displayName: string;
+  initials: string;
+};
+type userPhotos = {
+  medium?: string | null;
+  mediumUrl?: string | null;
+  small?: string | null;
+  smallUrl?: string | null;
+  thumb?: string | null;
+  thumbUrl?: string | null;
+};
+type userDocuments = {
+  cpf?: string;
+  cnpj?: string;
+  studentId?: string;
+};
+
+// ========================================================================
+// Exporting types: -------------------------------------------------------
+// ========================================================================
 
 /**
  * Defines the structure of a user document in the 'users' Firestore collection.
@@ -33,21 +59,18 @@ export interface UserDocument {
     | FirestoreFieldValue
     | userPreferences
     | Date
+    | userNames
+    | userPhotos
+    | userDocuments
     | undefined; // Index signature for dynamic properties
   uid: string;
   email?: string | null;
   emailVerified: boolean;
   // password: string;
 
-  firstName: string;
-  allLastNames: string;
-  lastName: string;
-  fullName: string;
-  displayName: string;
-  initials: string;
-
+  names: userNames;
   phoneNumber?: string | null;
-  photoURL?: string | null;
+  photos: userPhotos;
   country: string;
 
   // Role assigned via custom claims, duplicated for client-side access
@@ -55,9 +78,7 @@ export interface UserDocument {
 
   // Document fields for different user types
   personType: personTypes;
-  cpf?: string;
-  cnpj?: string;
-  studentId?: string;
+  documents: userDocuments;
 
   // Timestamps and status
   createdAt: FirestoreFieldValue | Date;
@@ -94,19 +115,22 @@ export interface UserIncomingData {
 
 // Define an interface for the updated data for type safety
 export interface UserUpdateData {
-  [key: string]: string | FirestoreFieldValue | Date | boolean | undefined;
+  [key: string]:
+    | string
+    | FirestoreFieldValue
+    | Date
+    | boolean
+    | userNames
+    | userDocuments
+    | userPhotos
+    | undefined;
   email?: string;
   emailVerified?: boolean;
-  firstName?: string;
-  lastName?: string;
-  displayName?: string;
-  initials?: string;
+  names?: userNames;
   phoneNumber?: string;
+  documents?: userDocuments;
   role?: userRoles;
-  cpf?: string;
-  cnpj?: string;
-  studentId?: string;
   personType?: personTypes;
-  photoURL?: string;
+  photos?: userPhotos;
   lastUpdated?: FirestoreFieldValue | Date;
 }

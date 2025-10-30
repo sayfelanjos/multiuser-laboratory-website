@@ -3,7 +3,6 @@ import type { UserDocument } from "../types/userTypes";
 import { parseUserName } from "../utils/userUtils";
 // ! TEMPORARY NATIVE ADMIN USERS:
 import { nativeAdminList } from "../security/authorization";
-import { logger } from "firebase-functions";
 
 /**
  * Creates a Firestore document for a newly created user.
@@ -21,19 +20,25 @@ export const createUserDocument = async (user: UserRecord): Promise<void> => {
     uid,
     email: email || null,
     emailVerified,
-    displayName: `${firstName} ${lastName}`,
-    fullName: `${firstName} ${allLastNames}`,
-    allLastNames,
-    firstName,
-    lastName,
-    initials: initials.toUpperCase(),
+    names: {
+      displayName: `${firstName} ${lastName}`,
+      fullName: `${firstName} ${allLastNames}`,
+      allLastNames,
+      firstName,
+      lastName,
+      initials: initials.toUpperCase(),
+    },
     phoneNumber: phoneNumber || null,
-    photoURL: photoURL || null,
+    photos: {
+      smallUrl: photoURL || null,
+    },
     country: "BR",
     personType: "unset",
-    cpf: "",
-    cnpj: "",
-    studentId: "",
+    documents: {
+      cpf: "",
+      cnpj: "",
+      studentId: "",
+    },
     role: user.customClaims?.role || "user",
     createdAt: creationTime,
     lastUpdated: creationTime,
@@ -46,11 +51,11 @@ export const createUserDocument = async (user: UserRecord): Promise<void> => {
 
   try {
     await db.collection("users").doc(uid).set(newUserDocument);
-    logger.info(
+    console.info(
       `Successfully created Firestore document for new user: ${uid}.`,
     );
   } catch (error) {
-    logger.error(`Error creating Firestore document for user ${uid}:`, error);
+    console.error(`Error creating Firestore document for user ${uid}:`, error);
     // Optional: add more robust error handling, like sending an alert
   }
 };
@@ -69,14 +74,14 @@ export const assignDefaultCustomClaims = async (
   const role = nativeAdminList.includes(email) ? "admin" : "user";
 
   if (userClaims?.role) {
-    logger.info(`User ${user.uid} already has role '${userClaims.role}'.`);
+    console.info(`User ${user.uid} already has role '${userClaims.role}'.`);
     return;
   }
 
   try {
     await auth.setCustomUserClaims(user.uid, { role, ...userClaims });
-    logger.info(`Assigned role "${role}" to ${user.uid}`);
+    console.info(`Assigned role "${role}" to ${user.uid}`);
   } catch (error) {
-    logger.error(`Error setting default claims for user ${user.uid}:`, error);
+    console.error(`Error setting default claims for user ${user.uid}:`, error);
   }
 };
