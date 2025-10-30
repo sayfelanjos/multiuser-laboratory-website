@@ -166,7 +166,8 @@ const router = createBrowserRouter([
             element: <TermoAnalysis/>
           }
         ]
-      }
+      },
+      {
         path: "*",
         element: <NotFound />,
       },
