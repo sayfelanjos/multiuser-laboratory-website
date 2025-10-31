@@ -37,3 +37,5 @@ jobs:
 
       - name: Deploy to Firebase Functions
         run: firebase deploy --only functions --project ${{ secrets.GCP_PROJECT_ID }} --non-interactive
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
