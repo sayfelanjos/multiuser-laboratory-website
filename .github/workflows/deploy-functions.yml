@@ -21,6 +21,7 @@ jobs:
 
       # Authenticate using Workload Identity (recommended)
       - name: Authenticate to Google Cloud
+        id: google_auth
         uses: 'google-github-actions/auth@v2'
         env:
           CI: false
