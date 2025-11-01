@@ -186,7 +186,6 @@ const UserForm = () => {
 
       // Prevent submission if there are validation errors.
       const hasErrors = Object.entries(formErrors).some(([field, error]) => {
-        console.error(field, error);
         return error !== null;
       });
       if (hasErrors) {
@@ -199,10 +198,10 @@ const UserForm = () => {
       }
 
       setIsLoading(true);
+      // ===========================================================
+      // Update targetUser
+      // ===========================================================
       if (targetUser.uid) {
-        // ===========================================================
-        // Update targetUser
-        // ===========================================================
         if (isInputChanged()) {
           // Update User data in Firestore and Authentication at Backend:
           const updateData = {

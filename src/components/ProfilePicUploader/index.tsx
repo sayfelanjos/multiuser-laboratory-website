@@ -1,5 +1,5 @@
 // src/components/ProfilePicUploader.tsx
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import Cropper from "react-easy-crop";
 import type { Point, Area } from "react-easy-crop";
@@ -11,6 +11,10 @@ import {
   Image,
   Container,
 } from "react-bootstrap";
+import { firestore as db, auth } from "../../firebase";
+import { doc, onSnapshot } from "firebase/firestore";
+import { onAuthStateChanged, User } from "firebase/auth";
+
 import FormRange from "react-bootstrap/FormRange";
 import { Divider, App } from "antd";
 import { PencilSquare } from "react-bootstrap-icons";
@@ -24,6 +28,7 @@ import {
   uploadFileWithProgress,
 } from "../../lib/storageHandlers";
 import "./_profile-pic-uploader.scss";
+import { useAuth } from "../../hooks/useAuth";
 // import {
 //   UploadOutlined,
 //   GoogleOutlined,
@@ -54,6 +59,7 @@ export default function ProfilePicUploader({
   photoURL: string | null;
   userUid: string | null;
 }) {
+  const { user, refreshUserData } = useAuth();
   const [file, setFile] = useState<File | null>(null);
   const [cropPreview, setCropPreview] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -117,15 +123,51 @@ export default function ProfilePicUploader({
       setProgress(0);
 
       // upload main image with progress
-      const url = await uploadFileWithProgress(
+      await uploadFileWithProgress(
         resizedFile,
         userUid,
         setProgress,
         "medium_profile",
       );
 
-      console.log("Uploaded profile pic:", url);
+      // console.log("Uploaded profile pic successfully.");
       setPreview(croppedFileUrl);
+
+      if (user && user.uid === userUid) {
+        console.log(`User ${user.email} modifyied self picure url.`);
+
+        const docRef = doc(db, "users", userUid);
+
+        // Set a trigger to refresh data when firestore updates:
+        const unsubscribeDB = onSnapshot(docRef, (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.data();
+            const newMediumUrl = data.photos?.mediumUrl;
+
+            console.log(
+              `onSnapshot received update. New mediumlUrl: ${newMediumUrl}`,
+            );
+
+            // Check against the current user photoURL to prevent old/stale updates.
+            if (newMediumUrl && user.photoURL !== newMediumUrl) {
+              console.log("New URL detected! Refreshing user data...");
+              refreshUserData(); // This will pull the new Auth/claims
+              unsubscribeDB(); // Unsubscribe after get the data we want
+            }
+          } else {
+            console.log(
+              "Failed to refreshUserData at ProfilePicUploader: Doc doesn't exist.",
+            );
+            unsubscribeDB(); // Unsubscribe on error
+          }
+        });
+      }
+
+      showNotification(
+        notification,
+        "Foto de usuário salva com sucesso!",
+        "success",
+      );
     } catch (err) {
       showNotification(
         notification,
@@ -140,12 +182,6 @@ export default function ProfilePicUploader({
       setProgress(null);
       setZoom(1);
       setCrop({ x: 0, y: 0 });
-      showNotification(
-        notification,
-        "Foto de usuário salva com sucesso!",
-        "success",
-      );
-      // refreshUserData();
     }
   }
 

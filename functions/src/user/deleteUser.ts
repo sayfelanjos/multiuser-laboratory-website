@@ -13,7 +13,7 @@ export const deleteUser = functions
     const { uid: targetUid } = data;
 
     // 1. Security Check: Ensure the caller is an admin.
-    await authorizeRequest(context, { role: "admin" });
+    await authorizeRequest(context, { role: "admin", targetUid });
 
     // 2. Validate Input
     if (!targetUid) {
@@ -23,7 +23,7 @@ export const deleteUser = functions
       );
     }
 
-    // 3. Deletion Logic
+    // 3. Deletion Logic:
     try {
       console.info(`Admin ${context.auth?.uid} is deleting user ${targetUid}`);
 

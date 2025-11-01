@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { createPortal } from "react-dom";
 import "./_scheduler-sidebar.scss";
 import { NavLink } from "react-router-dom";
-import { Navbar, DropdownDivider } from "react-bootstrap";
+import { Navbar } from "react-bootstrap";
 import ScheduleIcon from "../../assets/icons/ScheduleIcon";
 import RequestQuoteIcon from "../../assets/icons/RequestQuoteIcon";
 import CustomersIcon from "../../assets/icons/CustomersIcon";
@@ -10,8 +10,11 @@ import AvatarIcon from "../../assets/icons/AvatarIcon";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import useBreakpoint from "../../hooks/getCurrentBreakpoint";
 import { setIsSidebarOpen } from "../../redux/reducers/toggleSidebarSlice";
+import { useAuth } from "../../hooks/useAuth";
 
 const sidebarMenu = (isSidebarOpen: boolean, breakPoint: string) => {
+  const { role: userRole } = useAuth();
+
   return (
     <>
       <Navbar.Text
@@ -42,15 +45,17 @@ const sidebarMenu = (isSidebarOpen: boolean, breakPoint: string) => {
         </span>
       </NavLink>
 
-      <NavLink
-        to="/app/users/list"
-        className={`scheduler-sidebar__btn-link btn btn-link btn-dark text-decoration-none d-flex align-items-center ${isSidebarOpen ? "justify-content-start" : "justify-content-center"}`}
-      >
-        <AvatarIcon />
-        <span className={`ms-2 ${isSidebarOpen ? "d-flex" : "d-none"}`}>
-          Gerenciar Usuários
-        </span>
-      </NavLink>
+      {userRole === "admin" && (
+        <NavLink
+          to="/app/users/list"
+          className={`scheduler-sidebar__btn-link btn btn-link btn-dark text-decoration-none d-flex align-items-center ${isSidebarOpen ? "justify-content-start" : "justify-content-center"}`}
+        >
+          <AvatarIcon />
+          <span className={`ms-2 ${isSidebarOpen ? "d-flex" : "d-none"}`}>
+            Gerenciar Usuários
+          </span>
+        </NavLink>
+      )}
 
       {/*<hr*/}
       {/*  style={{*/}

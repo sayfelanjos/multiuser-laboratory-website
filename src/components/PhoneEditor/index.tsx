@@ -332,7 +332,8 @@ const PhoneEditor: React.FC<PhoneEditorProps> = ({
               inputComponent={Form.Control} // Use Form.Control as the base input for styling consistency
               ref={inputRef as React.Ref<any>}
               onKeyDown={handleKeyDown}
-              placeholder={"+55 (00) 00000 0000"}
+              placeholder={"ex: +55 (00) ..."}
+              disabled={!isEditing}
               // Indicate error state for Bootstrap styling
               isInvalid={phoneError}
             />

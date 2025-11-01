@@ -1,15 +1,6 @@
 import React from "react";
 import { Skeleton } from "antd";
-// Removed Firebase Auth imports related to email/phone update
-import {
-  Spinner,
-  Stack,
-  Container,
-  Row,
-  Col,
-  Card,
-  // Removed InputGroup as it's now in child components
-} from "react-bootstrap";
+import { Spinner, Stack, Container, Row, Col, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { auth } from "../../firebase"; // Keep auth import
 import { useAuth } from "../../hooks/useAuth";
@@ -94,7 +85,52 @@ const UserProfile = () => {
     { label: "RA", data: userData?.documents.studentId || "" },
   ];
 
-  // --- Render Logic ---
+  if (!user) {
+    return (
+      <Container fluid className="user-profile-page__ctn">
+        <Card
+          className="mt-3 mb-5 shadow rounded-3 bg-white p-3 w-100"
+          style={{ maxWidth: "800px" }}
+        >
+          {/* Header */}
+          <Row className="mb-4 text-center">
+            <Col>
+              <ProfilePicUploader photoURL={""} userUid={""} />
+              <div className="mt-3">
+                <Stack gap={2}>
+                  <Skeleton.Input active size="small" />
+                  <Skeleton.Input active size="small" />
+                  <Skeleton.Input active size="small" />
+                </Stack>
+              </div>
+            </Col>
+          </Row>
+
+          <Stack gap={2}>
+            <h2 className="text-center">
+              <Spinner className="me-3" as="span" animation="border" />{" "}
+              Carregando Dados...
+            </h2>
+            <br />
+            <Skeleton.Input active size="small" block />
+            <Skeleton.Input active size="small" block />
+            <Skeleton.Input active size="small" block />
+            <br />
+            <Skeleton.Input active size="small" block />
+            <Skeleton.Input active size="small" block />
+            <Skeleton.Input active size="small" block />
+          </Stack>
+
+          <Row className="mt-4">
+            <Col className="d-flex flex-wrap gap-2 justify-content-center">
+              <DeleteAccountButton uid={""} email={""} />
+            </Col>
+          </Row>
+        </Card>
+      </Container>
+    );
+  }
+
   return (
     <Container fluid className="user-profile-page__ctn">
       <Card
@@ -104,30 +140,17 @@ const UserProfile = () => {
         {/* Header */}
         <Row className="mb-4 text-center">
           <Col>
-            <ProfilePicUploader
-              photoURL={user?.photoURL || ""}
-              userUid={user?.uid || ""}
-            />
+            <ProfilePicUploader photoURL={user.photoURL} userUid={user.uid} />
             <div className="mt-3">
-              {user ? (
-                <>
-                  <h4 className="fw-semibold">
-                    {user.displayName || "loading..."}
-                  </h4>
-                  <p className="text-muted mb-0">
-                    <Envelope /> {user.email}
-                  </p>
-                  <small className="text-muted">
-                    <i>{rolesData[userRole || "user"]}</i>
-                  </small>
-                </>
-              ) : (
-                <Stack gap={2}>
-                  <Skeleton.Input active size="small" />
-                  <Skeleton.Input active size="small" />
-                  <Skeleton.Input active size="small" />
-                </Stack>
-              )}
+              <h4 className="fw-semibold">
+                {user.displayName || "loading..."}
+              </h4>
+              <p className="text-muted mb-0">
+                <Envelope /> {user.email}
+              </p>
+              <small className="text-muted">
+                <i>{rolesData[userRole || "user"]}</i>
+              </small>
             </div>
           </Col>
         </Row>
@@ -140,7 +163,7 @@ const UserProfile = () => {
               Tivemos um erro ao encontrar os dados do usuário.
             </p>
           </>
-        ) : loadingDocStatus === "loading" || isLoadingUser ? ( // Combine loading states
+        ) : loadingDocStatus === "loading" ? (
           <Stack gap={2}>
             <h2 className="text-center">
               <Spinner className="me-3" as="span" animation="border" />{" "}
@@ -191,11 +214,11 @@ const UserProfile = () => {
                 </h4>
                 <Container>
                   <EmailEditor
-                    initialEmail={userData?.email || ""}
+                    initialEmail={userData.email}
                     user={user} // Pass the user object
                   />
                   <PhoneEditor
-                    phone={userData?.phone || ""}
+                    phone={userData.phone}
                     auth={auth} // Pass the auth instance
                     refreshUserData={refreshUserData}
                   />
@@ -216,12 +239,10 @@ const UserProfile = () => {
         {/* Action Buttons */}
         <Row className="mt-4">
           <Col className="d-flex flex-wrap gap-2 justify-content-center">
-            {/* {userRole === "admin" && (
-              <Link to="/app/users/list" className="btn btn-outline-dark">
-                Gerenciar Usuários
-              </Link>
-            )} */}
-            <DeleteAccountButton user={user} />
+            <DeleteAccountButton
+              uid={user.uid}
+              email={user.email || user.displayName || ""}
+            />
           </Col>
         </Row>
       </Card>

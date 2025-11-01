@@ -1,20 +1,29 @@
 // src/components/DeleteAccountButton.tsx
 
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { Button, Modal, Form, Spinner } from "react-bootstrap";
-import { User } from "firebase/auth"; // Import User type
 import { FirebaseError } from "firebase/app";
 import { httpsCallable } from "firebase/functions";
-import { functions } from "../../firebase"; // Assuming path
+import { functions, auth } from "../../firebase"; // Assuming path
 import { App } from "antd"; // For notifications
 import { showNotification } from "../../helpers/showNotification"; // Assuming path
 import WarningIcon from "../../assets/icons/WarningIcon"; // Assuming path
+import { useNavigate } from "react-router-dom";
 
 interface DeleteAccountButtonProps {
-  user: User | null;
+  uid: string;
+  email: string;
+  children?: React.ReactNode;
+  typeToDelete?: boolean;
 }
 
-const DeleteAccountButton: React.FC<DeleteAccountButtonProps> = ({ user }) => {
+const DeleteAccountButton: React.FC<DeleteAccountButtonProps> = ({
+  uid,
+  email,
+  children,
+  typeToDelete = true,
+}) => {
+  const navigate = useNavigate();
   // Use AntD notification hook if available in this context
   const { notification } = App.useApp();
 
@@ -42,25 +51,27 @@ const DeleteAccountButton: React.FC<DeleteAccountButtonProps> = ({ user }) => {
     setLoadingAccountDeletion(true);
     const deleteUserFunction = httpsCallable(functions, "deleteUser");
 
-    if (!user) {
+    if (!uid) {
       showNotification(notification, "Dados de usuário ausentes!", "error");
       setLoadingAccountDeletion(false);
       return;
     }
 
     try {
-      await deleteUserFunction({ uid: user.uid });
+      await deleteUserFunction({ uid: uid });
       showNotification(
         notification,
-        `Conta ${user.email} deletada com sucesso! Você será desconectado.`,
+        `Conta ${email} deletada com sucesso! Você será desconectado.`,
         "success",
       );
 
-      // Ideally, trigger sign-out after a short delay or upon success
-      // auth.signOut(); // Requires auth instance
-      // navigate('/signin'); // Requires navigate instance
+      // Sign-out after a short delay or upon success
+      setTimeout(() => {
+        auth.signOut(); // Requires auth instance
+        navigate("/signin"); // Requires navigate instance
+      }, 3500);
     } catch (error) {
-      let message = `Conta ${user.email} não pode ser deletada!`;
+      let message = `Conta ${email} não pode ser deletada!`;
       if (
         error instanceof FirebaseError &&
         (error.code === "functions/unauthenticated" ||
@@ -78,7 +89,7 @@ const DeleteAccountButton: React.FC<DeleteAccountButtonProps> = ({ user }) => {
       setLoadingAccountDeletion(false);
       closeDeletionModal(); // Close modal after attempt
     }
-  }, [notification, user, functions, closeDeletionModal]); // Added dependencies
+  }, [notification, email, uid, functions, closeDeletionModal]); // Added dependencies
 
   return (
     <>
@@ -95,7 +106,7 @@ const DeleteAccountButton: React.FC<DeleteAccountButtonProps> = ({ user }) => {
             <Spinner as="span" animation="border" size="sm" /> Apagando conta...
           </span>
         ) : (
-          "Apagar conta"
+          children || "Apagar conta"
         )}
       </Button>
 
@@ -140,14 +151,20 @@ const DeleteAccountButton: React.FC<DeleteAccountButtonProps> = ({ user }) => {
           <Button
             variant={deletionText === "deletar" ? "danger" : "outline-danger"}
             onClick={
-              deletionText === "deletar"
+              !typeToDelete || deletionText === "deletar"
                 ? handleAccountDeletion
                 : () => deletionField.current?.focus()
             }
-            disabled={loadingAccountDeletion || deletionText !== "deletar"} // Disable during loading
+            disabled={
+              loadingAccountDeletion ||
+              (typeToDelete && deletionText !== "deletar")
+            } // Disable during loading
           >
             {loadingAccountDeletion ? (
-              <Spinner as="span" animation="border" size="sm" />
+              <>
+                <Spinner as="span" animation="border" size="sm" /> Apagando
+                conta...
+              </>
             ) : (
               "Sim, Deletar"
             )}
