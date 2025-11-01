@@ -14,14 +14,17 @@
   text-align: center;
   padding: 1.5rem;
   cursor: pointer;
+  animation: blink-background 1.5s infinite forwards;
 
   // --- Desktop (Mouse Primary) Styles ---
   color: $gray-600;
   background-color: $gray-100;
 
   &:hover {
-    background-color: lighten($blue, 40%);
+    background-color: lighten($blue, 30%);
     border-color: $blue;
+    animation: none;
+    color: $blue;
   }
 
   // --- Mobile (Touch Primary) Styles ---
@@ -40,5 +43,20 @@
   &.is-dragging {
     background-color: lighten($blue, 40%);
     border-color: $blue;
+  }
+
+  @keyframes blink-background {
+    0% {
+      background-color: $gray-100;
+      border-color: $gray-400;
+    }
+    50% {
+      background-color: lighten($blue, 40%);
+      border-color: $blue;
+    }
+    100% {
+      background-color: $gray-100;
+      border-color: $gray-400;
+    }
   }
 }

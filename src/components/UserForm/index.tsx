@@ -70,8 +70,6 @@ const UserForm = () => {
     return loadedTargetUser
       ? loadedTargetUser.names.firstName !== targetUser.firstName ||
           loadedTargetUser.names.allLastNames !== targetUser.allLastNames ||
-          loadedTargetUser.email !== targetUser.email ||
-          loadedTargetUser.phone !== targetUser.phone ||
           loadedTargetUser.role !== targetUser.role ||
           loadedTargetUser.personType !== targetUser.personType ||
           loadedTargetUser.documents.cpf !==
@@ -188,7 +186,6 @@ const UserForm = () => {
 
       // Prevent submission if there are validation errors.
       const hasErrors = Object.entries(formErrors).some(([field, error]) => {
-        console.error(field, error);
         return error !== null;
       });
       if (hasErrors) {
@@ -201,10 +198,10 @@ const UserForm = () => {
       }
 
       setIsLoading(true);
+      // ===========================================================
+      // Update targetUser
+      // ===========================================================
       if (targetUser.uid) {
-        // ===========================================================
-        // Update targetUser
-        // ===========================================================
         if (isInputChanged()) {
           // Update User data in Firestore and Authentication at Backend:
           const updateData = {
@@ -311,29 +308,9 @@ const UserForm = () => {
       >
         <h4 className="text-center mb-4">
           {location.pathname.match("/app/users/edit")
-            ? "Editar usuário"
+            ? "Editar dados"
             : "Adicionar novo usuário"}
         </h4>
-        {/* Profile picture */}
-        <Row className="mb-3 d-flex justify-content-center">
-          <Col
-            md="auto"
-            className="d-flex flex-column justify-content-center align-items-center"
-          >
-            {/* <Image
-              src={targetUser.photoURL || userAvatar}
-              alt="User"
-              style={{ width: "auto", height: "120px" }}
-              roundedCircle
-              className="my-2"
-            /> */}
-
-            <ProfilePicUploader
-              photoURL={targetUser.photoURL || null}
-              userUid={targetUser.uid || null}
-            />
-          </Col>
-        </Row>
         <Form.Text className="mb-3">Dados Básicos:</Form.Text>
         <Row className="mb-3">
           {/* First Name */}
@@ -364,7 +341,7 @@ const UserForm = () => {
         <Form.Text className="mb-3">Contato:</Form.Text>
         <Row className="mb-3">
           {/* Email */}
-          <Form.Group as={Col} md="7" controlId="validationCustom03">
+          <Form.Group as={Col} md="6" controlId="validationCustom03">
             <Form.Label>Email</Form.Label>
             <Form.Control
               // disabled={true}
@@ -378,12 +355,12 @@ const UserForm = () => {
             />
           </Form.Group>
           {/* Phone Number */}
-          <Form.Group as={Col} md="5" controlId="validationCustomUsername">
+          <Form.Group as={Col} md="6" controlId="validationCustomUsername">
             <Form.Label>Celular</Form.Label>
             <IMaskInput
               id="formBasicPhone"
               className="form-control"
-              mask="(00) 0 0000-0000"
+              mask="+00 (00) 0 0000-0000"
               placeholder="(__) _ ____-____"
               name="phone"
               onAccept={(value) => {

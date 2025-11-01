@@ -1,12 +1,7 @@
 import React, { useCallback, useState } from "react";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
 import Offcanvas from "react-bootstrap/Offcanvas";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "../../assets/images/fem-logo-monocromatica.png";
-import Stack from "react-bootstrap/Stack";
 import SiginIcon from "../../assets/icons/SignInIcon";
 import SignOutIcon from "../../assets/icons/SignOutIcon";
 import HomeIcon from "../../assets/icons/HomeIcon";
@@ -15,13 +10,20 @@ import AboutIcon from "../../assets/icons/AboutIcon";
 import ContactIcon from "../../assets/icons/ContactIcon";
 import { useAuth } from "../../hooks/useAuth";
 import { signOutUser } from "../../helpers/signOutUser";
-import { useLocation } from "react-router-dom";
 import "./_header.scss";
 import ScheduleIcon from "../../assets/icons/ScheduleIcon";
 import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
-import Dropdown from "react-bootstrap/Dropdown";
-import Image from "react-bootstrap/Image";
-import Spinner from "react-bootstrap/Spinner";
+import { Person, People, Gear, Envelope } from "react-bootstrap-icons";
+import {
+  Container,
+  Dropdown,
+  Nav,
+  Navbar,
+  NavDropdown,
+  Image,
+  Spinner,
+  Stack,
+} from "react-bootstrap";
 
 const HeaderNavLink = ({
   children,
@@ -82,7 +84,7 @@ const DropdownData = [
 ];
 
 const Header = () => {
-  const { user, isLoading: isAuthLoading } = useAuth();
+  const { user, role: userRole, isLoading: isAuthLoading } = useAuth();
   const path = useLocation();
   const navigate = useNavigate();
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -181,19 +183,25 @@ const Header = () => {
                                 <span className="d-block mb-3 p-0 text-center fw-bold">
                                   {user?.displayName}
                                 </span>
-                                <span className="mb-2 text-center fw-light">
-                                  {user?.email || "No identified"}
+                                <span className="mb-2 text-center fw-light text-nowrap">
+                                  <Envelope /> {user?.email || "No identified"}
                                 </span>
                               </Dropdown.ItemText>
 
                               <Dropdown.Divider />
 
                               <Dropdown.Item as={Link} to="/app/users/profile">
-                                Perfil
+                                <Person /> Perfil
                               </Dropdown.Item>
 
+                              {userRole === "admin" && (
+                                <Dropdown.Item as={Link} to="/app/users/list">
+                                  <People /> Gerenciar Usuários
+                                </Dropdown.Item>
+                              )}
+
                               <Dropdown.Item as={Link} to="#/action-2" disabled>
-                                Configurações
+                                <Gear /> Configurações
                               </Dropdown.Item>
 
                               <Dropdown.Divider />

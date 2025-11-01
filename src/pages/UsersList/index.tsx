@@ -1,7 +1,21 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useMemo,
+  useRef,
+  JSX,
+} from "react";
 import { Table, Space, App } from "antd";
 import type { TableColumnsType } from "antd";
-import { Container, Modal, Button, Image, Spinner } from "react-bootstrap";
+import {
+  Container,
+  Modal,
+  Button,
+  Image,
+  Spinner,
+  Form,
+} from "react-bootstrap";
 import Divider from "antd/lib/divider";
 import { Link } from "react-router-dom";
 import { collection, getDocs, query, where } from "firebase/firestore";
@@ -44,6 +58,10 @@ const UsersList = () => {
   // todo: COMMENT OUT OR REMOVE THESE VARIABLES AFTER MIGRATION COMPLETED
   const [migratedUsers, setMigratedUsers] = useState<boolean>(false);
   const [migratingUsers, setMigratingUsers] = useState<boolean>(false);
+
+  // State and ref for the "type to delete" confirmation
+  const [deletionText, setDeletionText] = useState<string>("");
+  const deletionField = useRef<HTMLInputElement>(null);
 
   const columns = useMemo<TableColumnsType<UserDocType>>(
     () => [
@@ -200,9 +218,11 @@ const UsersList = () => {
         // This ensures setIsLoading(false) is called only after the promise settles
         setIsLoading(false);
       });
-  }, [key, migratedUsers]);
+  }, [migratedUsers]);
 
   const handleDeleteUser = useCallback(async () => {
+    // Reset text and set loading *before* the async call
+    setDeletionText("");
     setIsLoading(true);
 
     // Get a reference to the Cloud Function
@@ -264,6 +284,12 @@ const UsersList = () => {
       });
   }, [dispatch, notification]);
 
+  // Handler to close modal and reset text state
+  const handleCloseModal = () => {
+    dispatch(closeWarningOfDeletingUserModal());
+    setDeletionText("");
+  };
+
   return (
     <Container
       fluid
@@ -311,10 +337,13 @@ const UsersList = () => {
           scroll={{ x: "max-content", y: 300 }}
         />
       </Container>
+
       <Modal
         show={isOpened}
+        onHide={handleCloseModal} // UPDATED: Use new handler
         aria-labelledby="contained-modal-title-vcenter"
         centered
+        onEntered={() => deletionField.current?.focus()} // NEW: Auto-focus input
       >
         <Modal.Header closeButton>
           <span className="d-flex justify-content-center align-items-center gap-3">
@@ -323,18 +352,57 @@ const UsersList = () => {
           </span>
         </Modal.Header>
         <Modal.Body>
-          <p>Você tem certeza de que deseja apagar o usuário:</p>
-          <i>{userName}</i>
+          <p>
+            Você tem certeza de que deseja apagar permanentemente o usuário:
+          </p>
+          <i className="d-block mb-3">{userName}</i>
+
+          {/* NEW: "Type to delete" Form */}
+          <Form.Group className="mb-3" controlId="deleteConfirmInput">
+            <Form.Label>
+              Digite &quot;<span className="text-danger">deletar</span>&quot;
+              para confirmar:
+            </Form.Label>
+            <Form.Control
+              autoComplete="off"
+              type="text"
+              className="text-danger"
+              value={deletionText}
+              placeholder="digite aqui..."
+              onChange={(e) => setDeletionText(e.target.value)}
+              ref={deletionField}
+            />
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button
-            className="btn-dark"
-            onClick={() => dispatch(closeWarningOfDeletingUserModal())}
+            variant="outline-dark"
+            onClick={handleCloseModal}
+            disabled={isLoading} // Disable while loading
           >
             Não
           </Button>
-          <Button className="btn-dark" onClick={handleDeleteUser}>
-            Sim
+          <Button
+            variant="danger"
+            onClick={handleDeleteUser}
+            // UPDATED: Disable if loading OR if text doesn't match
+            disabled={isLoading || deletionText !== "deletar"}
+          >
+            {isLoading ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-2"
+                />
+                Apagando...
+              </>
+            ) : (
+              "Sim, Deletar"
+            )}
           </Button>
         </Modal.Footer>
       </Modal>
