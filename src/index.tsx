@@ -28,6 +28,7 @@ import MechanicTestCalendar from "./pages/MechanicTestCalendar";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import SchedulePage from "./pages/Scheduler";
+import VerifyEmail from "./pages/VerifyEmail";
 import UsersList from "./pages/UsersList";
 import UserRegister from "./pages/UserAdd";
 import UserEdit from "./pages/UserEdit";
@@ -48,6 +49,14 @@ import store from "./redux/store/store";
 import { App } from "antd";
 import path from "path";
 import AccessDenied from "./pages/AccessDenied";
+import { onAuthStateChanged, getIdTokenResult } from "firebase/auth";
+import { auth } from "./firebase";
+import {
+  setAuthData,
+  clearAuthData,
+  setAuthLoading,
+} from "./redux/reducers/authSlice";
+import { UserRoleTypes } from "./types/userInfo";
 
 const router = createBrowserRouter([
   {
@@ -200,6 +209,10 @@ const router = createBrowserRouter([
                 path: "profile",
                 element: <UserProfile />,
               },
+              {
+                path: "verify-email",
+                element: <VerifyEmail />,
+              },
               // ===============================================================
               // Admin-only path group (List, Add):
               // ===============================================================
@@ -258,6 +271,26 @@ const router = createBrowserRouter([
     ],
   },
 ]);
+
+// This runs once when the app loads
+onAuthStateChanged(auth, async (authUser) => {
+  if (authUser) {
+    // User is signed in. Get their token/claims.
+    store.dispatch(setAuthLoading(true)); // Tell store we are loading
+    try {
+      const idTokenResult = await getIdTokenResult(authUser);
+      const role = (idTokenResult.claims.role as UserRoleTypes) || null;
+      // Dispatch the user and role to the Redux store
+      store.dispatch(setAuthData({ user: authUser, role }));
+    } catch (error) {
+      console.error("Auth listener error, logging out:", error);
+      store.dispatch(clearAuthData());
+    }
+  } else {
+    // User is signed out
+    store.dispatch(clearAuthData());
+  }
+});
 
 if ("serviceWorker" in navigator && process.env.NODE_ENV !== "development") {
   window.addEventListener("load", () => {

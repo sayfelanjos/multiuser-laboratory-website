@@ -1,0 +1,35 @@
+name: "Release Storage Rules (main)"
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "storage.rules"
+      - ".github/workflows/release-storage-rules.yml"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  release_storage_rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Authenticate to Google Cloud
+        id: google_auth
+        uses: "google-github-actions/auth@v2"
+        env:
+          CI: false
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+      - name: Deploy to Firebase Rules
+        run: firebase deploy --only storage:rules --project ${{ secrets.GCP_PROJECT_ID }} --non-interactive
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.google_auth.outputs.credentials_file_path }}
