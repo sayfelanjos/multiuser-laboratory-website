@@ -1,5 +1,5 @@
 // src/components/ProfilePicUploader.tsx
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import Cropper from "react-easy-crop";
 import type { Point, Area } from "react-easy-crop";
@@ -11,6 +11,10 @@ import {
   Image,
   Container,
 } from "react-bootstrap";
+import { firestore as db, auth } from "../../firebase";
+import { doc, onSnapshot } from "firebase/firestore";
+import { onAuthStateChanged, User } from "firebase/auth";
+
 import FormRange from "react-bootstrap/FormRange";
 import { Divider, App } from "antd";
 import { PencilSquare } from "react-bootstrap-icons";
@@ -24,6 +28,7 @@ import {
   uploadFileWithProgress,
 } from "../../lib/storageHandlers";
 import "./_profile-pic-uploader.scss";
+import { useAuth } from "../../hooks/useAuth";
 // import {
 //   UploadOutlined,
 //   GoogleOutlined,
@@ -54,7 +59,9 @@ export default function ProfilePicUploader({
   photoURL: string | null;
   userUid: string | null;
 }) {
+  const { user, refreshUserData } = useAuth();
   const [file, setFile] = useState<File | null>(null);
+  const [cropPreview, setCropPreview] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [cropping, setCropping] = useState(false);
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
@@ -72,7 +79,7 @@ export default function ProfilePicUploader({
     const f = acceptedFiles[0];
     if (f) {
       setFile(f);
-      setPreview(URL.createObjectURL(f));
+      setCropPreview(URL.createObjectURL(f));
       setCropping(true); // open crop modal
     }
   }, []);
@@ -85,7 +92,6 @@ export default function ProfilePicUploader({
   } = useDropzone({
     accept: { "image/*": [] },
     multiple: false,
-    noClick: true,
     noKeyboard: true,
     onDrop,
   });
@@ -94,13 +100,12 @@ export default function ProfilePicUploader({
   const isTouchPrimary = primaryInput === "touch";
   const dropzoneClassName =
     "dropzone p-5 mt-3 " +
-    // (isTouchPrimary ? "is-touch p-2 px-3 " : "") +
     (isTouchPrimary ? "is-touch p-2 px-3 " : "") +
     (isDragActive && !isTouchPrimary ? "is-dragging " : "");
 
   // === Save cropped + compressed image ===
   async function handleSave() {
-    if (!file || !userUid || !preview || !croppedAreaPixels) {
+    if (!file || !userUid || !cropPreview || !croppedAreaPixels) {
       return;
     }
 
@@ -108,7 +113,7 @@ export default function ProfilePicUploader({
 
     try {
       const { file: croppedFile, url: croppedFileUrl } = await getCroppedImg(
-        preview,
+        cropPreview,
         croppedAreaPixels,
       );
 
@@ -118,15 +123,51 @@ export default function ProfilePicUploader({
       setProgress(0);
 
       // upload main image with progress
-      const url = await uploadFileWithProgress(
+      await uploadFileWithProgress(
         resizedFile,
         userUid,
         setProgress,
         "medium_profile",
       );
 
-      console.log("Uploaded profile pic:", url);
+      // console.log("Uploaded profile pic successfully.");
       setPreview(croppedFileUrl);
+
+      if (user && user.uid === userUid) {
+        console.log(`User ${user.email} modifyied self picure url.`);
+
+        const docRef = doc(db, "users", userUid);
+
+        // Set a trigger to refresh data when firestore updates:
+        const unsubscribeDB = onSnapshot(docRef, (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.data();
+            const newMediumUrl = data.photos?.mediumUrl;
+
+            console.log(
+              `onSnapshot received update. New mediumlUrl: ${newMediumUrl}`,
+            );
+
+            // Check against the current user photoURL to prevent old/stale updates.
+            if (newMediumUrl && user.photoURL !== newMediumUrl) {
+              console.log("New URL detected! Refreshing user data...");
+              refreshUserData(); // This will pull the new Auth/claims
+              unsubscribeDB(); // Unsubscribe after get the data we want
+            }
+          } else {
+            console.log(
+              "Failed to refreshUserData at ProfilePicUploader: Doc doesn't exist.",
+            );
+            unsubscribeDB(); // Unsubscribe on error
+          }
+        });
+      }
+
+      showNotification(
+        notification,
+        "Foto de usuário salva com sucesso!",
+        "success",
+      );
     } catch (err) {
       showNotification(
         notification,
@@ -141,12 +182,6 @@ export default function ProfilePicUploader({
       setProgress(null);
       setZoom(1);
       setCrop({ x: 0, y: 0 });
-      showNotification(
-        notification,
-        "Foto de usuário salva com sucesso!",
-        "success",
-      );
-      // refreshUserData();
     }
   }
 
@@ -185,15 +220,16 @@ export default function ProfilePicUploader({
 
   return (
     <>
-      <Container className="d-flex flex-column align-items-center position-relative p-0">
+      <Container
+        style={{ width: "fit-content" }}
+        className="d-flex flex-column align-items-center position-relative p-0"
+      >
         {/* Current preview */}
         <Image
           src={preview || photoURL || userAvatar}
           roundedCircle
           height={photoSize}
           alt="User"
-          // style={{ objectFit: "cover" }}
-          // className="border"ss
         />
         {editing && (
           <>
@@ -216,8 +252,6 @@ export default function ProfilePicUploader({
         <Button
           className={"" + (editing ? "" : "position-absolute")}
           style={{
-            // top: `${photoSize}px`,
-            // left: `${Math.round(photoSize / 2)}px`,
             bottom: `${0}px`,
             right: `${0}px`,
             height: "fit-content",
@@ -229,9 +263,9 @@ export default function ProfilePicUploader({
           {editing ? (
             "Cancelar"
           ) : (
-            // <CameraFill />
-            // <Upload />
             <h5 className="">
+              {/* <CameraFill /> */}
+              {/* <Upload /> */}
               <PencilSquare />
             </h5>
           )}
@@ -241,7 +275,7 @@ export default function ProfilePicUploader({
         <div className="d-flex gap-2">
           {/* <Button onClick={handleManualSelect}>
           <UploadOutlined /> Upload
-        </Button> */}
+          </Button> */}
 
           {/* Uncomment when Google Picker is ready */}
 
@@ -249,7 +283,7 @@ export default function ProfilePicUploader({
           <Button variant="light" onClick={onPickFromDrive}>
             <GoogleOutlined /> Import from Google Drive
           </Button>
-        )} */}
+          )} */}
 
           {/* Uncomment when OneDrive Picker is ready */}
 
@@ -257,7 +291,7 @@ export default function ProfilePicUploader({
           <Button variant="light" onClick={onPickFromOneDrive}>
             <WindowsOutlined /> Import from OneDrive
           </Button>
-        )} */}
+          )} */}
         </div>
 
         {/* Progress */}
@@ -266,6 +300,7 @@ export default function ProfilePicUploader({
             <ProgressBar now={progress} label={`${progress}%`} />
           </div>
         )}
+
         {/* Crop modal */}
         <Modal show={cropping} onHide={() => setCropping(false)} centered>
           <Modal.Header closeButton>
@@ -273,7 +308,7 @@ export default function ProfilePicUploader({
           </Modal.Header>
           <Modal.Body style={{ height: "400px", position: "relative" }}>
             <Cropper
-              image={preview || ""}
+              image={cropPreview || ""}
               crop={crop}
               zoom={zoom}
               cropShape="round"
@@ -307,9 +342,9 @@ export default function ProfilePicUploader({
           </Modal.Footer>
         </Modal>
       </Container>
-      {!editing && (
+      {!(editing || photoURL) && (
         <div className="text-muted mt-3">
-          {photoURL ? "Foto de perfil" : "Sem foto de perfil"}
+          <i> Sem foto de perfil </i>
         </div>
       )}
     </>

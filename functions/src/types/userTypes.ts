@@ -31,11 +31,8 @@ type userNames = {
   initials: string;
 };
 type userPhotos = {
-  medium?: string | null;
   mediumUrl?: string | null;
-  small?: string | null;
   smallUrl?: string | null;
-  thumb?: string | null;
   thumbUrl?: string | null;
 };
 type userDocuments = {
@@ -127,7 +124,7 @@ export interface UserUpdateData {
   email?: string;
   emailVerified?: boolean;
   names?: userNames;
-  phoneNumber?: string;
+  phone?: string;
   documents?: userDocuments;
   role?: userRoles;
   personType?: personTypes;

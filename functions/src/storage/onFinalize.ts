@@ -5,7 +5,7 @@ import * as path from "path";
 import * as os from "os";
 import * as fs from "fs";
 import { getDownloadURL } from "firebase-admin/storage";
-// import { ref, getMetadata } from "firebase/storage";
+import { logger } from "firebase-functions";
 
 /**
  * Generate profile pictures variants
@@ -19,12 +19,12 @@ export const onFinalizeFileUpload = functions
     const fileBucket = object.bucket; // Get the bucket name
 
     if (!mediumFilePath) {
-      console.log("No file path given! Finalizing...");
+      logger.log("No file path given! Finalizing...");
       return;
     }
 
     if (!mediumFilePath.startsWith("userProfilePics/")) {
-      console.log("Not a user profile picture. Finalizing...");
+      logger.log("Not a user profile picture. Finalizing...");
       return null;
     }
 
@@ -34,22 +34,63 @@ export const onFinalizeFileUpload = functions
     const uid = pathParts[1];
 
     if (fileName.startsWith("thumb_") || fileName.startsWith("small_")) {
-      console.log("File is already a variant. Finalizing...");
+      logger.log("File is already a variant. Finalizing...");
       return null;
     }
 
     if (!uid) {
-      console.log("No user ID was given. Finalizing...");
+      logger.log("No user ID was given. Finalizing...");
       return null;
     }
 
     // Download initial file for creating small and thumb variants
     const tempLocalFile = path.join(os.tmpdir(), fileName);
     const currentBucket = admin.storage().bucket(fileBucket);
-    const fileRef = currentBucket.file(mediumFilePath);
-    const fileMetadata = await fileRef.getMetadata();
-    console.log(fileMetadata);
-    await fileRef.download({ destination: tempLocalFile });
+    const mediumFile = currentBucket.file(mediumFilePath);
+    const mediumUrl = await getDownloadURL(mediumFile);
+
+    // Update Auth (do it here instead of in the onUpdate function)
+    try {
+      logger.log("Updating Auth picture to the medium variant...");
+      await admin.auth().updateUser(uid, { photoURL: mediumUrl });
+      logger.log("Successfully updated Auth picture!");
+    } catch (err) {
+      logger.error("Could not update auth user photoURL", err);
+    }
+
+    try {
+      logger.log("Saving medium image URL to firestore...");
+      await admin.firestore().doc(`users/${uid}`).set(
+        {
+          photos: {
+            mediumUrl,
+          },
+        },
+        { merge: true },
+      );
+      logger.log("Successfully Saved medium size to firestore!");
+    } catch (err) {
+      logger.log("Error when saving medium size image URL to firestore:", err);
+    }
+
+    logger.log(`Downloading medium file... ${mediumFilePath}, ${mediumFile}`);
+    for (let tryNum = 1; ; ) {
+      try {
+        // Add a small delay to prevent errors
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        await mediumFile.download({ destination: tempLocalFile });
+        break;
+      } catch {
+        tryNum++;
+        if (tryNum >= 10) {
+          logger.log("File failded to 10 times. returning...");
+          return null;
+        }
+        logger.log(`Failed when downloading: attempting again nº ${tryNum}...`);
+      }
+    }
+
+    logger.log("File downloaded, creating variants...");
 
     // Create "small" version
     const smallPath = `userProfilePics/${uid}/small_profile.${fileExtension}`;
@@ -59,9 +100,9 @@ export const onFinalizeFileUpload = functions
       .toFile(tempSmall);
     await currentBucket.upload(tempSmall, {
       destination: smallPath,
-      metadata: { contentType: "image/jpeg" },
+      metadata: { contentType: object.contentType },
     });
-    console.log("Successfully created small picture variant!");
+    logger.log("Successfully created small picture variant!");
 
     // Create "thumb" version
     const thumbPath = `userProfilePics/${uid}/thumb_profile`;
@@ -71,60 +112,51 @@ export const onFinalizeFileUpload = functions
       .toFile(tempThumb);
     await currentBucket.upload(tempThumb, {
       destination: thumbPath,
-      metadata: { contentType: "image/jpeg" },
+      metadata: { contentType: object.contentType },
     });
-    console.log("Successfully created thumb picture variant!");
+    logger.log("Successfully created thumb picture variant!");
 
     // getDownloadURL provides a long-lived, publicly accessible URL, which works in emulators and production.
-    const mediumFile = currentBucket.file(mediumFilePath);
-    const mediumUrl = await getDownloadURL(mediumFile);
     const smallFile = currentBucket.file(smallPath);
     const smallUrl = await getDownloadURL(smallFile);
     const thumbFile = currentBucket.file(thumbPath);
     const thumbUrl = await getDownloadURL(thumbFile);
 
-    // Update Auth (do it here instead of in the onUpdate function)
-    try {
-      console.log("Updating Auth picture to the small variant...");
-      await admin.auth().updateUser(uid, { photoURL: mediumUrl });
-      console.log("Successfully updated Auth picture!");
-    } catch (e) {
-      console.warn("Could not update auth user photoURL", e);
-    }
-
     // Update Firestore:
     try {
-      console.log("Saving image URLs to firestore...");
-      await admin
-        .firestore()
-        .doc(`users/${uid}`)
-        .set(
-          {
-            photos: {
-              medium: mediumFilePath,
-              mediumUrl,
-              small: smallPath,
-              smallUrl,
-              thumb: thumbPath,
-              thumbUrl,
-            },
+      logger.log("Saving variant image URLs to firestore...");
+      await admin.firestore().doc(`users/${uid}`).set(
+        {
+          photos: {
+            // medium: mediumFilePath,
+            // mediumUrl,
+            smallUrl,
+            thumbUrl,
           },
-          { merge: true },
-        );
-      console.log("Successfully Saved to firestore!");
+        },
+        { merge: true },
+      );
+      logger.log("Successfully Saved variants to firestore!");
     } catch (err) {
-      console.log("Error when saving image URLs to firestore:", err);
+      logger.log("Error when saving variant image URLs to firestore:", err);
     }
 
     // Clean temp files
     try {
-      fs.unlinkSync(tempLocalFile);
-      fs.unlinkSync(tempSmall);
-      fs.unlinkSync(tempThumb);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Use asynchronous unlink and wait for all deletions
+      await Promise.all([
+        fs.promises.rm(tempLocalFile, { force: true, recursive: false }), // force can help with permissions sometimes
+        fs.promises.rm(tempSmall, { force: true, recursive: false }),
+        fs.promises.rm(tempThumb, { force: true, recursive: false }),
+      ]);
+
+      logger.log("Successfully deleted temporary files.");
     } catch (err) {
-      console.log("Failed to delete temporary files:", err);
+      logger.log("Failed to delete temporary files after 1s:", err);
     }
 
-    console.log("Finished onFinalize!");
+    logger.log("Finished onFinalize!");
     return null;
   });

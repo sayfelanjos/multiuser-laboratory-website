@@ -7,17 +7,18 @@ import {
   Image,
   Dropdown,
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import brandIcon from "../../assets/images/fem-logo-monocromatica.png";
 import HamburgerIcon from "../../assets/icons/HamburgerIcon";
 import CloseIcon from "../../assets/icons/CloseIcon";
-import "./_scheduler-navbar.scss";
+import SignOutIcon from "../../assets/icons/SignOutIcon";
 import { signOutUser } from "../../helpers/signOutUser";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
 import { useAppSelector, useAppDispatch } from "../../hooks/reduxHooks";
 import { setIsSidebarOpen } from "../../redux/reducers/toggleSidebarSlice";
+import { Person, People, Gear, Envelope } from "react-bootstrap-icons";
+import "./_scheduler-navbar.scss";
 
 const brandStyle = {
   width: "auto",
@@ -33,7 +34,7 @@ const SchedulerNavbar = () => {
   const navigate = useNavigate();
   const isSidebarOpen = useAppSelector((state) => state.isSidebarOpen.value);
   const dispatch = useAppDispatch();
-  const { user } = useAuth();
+  const { user, role: userRole } = useAuth();
 
   const onButtonClick = useCallback(
     async (event: React.MouseEvent<HTMLElement>) => {
@@ -62,7 +63,8 @@ const SchedulerNavbar = () => {
             {isSidebarOpen ? <CloseIcon /> : <HamburgerIcon />}
           </Button>
           <Navbar.Brand
-            href="/home"
+            as={Link}
+            to="/home"
             className="scheduler-navbar__brand p-0 my-auto"
           >
             <Image src={brandIcon} style={brandStyle}></Image>
@@ -89,19 +91,32 @@ const SchedulerNavbar = () => {
                 <span className="d-block d-lg-none mb-3 p-0 text-center fw-bold">
                   {user?.displayName}
                 </span>
-                <span className="mb-2 text-center fw-light">
-                  {user?.email || "No identified"}
+                <span className="mb-2 text-center fw-light text-nowrap">
+                  <Envelope /> {user?.email || "No identified"}
                 </span>
               </Dropdown.ItemText>
+
               <Dropdown.Divider />
+
               <Dropdown.Item as={Link} to="/app/users/profile">
-                Perfil
+                <Person /> Perfil
               </Dropdown.Item>
+
+              {userRole === "admin" && (
+                <Dropdown.Item as={Link} to="/app/users/list">
+                  <People /> Gerenciar Usuários
+                </Dropdown.Item>
+              )}
+
               <Dropdown.Item as={Link} to="#/action-2" disabled>
-                Configurações
+                <Gear /> Configurações
               </Dropdown.Item>
+
               <Dropdown.Divider />
-              <Dropdown.Item onClick={onButtonClick}>Logout</Dropdown.Item>
+
+              <Dropdown.Item onClick={onButtonClick}>
+                <SignOutIcon /> Logout
+              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </Nav>
