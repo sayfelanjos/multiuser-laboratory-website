@@ -28,6 +28,7 @@ jobs:
         with:
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          create_credentials_file: 'true'
 
       - name: Install Function Dependencies
         run: npm ci
@@ -39,4 +40,4 @@ jobs:
       - name: Deploy to Firebase Functions
         run: firebase deploy --only functions --project ${{ secrets.GCP_PROJECT_ID }} --non-interactive
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.google_auth.outputs.credentials_file_path }}

@@ -18,3 +18,7 @@ build/
 .env.*
 .vscode
 **.log
+
+# Sensitive data
+.secrets
+multiuser-laboratory-website-a7a058942a80.json
