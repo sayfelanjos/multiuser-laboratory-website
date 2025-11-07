@@ -32,6 +32,11 @@ import VerifyEmail from "./pages/VerifyEmail";
 import UsersList from "./pages/UsersList";
 import UserRegister from "./pages/UserAdd";
 import UserEdit from "./pages/UserEdit";
+import MechanicalTesting from "./pages/Laboratories/MechanicalTesting";
+import Metallography from "./pages/Laboratories/Metallography";
+import ScanningElectronMicroscopy from "./pages/Laboratories/ScanningElectronMicroscopy";
+import TermoAnalysis from "./pages/Laboratories/TermoAnalysis";
+import TransmissionElectronMicroscopy from "./pages/Laboratories/TransmissionElectronMicroscopy";
 import ResetPassword from "./pages/ResetPassword";
 import RequestToResetPassword from "./pages/RequestToResetPassword";
 import UserProfile from "./pages/UserProfile";
@@ -42,6 +47,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { firestore as db } from "./firebase";
 import store from "./redux/store/store";
 import { App } from "antd";
+import path from "path";
 import AccessDenied from "./pages/AccessDenied";
 import { onAuthStateChanged, getIdTokenResult } from "firebase/auth";
 import { auth } from "./firebase";
@@ -144,6 +150,31 @@ const router = createBrowserRouter([
             element: <CharpyImpactTest />,
           },
         ],
+      },
+      {
+        path: "laboratories",
+        children: [
+          {
+            path: "mechanical-testing-laboratory",
+            element: <MechanicalTesting/>,
+          },
+          {
+            path: "metallography-laboratory",
+            element: <Metallography/>
+          },
+          {
+            path: "scanning-electron-microscopy-laboratory",
+            element: <ScanningElectronMicroscopy/>
+          },
+          {
+            path: "transmission-electron-microscopy-laboratory",
+            element: <TransmissionElectronMicroscopy/>
+          },
+          {
+            path: "termoanalisys-laboratory",
+            element: <TermoAnalysis/>
+          }
+        ]
       },
       {
         path: "*",
