@@ -33,7 +33,9 @@ type rolesMap = { [key: string]: roleType };
 const personsData: rolesMap = {
   individual: { displayName: { pt: "Pessoa Física", en: "Individual" } },
   company: { displayName: { pt: "Pessoa Jurídica", en: "Company" } },
-  student: { displayName: { pt: "Estudante", en: "Student" } },
+  student: {
+    displayName: { pt: "Estudante (UNICAMP)", en: "Student (UNICAMP)" },
+  },
 };
 
 // const rolesDataTest: rolesMap = {
@@ -338,9 +340,13 @@ const UserForm = () => {
             />
           </Form.Group>
         </Row>
+
+        {/*
         <Form.Text className="mb-3">Contato:</Form.Text>
         <Row className="mb-3">
-          {/* Email */}
+          {
+          //Email
+          }
           <Form.Group as={Col} md="6" controlId="validationCustom03">
             <Form.Label>Email</Form.Label>
             <Form.Control
@@ -354,7 +360,9 @@ const UserForm = () => {
               value={targetUser.email || ""}
             />
           </Form.Group>
-          {/* Phone Number */}
+          { 
+          //Phone Number
+          }
           <Form.Group as={Col} md="6" controlId="validationCustomUsername">
             <Form.Label>Celular</Form.Label>
             <IMaskInput
@@ -375,6 +383,7 @@ const UserForm = () => {
             />
           </Form.Group>
         </Row>
+        */}
         <Form.Text className="mb-3">Conta:</Form.Text>
         <Row className="mb-3">
           {/* Person Type */}
@@ -469,11 +478,12 @@ const UserForm = () => {
           <Form.Group as={Col} md="6" controlId="">
             <Form.Label>Tipo</Form.Label>
             <Form.Select
-              disabled={callerRole !== "admin"}
               required
               name="role"
               value={targetUser.role}
               onChange={(event) => handleInputChange(event, "role")}
+              // disabled={callerRole !== "admin"}
+              disabled
             >
               <option value="" disabled>
                 Selecione
