@@ -1,24 +1,29 @@
-import { useEffect, useState } from "react";
-import { addAuthListener } from "../helpers/addAuthListener";
-import { User } from "firebase/auth";
-import { getCurrentUser } from "../helpers/getCurrentUser";
+// src/hooks/useAuth.ts
 
-interface AuthState {
-  isLoading: boolean;
-  user: User | null;
-}
+import { useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "../redux/store/store"; // Adjust path
+import { refreshAuthData } from "../redux/reducers/authSlice"; // Adjust path
+
+/**
+ * @hook useAuth
+ * A custom hook to consume the shared authentication state
+ * from the Redux store.
+ */
 export const useAuth = () => {
-  const [authInfo, setAuthInfo] = useState<AuthState>((): AuthState => {
-    const user: User | null = getCurrentUser();
-    const isLoading = !user;
-    return <AuthState>{ isLoading, user };
-  });
+  const dispatch = useDispatch<AppDispatch>();
 
-  useEffect(() => {
-    return addAuthListener((user) => {
-      setAuthInfo({ isLoading: false, user } as AuthState);
-    });
-  }, []);
+  // 1. Select the auth state from the Redux store
+  const { user, role, isLoading } = useSelector(
+    (state: RootState) => state.auth,
+  );
 
-  return authInfo;
+  // 2. Create a memoized function to dispatch the refresh thunk
+  const refreshUserData = useCallback(async () => {
+    // dispatch returns the thunk's promise
+    await dispatch(refreshAuthData());
+  }, [dispatch]);
+
+  // 3. Return the state and the refresh function
+  return { user, role, isLoading, refreshUserData };
 };

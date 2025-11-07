@@ -1,142 +1,294 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Table, Space, App, Skeleton } from "antd";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useMemo,
+  useRef,
+  JSX,
+} from "react";
+import { Table, Space, App } from "antd";
 import type { TableColumnsType } from "antd";
-import Container from "react-bootstrap/Container";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
+import {
+  Container,
+  Modal,
+  Button,
+  Image,
+  Spinner,
+  Form,
+} from "react-bootstrap";
 import Divider from "antd/lib/divider";
 import { Link } from "react-router-dom";
-import Stack from "react-bootstrap/Stack";
-import { collection, doc, getDocs, deleteDoc } from "firebase/firestore";
-import { firestore as db } from "../../firebase";
-import User from "../../interfaces/user";
-import store from "../../redux/store/store";
-import { setWarningOfDeletingUserModal } from "../../redux/reducers/warningOfDeletingUserModalSlice";
-import "./_users-list-page.scss";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
+import { functions, firestore as db } from "../../firebase";
+import UserDocType from "../../interfaces/userDoc";
+import {
+  setWarningOfDeletingUserModal,
+  closeWarningOfDeletingUserModal,
+} from "../../redux/reducers/warningOfDeletingUserModalSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import DeleteIcon from "../../assets/icons/DeleteIcon";
+import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
 import { showNotification } from "../../helpers/showNotification";
+import "./_users-list-page.scss";
+import { TrashFill, PencilSquare } from "react-bootstrap-icons";
 
-const columns: TableColumnsType<User> = [
-  {
-    title: "ID",
-    dataIndex: "key",
-  },
-  {
-    title: "Nome",
-    dataIndex: "firstName",
-  },
-  {
-    title: "Sobrenome",
-    dataIndex: "lastName",
-  },
-  {
-    title: "Email",
-    dataIndex: "email",
-  },
-  {
-    title: "Celular",
-    dataIndex: "phone",
-  },
-  {
-    title: "Ações",
-    key: "operation",
-    fixed: "right",
-    width: 132,
-    render: (record) => (
-      <Space size="middle">
-        <Link
-          to={`/app/users/edit/${record.key}`}
-          className="users-list__action-btn"
-        >
-          Editar
-        </Link>
-        <Button
-          type="button"
-          className="btn btn-link users-list__action-btn"
-          onClick={() =>
-            store.dispatch(
-              setWarningOfDeletingUserModal({
-                isOpened: true,
-                key: record.key,
-                userName: record.firstName + " " + record.lastName,
-              }),
-            )
-          }
-        >
-          Apagar
-        </Button>
-      </Space>
-    ),
-  },
-];
+const personTypes: { [key: string]: string } = {
+  unset: "Não especificado",
+  individual: "Pessoa física",
+  company: "Pessoa Jurídica",
+  student: "Estudante",
+};
+
+const roles: { [key: string]: string } = {
+  user: "Usuário Comum",
+  technician: "Técnico",
+  manager: "Gestor",
+  admin: "Administrador",
+};
 
 const UsersList = () => {
-  const [data, setData] = useState<Array<User>>([]);
+  const [usersData, setUsersData] = useState<Array<UserDocType>>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { key, userName, isOpened } = useAppSelector(
     (state) => state.warningOfDeletingUserModal,
   );
   const dispatch = useAppDispatch();
   const { notification } = App.useApp();
+  // todo: COMMENT OUT OR REMOVE THESE VARIABLES AFTER MIGRATION COMPLETED
+  const [migratedUsers, setMigratedUsers] = useState<boolean>(false);
+  const [migratingUsers, setMigratingUsers] = useState<boolean>(false);
 
+  // State and ref for the "type to delete" confirmation
+  const [deletionText, setDeletionText] = useState<string>("");
+  const deletionField = useRef<HTMLInputElement>(null);
+
+  const columns = useMemo<TableColumnsType<UserDocType>>(
+    () => [
+      {
+        width: 72,
+        dataIndex: "photos",
+        render: (photos) => (
+          <Image
+            src={photos?.smallUrl || userAvatar}
+            alt="User"
+            style={{ width: "auto", height: "40px" }}
+            roundedCircle
+          />
+        ),
+      },
+      {
+        title: "Nome",
+        dataIndex: "names",
+        render: (names) => names?.fullName || "",
+        sorter: (a, b) =>
+          a.names.displayName.localeCompare(b.names.displayName),
+      },
+      {
+        title: "Email",
+        sorter: (a, b) => a.email.localeCompare(b.email),
+        dataIndex: "email",
+      },
+      {
+        title: "Criação",
+        dataIndex: "createdAt",
+        sorter: (a, b) => a.createdAt.toMillis() - b.createdAt.toMillis(),
+        defaultSortOrder: "ascend",
+        width: "15rem",
+        render: (creationTime) =>
+          new Date(creationTime.toMillis()).toLocaleString("pt-BR"),
+      },
+      {
+        title: "Ultima Modificação",
+        dataIndex: "lastUpdated",
+        sorter: (a, b) => a.createdAt.toMillis() - b.createdAt.toMillis(),
+        defaultSortOrder: "ascend",
+        width: "15rem",
+        render: (creationTime) =>
+          new Date(creationTime.toMillis()).toLocaleString("pt-BR"),
+      },
+      {
+        title: "Tipo",
+        dataIndex: "role",
+        width: 100,
+        render: (r) => roles[r || "user"],
+        filters: Object.keys(roles).map((key) => ({
+          text: roles[key],
+          value: key,
+        })),
+        onFilter: (value, record) => record.role === value,
+      },
+      {
+        title: "Pessoa",
+        dataIndex: "personType",
+        render: (p) => personTypes[p || "unset"],
+        filters: Object.keys(personTypes).map((key) => ({
+          text: personTypes[key],
+          value: key,
+        })),
+        onFilter: (value, record) => record.personType === value,
+      },
+      {
+        title: "Documento",
+        dataIndex: "documents",
+        render: (value, user) => {
+          if (user.personType === "individual") {
+            return `cpf: ${value.cpf}`;
+          } else if (user.personType === "company") {
+            return `cnpj: ${value.cnpj}`;
+          } else if (user.personType === "student") {
+            return `studentId: ${value.studentId}`;
+          }
+          return "N/A";
+        },
+      },
+      {
+        title: "Usuário Ativo?",
+        dataIndex: "isActive",
+        width: 150,
+        render: (v) => (v ? "Sim" : "Não"),
+        filters: [
+          { text: "Sim", value: true },
+          { text: "Não", value: false },
+        ],
+        onFilter: (value, record) => record.isActive === value,
+        hidden: true,
+      },
+      {
+        title: "Telefone",
+        width: 120,
+        dataIndex: "phoneNumber",
+        render: (v) => v || "-",
+      },
+      {
+        title: "Ações",
+        key: "operation",
+        fixed: "right",
+        width: 70,
+        render: (record) => (
+          <Space size="middle">
+            <Link
+              to={`/app/users/edit/${record.uid}`}
+              className="users-list__action-btn"
+            >
+              <PencilSquare />
+            </Link>
+            <Button
+              type="button"
+              className="btn btn-link text-danger users-list__action-btn"
+              onClick={() =>
+                // Now using the dispatch from the component's hook
+                dispatch(
+                  setWarningOfDeletingUserModal({
+                    isOpened: true,
+                    key: record.uid,
+                    userName: `${record.names.displayName}`,
+                  }),
+                )
+              }
+            >
+              <TrashFill />
+            </Button>
+          </Space>
+        ),
+      },
+    ],
+    [dispatch],
+  );
+
+  // Get users list from firestore database.
   useEffect(() => {
     setIsLoading(true);
-    const users: Array<User> = [];
-    getDocs(collection(db, "users"))
+    const users: Array<UserDocType> = [];
+    const usersCollectionRef = collection(db, "users");
+    const q = query(usersCollectionRef, where("isActive", "==", true));
+
+    getDocs(q)
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          const { firstName, lastName, email, phone } = doc.data() as User;
-          users.push({
-            key: doc.id,
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            phone: phone,
-          });
+          const user = doc.data();
+          users.push(user as UserDocType);
         });
-        setData(users);
+        setUsersData(users);
       })
       .catch((error) => {
         console.error(error.message);
+      })
+      .finally(() => {
+        // This ensures setIsLoading(false) is called only after the promise settles
+        setIsLoading(false);
       });
-    setIsLoading(false);
-  }, [key]);
+  }, [migratedUsers]);
 
-  const onButtonClick = useCallback(() => {
+  const handleDeleteUser = useCallback(async () => {
+    // Reset text and set loading *before* the async call
+    setDeletionText("");
     setIsLoading(true);
-    deleteDoc(doc(db, "users", `${key}`))
+
+    // Get a reference to the Cloud Function
+    const deleteUserFunction = httpsCallable(functions, "deleteUser");
+
+    // Delete the user from Auth
+    console.log("Deleting user with UID:", key);
+    deleteUserFunction({ uid: key })
       .then(() => {
+        // This code runs only if the function call was successful
         showNotification(
           notification,
           "Usuário apagado com sucesso!",
           "success",
         );
-        setIsLoading(false);
-        return dispatch(
-          setWarningOfDeletingUserModal({
-            isOpened: false,
-            key: "",
-            userName: "",
-          }),
+
+        // Remove the deleted user from the local state to update the UI
+        setUsersData((currentUsers) =>
+          currentUsers.filter((user) => user.uid !== key),
         );
       })
-      .catch(() => {
+      .catch((error) => {
+        // This code runs if the function call fails for any reason
+        console.error("Error deleting user:", error);
         showNotification(
           notification,
-          "Usuário não pode ser apagado!\n Verifique e tente novamente.",
+          "O usuário não pôde ser apagado!\n Verifique e tente novamente.",
           "error",
         );
+      })
+      .finally(() => {
+        // This code runs regardless of success or failure
         setIsLoading(false);
-        return dispatch(
-          setWarningOfDeletingUserModal({
-            isOpened: false,
-            key: "",
-            userName: "",
-          }),
-        );
+        dispatch(closeWarningOfDeletingUserModal());
       });
-  }, [key]);
+  }, [key, dispatch, notification]);
+
+  // todo: COMMENT or REMOVE THIS FUNCTION AFTER MIGRATION IS COMPLETED.
+  const migrateUsers = httpsCallable(functions, "migrateUsers");
+  const handleMigrateUsers = useCallback(() => {
+    setMigratingUsers(true);
+    migrateUsers()
+      .then((resp) => {
+        const data = resp.data as { message?: string };
+        console.log("Migrated:", data.message);
+        showNotification(
+          notification,
+          "Usuários migrados com sucesso!",
+          "success",
+        );
+        setMigratedUsers(true);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setMigratingUsers(false);
+        dispatch(closeWarningOfDeletingUserModal());
+      });
+  }, [dispatch, notification]);
+
+  // Handler to close modal and reset text state
+  const handleCloseModal = () => {
+    dispatch(closeWarningOfDeletingUserModal());
+    setDeletionText("");
+  };
 
   return (
     <Container
@@ -146,37 +298,52 @@ const UsersList = () => {
       <Container className="shadow rounded-2 p-3">
         <h3>Lista de Usuários</h3>
         <Divider />
-        <div className="d-flex justify-content-end">
-          <Link to="/app/users/add" className="btn btn-dark">
-            Novo
-          </Link>
+        <div className="d-flex justify-content-end gap-3">
+          {/* // todo: COMMENT REMOVE THIS BUTTON AFTER MIGRATION COMPLETED */}
+          <Button
+            className={"px-3 " + (migratedUsers ? "" : "blinking-shadow")}
+            onClick={handleMigrateUsers}
+            disabled={migratedUsers}
+            variant="dark"
+          >
+            {migratingUsers ? (
+              <span>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-3"
+                />
+                Migrando usuários...
+              </span>
+            ) : migratedUsers ? (
+              <span> Migração concluída! </span>
+            ) : (
+              <span> Migrar Usuários </span>
+            )}
+          </Button>
+          {/* <Link to="/app/users/add" className="btn btn-dark" >
+            Adicionar Novo Usuário
+          </Link> */}
         </div>
         <Divider />
-        {isLoading ? (
-          <Stack gap={2}>
-            <Skeleton.Input active size="small" block />
-            <Skeleton.Input active size="small" block />
-            <Skeleton.Input active size="small" block />
-            <Skeleton.Input active size="small" block />
-            <Skeleton.Input active size="small" block />
-            <Skeleton.Input active size="small" block />
-            <Skeleton.Input active size="small" block />
-            <Skeleton.Input active size="small" block />
-            <Skeleton.Input active size="small" block />
-            <Skeleton.Input active size="small" block />
-          </Stack>
-        ) : (
-          <Table
-            columns={columns}
-            dataSource={data}
-            scroll={{ x: 1500, y: 300 }}
-          />
-        )}
+        <Table
+          rowKey="uid"
+          loading={isLoading}
+          columns={columns}
+          dataSource={usersData}
+          scroll={{ x: "max-content", y: 300 }}
+        />
       </Container>
+
       <Modal
         show={isOpened}
+        onHide={handleCloseModal} // UPDATED: Use new handler
         aria-labelledby="contained-modal-title-vcenter"
         centered
+        onEntered={() => deletionField.current?.focus()} // NEW: Auto-focus input
       >
         <Modal.Header closeButton>
           <span className="d-flex justify-content-center align-items-center gap-3">
@@ -185,26 +352,57 @@ const UsersList = () => {
           </span>
         </Modal.Header>
         <Modal.Body>
-          <p>Você tem certeza de que deseja apagar o usuário:</p>
-          <i>{userName}</i>
+          <p>
+            Você tem certeza de que deseja apagar permanentemente o usuário:
+          </p>
+          <i className="d-block mb-3">{userName}</i>
+
+          {/* NEW: "Type to delete" Form */}
+          <Form.Group className="mb-3" controlId="deleteConfirmInput">
+            <Form.Label>
+              Digite &quot;<span className="text-danger">deletar</span>&quot;
+              para confirmar:
+            </Form.Label>
+            <Form.Control
+              autoComplete="off"
+              type="text"
+              className="text-danger"
+              value={deletionText}
+              placeholder="digite aqui..."
+              onChange={(e) => setDeletionText(e.target.value)}
+              ref={deletionField}
+            />
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button
-            className="btn-dark"
-            onClick={() =>
-              dispatch(
-                setWarningOfDeletingUserModal({
-                  isOpened: false,
-                  key: "",
-                  userName: "",
-                }),
-              )
-            }
+            variant="outline-dark"
+            onClick={handleCloseModal}
+            disabled={isLoading} // Disable while loading
           >
             Não
           </Button>
-          <Button className="btn-dark" onClick={onButtonClick}>
-            Sim
+          <Button
+            variant="danger"
+            onClick={handleDeleteUser}
+            // UPDATED: Disable if loading OR if text doesn't match
+            disabled={isLoading || deletionText !== "deletar"}
+          >
+            {isLoading ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-2"
+                />
+                Apagando...
+              </>
+            ) : (
+              "Sim, Deletar"
+            )}
           </Button>
         </Modal.Footer>
       </Modal>

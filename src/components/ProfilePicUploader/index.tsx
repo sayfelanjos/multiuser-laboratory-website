@@ -1,0 +1,352 @@
+// src/components/ProfilePicUploader.tsx
+import React, { useState, useCallback, useEffect } from "react";
+import { useDropzone } from "react-dropzone";
+import Cropper from "react-easy-crop";
+import type { Point, Area } from "react-easy-crop";
+import {
+  Button,
+  Modal,
+  Spinner,
+  ProgressBar,
+  Image,
+  Container,
+} from "react-bootstrap";
+import { firestore as db, auth } from "../../firebase";
+import { doc, onSnapshot } from "firebase/firestore";
+import { onAuthStateChanged, User } from "firebase/auth";
+
+import FormRange from "react-bootstrap/FormRange";
+import { Divider, App } from "antd";
+import { PencilSquare } from "react-bootstrap-icons";
+import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
+import { showNotification } from "../../helpers/showNotification";
+import { usePrimaryInput } from "../../hooks/usePrimaryInput";
+import { resizeImageFile } from "../../lib/imageUtils";
+import getCroppedImg from "../../lib/imageUtils";
+import {
+  // uploadUserProfilePic,
+  uploadFileWithProgress,
+} from "../../lib/storageHandlers";
+import "./_profile-pic-uploader.scss";
+import { useAuth } from "../../hooks/useAuth";
+// import {
+//   UploadOutlined,
+//   GoogleOutlined,
+//   WindowsOutlined,
+// } from
+// "@ant-design/icons";
+
+// import { httpsCallable } from "firebase/functions";
+// import { openGoogleDrivePicker } from "../../lib/googlePicker";
+// import { openOneDrivePicker } from "../../lib/oneDrivePicker";
+// import { functions } from "../../firebase";
+
+// type Props = {
+//   googleConfig?: { clientId: string; apiKey: string; appId: string };
+//   oneDriveConfig?: { clientId: string; redirectUri?: string; scope?: string[] };
+// };
+// export default function ProfilePicUploader({
+//   googleConfig,
+//   oneDriveConfig,
+// }: Props) {
+
+export default function ProfilePicUploader({
+  photoSize = 180,
+  photoURL,
+  userUid,
+}: {
+  photoSize?: number;
+  photoURL: string | null;
+  userUid: string | null;
+}) {
+  const { user, refreshUserData } = useAuth();
+  const [file, setFile] = useState<File | null>(null);
+  const [cropPreview, setCropPreview] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [cropping, setCropping] = useState(false);
+  const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [progress, setProgress] = useState<number | null>(null);
+  const [loadingSave, setLoadingSave] = useState(false);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+  const [editing, setEditing] = useState(false);
+  const primaryInput = usePrimaryInput();
+  const { notification } = App.useApp();
+  // const updateUserProfile = httpsCallable(functions, "updateUser");
+
+  // === Dropzone setup ===
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const f = acceptedFiles[0];
+    if (f) {
+      setFile(f);
+      setCropPreview(URL.createObjectURL(f));
+      setCropping(true); // open crop modal
+    }
+  }, []);
+
+  const {
+    getRootProps,
+    getInputProps,
+    open: openFileDialog,
+    isDragActive,
+  } = useDropzone({
+    accept: { "image/*": [] },
+    multiple: false,
+    noKeyboard: true,
+    onDrop,
+  });
+
+  // === Drop area styling: ===
+  const isTouchPrimary = primaryInput === "touch";
+  const dropzoneClassName =
+    "dropzone p-5 mt-3 " +
+    (isTouchPrimary ? "is-touch p-2 px-3 " : "") +
+    (isDragActive && !isTouchPrimary ? "is-dragging " : "");
+
+  // === Save cropped + compressed image ===
+  async function handleSave() {
+    if (!file || !userUid || !cropPreview || !croppedAreaPixels) {
+      return;
+    }
+
+    setLoadingSave(true);
+
+    try {
+      const { file: croppedFile, url: croppedFileUrl } = await getCroppedImg(
+        cropPreview,
+        croppedAreaPixels,
+      );
+
+      // compress main image
+      const resizedFile = await resizeImageFile(croppedFile, 512, 512, 1);
+
+      setProgress(0);
+
+      // upload main image with progress
+      await uploadFileWithProgress(
+        resizedFile,
+        userUid,
+        setProgress,
+        "medium_profile",
+      );
+
+      // console.log("Uploaded profile pic successfully.");
+      setPreview(croppedFileUrl);
+
+      if (user && user.uid === userUid) {
+        console.log(`User ${user.email} modifyied self picure url.`);
+
+        const docRef = doc(db, "users", userUid);
+
+        // Set a trigger to refresh data when firestore updates:
+        const unsubscribeDB = onSnapshot(docRef, (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.data();
+            const newMediumUrl = data.photos?.mediumUrl;
+
+            console.log(
+              `onSnapshot received update. New mediumlUrl: ${newMediumUrl}`,
+            );
+
+            // Check against the current user photoURL to prevent old/stale updates.
+            if (newMediumUrl && user.photoURL !== newMediumUrl) {
+              console.log("New URL detected! Refreshing user data...");
+              refreshUserData(); // This will pull the new Auth/claims
+              unsubscribeDB(); // Unsubscribe after get the data we want
+            }
+          } else {
+            console.log(
+              "Failed to refreshUserData at ProfilePicUploader: Doc doesn't exist.",
+            );
+            unsubscribeDB(); // Unsubscribe on error
+          }
+        });
+      }
+
+      showNotification(
+        notification,
+        "Foto de usuário salva com sucesso!",
+        "success",
+      );
+    } catch (err) {
+      showNotification(
+        notification,
+        "Erro ao salvar foto de usuário!",
+        "error",
+      );
+      console.error("Error uploading profile pic", err);
+    } finally {
+      setEditing(false);
+      setCropping(false);
+      setLoadingSave(false);
+      setProgress(null);
+      setZoom(1);
+      setCrop({ x: 0, y: 0 });
+    }
+  }
+
+  const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  };
+
+  // // === Cloud picker handlers (commented out for now) ===
+  // async function onPickFromDrive() {
+  //   if (!user || !googleConfig) return;
+  //   const file = await openGoogleDrivePicker(googleConfig);
+  //   if (file) {
+  //     setFile(file);
+  //     setPreview(URL.createObjectURL(file));
+  //     setCropping(true);
+  //   }
+  // }
+
+  // async function onPickFromOneDrive() {
+  //   if (!user || !oneDriveConfig) return;
+  //   const file = await openOneDrivePicker(oneDriveConfig);
+  //   if (file) {
+  //     setFile(file);
+  //     setPreview(URL.createObjectURL(file));
+  //     setCropping(true);
+  //   }
+  // }
+
+  // // Check providers in the logged in user
+  // const hasGoogle = user?.providerData?.some(
+  //   (p) => p.providerId === "google.com",
+  // );
+  // const hasMicrosoft = user?.providerData?.some(
+  //   (p) => p.providerId === "microsoft.com",
+  // );
+
+  return (
+    <>
+      <Container
+        style={{ width: "fit-content" }}
+        className="d-flex flex-column align-items-center position-relative p-0"
+      >
+        {/* Current preview */}
+        <Image
+          src={preview || photoURL || userAvatar}
+          roundedCircle
+          height={photoSize}
+          alt="User"
+        />
+        {editing && (
+          <>
+            {/* Dropzone */}
+            {isTouchPrimary || (
+              <>
+                <div {...getRootProps({ className: dropzoneClassName })}>
+                  <input {...getInputProps()} />
+                  {isDragActive ? "Drop image here" : "Drag & drop image here"}
+                </div>
+                <Divider> ou </Divider>
+              </>
+            )}
+            <Button className="m-2" type="button" onClick={openFileDialog}>
+              Procurar Arquivo
+            </Button>
+          </>
+        )}
+
+        <Button
+          className={"" + (editing ? "" : "position-absolute")}
+          style={{
+            bottom: `${0}px`,
+            right: `${0}px`,
+            height: "fit-content",
+          }}
+          type="button"
+          variant={editing ? "link" : "secondary"}
+          onClick={() => setEditing((e) => !e)}
+        >
+          {editing ? (
+            "Cancelar"
+          ) : (
+            <h5 className="">
+              {/* <CameraFill /> */}
+              {/* <Upload /> */}
+              <PencilSquare />
+            </h5>
+          )}
+        </Button>
+
+        {/* Action buttons */}
+        <div className="d-flex gap-2">
+          {/* <Button onClick={handleManualSelect}>
+          <UploadOutlined /> Upload
+          </Button> */}
+
+          {/* Uncomment when Google Picker is ready */}
+
+          {/* {hasGoogle && (
+          <Button variant="light" onClick={onPickFromDrive}>
+            <GoogleOutlined /> Import from Google Drive
+          </Button>
+          )} */}
+
+          {/* Uncomment when OneDrive Picker is ready */}
+
+          {/* {hasMicrosoft && (
+          <Button variant="light" onClick={onPickFromOneDrive}>
+            <WindowsOutlined /> Import from OneDrive
+          </Button>
+          )} */}
+        </div>
+
+        {/* Progress */}
+        {progress !== null && (
+          <div className="mt-2" style={{ width: "100%" }}>
+            <ProgressBar now={progress} label={`${progress}%`} />
+          </div>
+        )}
+
+        {/* Crop modal */}
+        <Modal show={cropping} onHide={() => setCropping(false)} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Recortar Imagem</Modal.Title>
+          </Modal.Header>
+          <Modal.Body style={{ height: "400px", position: "relative" }}>
+            <Cropper
+              image={cropPreview || ""}
+              crop={crop}
+              zoom={zoom}
+              cropShape="round"
+              showGrid={false}
+              aspect={1}
+              onCropChange={setCrop}
+              onZoomChange={(z) => {
+                setZoom(z);
+              }}
+              onCropComplete={onCropComplete}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <FormRange
+              min={1}
+              max={3}
+              step={0.02}
+              value={zoom}
+              onChange={(e) => setZoom(+e.target.value)}
+            />
+            <Button variant="secondary" onClick={() => setCropping(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSave} disabled={loadingSave && !userUid}>
+              {loadingSave ? (
+                <Spinner animation="border" size="sm" />
+              ) : (
+                "Salvar"
+              )}
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </Container>
+      {!(editing || photoURL) && (
+        <div className="text-muted mt-3">
+          <i> Sem foto de perfil </i>
+        </div>
+      )}
+    </>
+  );
+}

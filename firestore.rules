@@ -1,16 +1,60 @@
+rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2024, 8, 20);
+
+    // --- HELPER FUNCTIONS ---
+    // Checks if the requesting user is an admin.
+    function isAdmin() {
+      return request.auth.token.role == 'admin';
+    }
+
+    // Checks if the requesting user is the owner of the document.
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // Checks if the user is authenticated.
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Checks if a write operation is attempting to modify the 'role' field.
+    // We check this on the incoming data (`request.resource.data`).
+    function isNotChangingRole() {
+      return (
+        !('role' in request.resource.data) ||
+        request.resource.data.role == request.auth.token.role
+      );
+    }
+    
+    // --- COLLECTION RULES ---
+
+    // Rules for the 'roles' collection
+    match /roles/{roleName} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Rules for the 'users' collection
+    match /users/{userId} {
+      // READ is allowed if the user is the owner OR an admin.
+      allow read: if isSignedIn() && (isOwner(userId) || isAdmin());
+
+      // CREATE is allowed if the user is creating their OWN document OR is an admin.
+      allow create: if isSignedIn() && (isOwner(userId) || isAdmin());
+      
+      // UPDATE is allowed if:
+      // 1. The user is an admin (can change anything).
+      // OR
+      // 2. The user is the owner AND they are NOT changing their own role.
+      allow update: if isSignedIn() && (isAdmin() || (isOwner(userId) && isNotChangingRole()));
+      
+      // DELETE is allowed if the user is the owner OR an admin.
+      allow delete: if isSignedIn() && (isOwner(userId) || isAdmin());
+
+      // WRITE is allowed if the user is an admin
+      allow write: if isSignedIn() && isAdmin();
     }
   }
 }

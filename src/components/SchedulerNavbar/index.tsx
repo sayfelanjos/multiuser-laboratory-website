@@ -1,20 +1,24 @@
 import React, { useCallback } from "react";
-import Navbar from "react-bootstrap/Navbar";
-import Container from "react-bootstrap/Container";
+import {
+  Navbar,
+  Container,
+  Nav,
+  Button,
+  Image,
+  Dropdown,
+} from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
 import brandIcon from "../../assets/images/fem-logo-monocromatica.png";
-import Nav from "react-bootstrap/Nav";
-import Button from "react-bootstrap/Button";
-import Image from "react-bootstrap/Image";
 import HamburgerIcon from "../../assets/icons/HamburgerIcon";
 import CloseIcon from "../../assets/icons/CloseIcon";
-import Dropdown from "react-bootstrap/Dropdown";
-import "./_scheduler-navbar.scss";
+import SignOutIcon from "../../assets/icons/SignOutIcon";
 import { signOutUser } from "../../helpers/signOutUser";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
 import { useAppSelector, useAppDispatch } from "../../hooks/reduxHooks";
 import { setIsSidebarOpen } from "../../redux/reducers/toggleSidebarSlice";
+import { Person, People, Gear, Envelope } from "react-bootstrap-icons";
+import "./_scheduler-navbar.scss";
 
 const brandStyle = {
   width: "auto",
@@ -30,7 +34,7 @@ const SchedulerNavbar = () => {
   const navigate = useNavigate();
   const isSidebarOpen = useAppSelector((state) => state.isSidebarOpen.value);
   const dispatch = useAppDispatch();
-  const { user } = useAuth();
+  const { user, role: userRole } = useAuth();
 
   const onButtonClick = useCallback(
     async (event: React.MouseEvent<HTMLElement>) => {
@@ -59,7 +63,8 @@ const SchedulerNavbar = () => {
             {isSidebarOpen ? <CloseIcon /> : <HamburgerIcon />}
           </Button>
           <Navbar.Brand
-            href="/home"
+            as={Link}
+            to="/home"
             className="scheduler-navbar__brand p-0 my-auto"
           >
             <Image src={brandIcon} style={brandStyle}></Image>
@@ -70,17 +75,48 @@ const SchedulerNavbar = () => {
         </div>
         <Nav>
           <Dropdown drop="down" align="end">
-            <Dropdown.Toggle 
-            className="bg-transparent p-0 m-0 border-0 me-3">
-              <Image src={user?.photoURL === null ? userAvatar : user?.photoURL} style={avatarStyle} roundedCircle/>
+            <Dropdown.Toggle className="bg-transparent p-0 m-0 border-0 me-3 d-flex align-items-center gap-2 ">
+              <span className="d-none d-lg-block p-0 my-auto fw-light">
+                {user?.displayName}
+              </span>
+              <Image
+                src={user?.photoURL || userAvatar}
+                style={avatarStyle}
+                roundedCircle
+                alt="User"
+              />
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <Dropdown.ItemText>{user?.email == null ? "No identified" : user?.email}</Dropdown.ItemText>
-              <Dropdown.Divider/> 
-              <Dropdown.Item href="/app/users/profile">Perfil</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">Configurações</Dropdown.Item>
+              <Dropdown.ItemText>
+                <span className="d-block d-lg-none mb-3 p-0 text-center fw-bold">
+                  {user?.displayName}
+                </span>
+                <span className="mb-2 text-center fw-light text-nowrap">
+                  <Envelope /> {user?.email || "No identified"}
+                </span>
+              </Dropdown.ItemText>
+
               <Dropdown.Divider />
-              <Dropdown.Item onClick={onButtonClick}>Logout</Dropdown.Item>
+
+              <Dropdown.Item as={Link} to="/app/users/profile">
+                <Person /> Perfil
+              </Dropdown.Item>
+
+              {userRole === "admin" && (
+                <Dropdown.Item as={Link} to="/app/users/list">
+                  <People /> Gerenciar Usuários
+                </Dropdown.Item>
+              )}
+
+              <Dropdown.Item as={Link} to="#/action-2" disabled>
+                <Gear /> Configurações
+              </Dropdown.Item>
+
+              <Dropdown.Divider />
+
+              <Dropdown.Item onClick={onButtonClick}>
+                <SignOutIcon /> Logout
+              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </Nav>
