@@ -13,6 +13,8 @@ import { signOutUser } from "../../helpers/signOutUser";
 import "./_header.scss";
 import ScheduleIcon from "../../assets/icons/ScheduleIcon";
 import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
+import { isDisabled } from "@testing-library/user-event/dist/utils";
+import { DropdownItem } from "react-bootstrap";
 import { Person, People, Gear, Envelope } from "react-bootstrap-icons";
 import {
   Container,
@@ -82,6 +84,14 @@ const DropdownData = [
   { route: "/service/flexion-test", text: "Ensaio de Flexão" },
   { route: "/service/charpy-impact-test", text: "Ensaio de Impacto Charpy" },
 ];
+
+const DropdownDataLaboratories = [
+  {route: "/laboratories/mechanical-testing-laboratory", text: "Ensaio Mecânico", isDisabled: true},
+  {route: "/laboratories/metallography-laboratory", text: "Metalografia", isDisabled: true},
+  {route: "/laboratories/scanning-electron-microscopy-laboratory", text: "Microscopia Eletrônica de Varredura", isDisabled: true},
+  {route: "/laboratories/transmission-electron-microscopy-laboratory", text: "Microscopia Eletrônica de Transmissão", isDisabled: true},
+  {route: "/laboratories/termoanalisys-laboratory", text: "Análise Térmica e Infravermelho", isDisabled: true},
+]
 
 const Header = () => {
   const { user, role: userRole, isLoading: isAuthLoading } = useAuth();
@@ -243,17 +253,47 @@ const Header = () => {
                         <Stack
                           gap={1}
                           direction="horizontal"
-                          className={`d-inline-flex nav-link p-0 ${path.pathname.startsWith("/service") ? "header__nav-active-color" : ""}`}
+                          className={`d-inline-flex nav-link p-0 ${path.pathname.startsWith("/laboratories") ? "header__nav-active-color" : ""}`}
                         >
                           <ServicesIcon />
-                          <span>Serviços</span>
+                          <span>Laboratorios</span>
                         </Stack>
                       }
                       id="basic-nav-dropdown"
                     >
-                      {DropdownData.map((item, index) => (
-                        <HeaderDropdownItem key={index} {...item} />
-                      ))}
+                      {/* {[...DropdownDataLaboratories]
+                      .sort((itemA, itemB) => {
+                          if ((!itemA.isDisabled && !itemB.isDisabled) || (itemA.isDisabled && itemB.isDisabled)){ // Performs comparisons only whether both items are enabled or disabled
+                            return itemA.text.localeCompare(itemB.text);
+                          }
+                          
+                          // Orders so that enabled items appear before disabled items
+                          if (itemA.isDisabled && !itemB.isDisabled) {
+                            return 1;
+                          }
+
+                          if (!itemA.isDisabled && itemB.isDisabled){
+                            return -1; 
+                          } 
+                            
+                          return 0;
+                        })
+                      .map((item, index) => (
+                        <Dropdown.Item 
+                          key={index} 
+                          as={Link}
+                          to={item.route}
+                          disabled = {item.isDisabled}
+                          >
+                          {item.text}
+                        </Dropdown.Item>
+                      ))} */
+                     <Dropdown.Item
+                     disabled = {true}
+                     >
+                      <i>Em breve...</i>
+                     </Dropdown.Item>
+                      }
                     </NavDropdown>
 
                     <HeaderNavLink route="/about">
