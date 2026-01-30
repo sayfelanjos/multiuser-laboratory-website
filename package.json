@@ -18,7 +18,7 @@
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.13.1",
     "cpf-cnpj-validator": "^1.0.3",
-    "eslint": "^8.57.0",
+    "eslint": "^9.26.0",
     "firebase": "^10.13.1",
     "formik": "^2.4.6",
     "pica": "^9.0.1",
