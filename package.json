@@ -35,7 +35,7 @@
     "react-scripts": "5.0.1",
     "sass": "^1.75.0",
     "swiper": "^11.1.14",
-    "web-vitals": "^2.1.4",
+    "web-vitals": "^6.2.2",
     "yup": "^1.4.0"
   },
   "scripts": {
