@@ -10,10 +10,17 @@ import AboutIcon from "../../assets/icons/AboutIcon";
 import ContactIcon from "../../assets/icons/ContactIcon";
 import { useAuth } from "../../hooks/useAuth";
 import { signOutUser } from "../../helpers/signOutUser";
+import { INTRANET_URL } from "../../constants/urls";
 import "./_header.scss";
 import ScheduleIcon from "../../assets/icons/ScheduleIcon";
 import userAvatar from "../../assets/images/carbon--user-avatar-filled.png";
-import { Person, People, Gear, Envelope } from "react-bootstrap-icons";
+import {
+  Person,
+  People,
+  Gear,
+  Envelope,
+  BoxArrowUpRight,
+} from "react-bootstrap-icons";
 import {
   Container,
   Dropdown,
@@ -265,6 +272,23 @@ const Header = () => {
                       <ContactIcon />
                       Contato
                     </HeaderNavLink>
+
+                    {/* External site: a plain anchor is required, because a
+                        router <Link> would render the SPA's NotFound page. */}
+                    <Nav.Link
+                      href={INTRANET_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-truncate"
+                    >
+                      <Stack gap={1} direction="horizontal">
+                        <BoxArrowUpRight />
+                        Intranet
+                        <span className="visually-hidden">
+                          (abre em nova aba)
+                        </span>
+                      </Stack>
+                    </Nav.Link>
 
                     <Nav.Item>
                       <Link

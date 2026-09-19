@@ -1,13 +1,12 @@
 import { readFileSync } from "fs";
 import { resolve } from "path";
+import { INTRANET_URL } from "./constants/urls";
 
 type Redirect = { source: string; destination: string; type: number };
 
 const { hosting } = JSON.parse(
   readFileSync(resolve(process.cwd(), "firebase.json"), "utf-8"),
 );
-
-const INTRANET_URL = "https://sites.google.com/unicamp.br/27-intranet/home";
 
 describe("firebase hosting config", () => {
   const redirects: Redirect[] = hosting.redirects ?? [];
