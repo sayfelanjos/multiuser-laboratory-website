@@ -17,6 +17,13 @@ Every change ships with tests in the same commit/PR — new features, bug fixes 
 
 CI enforces this: `deploy-hosting.yml` (`develop`) and `release-hosting.yml` (`main`) run a `test` job (`npm ci`, `npm test`), and the deploy job has `needs: test`, so nothing is deployed unless every test passes.
 
+### Commit and PR descriptions
+
+Always write clear descriptions.
+
+- Commits: a Conventional-Commits-style subject (`feat(scope): what changed`, imperative, under ~72 chars) plus a body explaining what changed and why, not just the diff.
+- Pull requests: a descriptive title (not the branch name) and a body with Summary, Changes (per file/area), Why (for non-obvious decisions), Testing (what was run and the result) and Notes for review (risks, follow-ups, known failures). Never leave the body empty.
+
 ### Branching: trunk-based development (target)
 
 The target workflow is trunk-based development: one always-deployable trunk, short-lived branches, small PRs merged often, unfinished work merged hidden (unlinked route or flag) instead of kept on a long-lived branch, no direct commits to or force-pushes of the trunk.
