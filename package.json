@@ -27,7 +27,7 @@
     "react-bootstrap-icons": "^1.11.6",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.3.8",
-    "react-easy-crop": "^5.5.3",
+    "react-easy-crop": "^6.2.3",
     "react-imask": "^7.6.1",
     "react-phone-number-input": "^3.4.13",
     "react-redux": "^9.1.2",
