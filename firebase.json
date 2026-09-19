@@ -3,6 +3,18 @@
     "site": "multiuser-laboratory-website",
     "public": "build",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "redirects": [
+      {
+        "source": "/intranet",
+        "destination": "https://sites.google.com/unicamp.br/27-intranet/home",
+        "type": 302
+      },
+      {
+        "source": "/intranet/**",
+        "destination": "https://sites.google.com/unicamp.br/27-intranet/home",
+        "type": 302
+      }
+    ],
     "rewrites": [
       {
         "source": "**",
