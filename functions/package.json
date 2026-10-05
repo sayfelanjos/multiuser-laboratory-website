@@ -20,7 +20,7 @@
     "cpf-cnpj-validator": "^1.0.3",
     "dotenv": "^16.4.5",
     "email-validator": "^2.0.4",
-    "firebase-admin": "^11.8.0",
+    "firebase-admin": "^14.5.0",
     "firebase-functions": "^5.1.1",
     "regenerator-runtime": "^0.14.1",
     "sharp": "^0.34.3"
